@@ -39,7 +39,7 @@ jobs:
         run: npm test
 
       - name: Generate dynamic coverage badge
-        run: node scripts/generate-coverage-badge.js
+        run: bash scripts/generate-coverage-badge.sh
 
       - name: Build
         run: npm run build

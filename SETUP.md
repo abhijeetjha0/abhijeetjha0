@@ -68,6 +68,6 @@ Automated via GitHub Actions ([`.github/workflows/deploy.yml`](.github/workflows
 
 1. **Dependency Installation**: `npm ci`
 2. **Mandatory Test Execution**: `npm test` runs the unit test suite and generates HTML coverage report in `coverage/lcov-report`. Build fails immediately if any test fails.
-3. **Dynamic Badge Generation**: `node scripts/generate-coverage-badge.js` generates `badge.json` & `badge.svg`.
+3. **Dynamic Badge Generation**: `bash scripts/generate-coverage-badge.sh` generates `badge.json` & `badge.svg`.
 4. **Application Build**: `npm run build` compiles Vite bundle to `dist`.
 5. **Deployment**: Deploys `dist` to GitHub Pages (`https://abhijeetjha0.github.io/abhijeetjha0/`).
