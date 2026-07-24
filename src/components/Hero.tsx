@@ -1,11 +1,12 @@
 import { Container, Row, Col } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import { SECTION_IDS } from '../constants';
 
 export default function Hero() {
   const { t } = useTranslation();
 
   return (
-    <div id="home" className="bg-light py-5 mb-5">
+    <div id={SECTION_IDS.HOME} className="bg-light py-5 mb-5">
       <Container>
         <Row className="align-items-center">
           <Col md={8}>

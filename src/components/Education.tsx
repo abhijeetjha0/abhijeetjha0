@@ -1,11 +1,6 @@
 import { Container, Card } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-
-interface EducationInfo {
-  degree: string;
-  institution: string;
-  period: string;
-}
+import { EducationInfo } from '../@types';
 
 export default function Education() {
   const { t } = useTranslation();

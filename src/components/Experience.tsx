@@ -1,14 +1,6 @@
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-
-interface ExperienceItem {
-  id?: string;
-  role: string;
-  company: string;
-  period: string;
-  location: string;
-  highlights?: string[];
-}
+import { ExperienceItem } from '../@types';
 
 export default function Experience() {
   const { t } = useTranslation();
@@ -19,8 +11,8 @@ export default function Experience() {
     <section id="experience" className="py-5">
       <Container>
         <h2 className="text-center mb-5">{t('sections.experience')}</h2>
-        {experiences.map((exp, index) => {
-          const itemKey = exp.id || `${exp.company}-${exp.role}-${exp.period}` || index;
+        {experiences.map((exp) => {
+          const itemKey = exp.id || `${exp.company}-${exp.role}-${exp.period}`;
           return (
             <Card key={itemKey} className="mb-4 shadow-sm border-0">
               <Card.Body>
@@ -36,8 +28,8 @@ export default function Experience() {
                 </Row>
                 {exp.highlights && exp.highlights.length > 0 && (
                   <ul className="mt-3">
-                    {exp.highlights.map((highlight: string, hIndex: number) => (
-                      <li key={`${itemKey}-highlight-${hIndex}`} className="mb-2">{highlight}</li>
+                    {exp.highlights.map((highlight: string) => (
+                      <li key={`${itemKey}-${highlight}`} className="mb-2">{highlight}</li>
                     ))}
                   </ul>
                 )}

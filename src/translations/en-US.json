@@ -17,6 +17,7 @@
   },
   "experience": [
     {
+      "id": "exp-senior-software-engineer",
       "company": "Metacube Software Pvt. Ltd.",
       "role": "Senior Software Engineer",
       "period": "Apr 2023 - Present",
@@ -32,6 +33,7 @@
       ]
     },
     {
+      "id": "exp-software-engineer",
       "company": "Metacube Software Pvt. Ltd.",
       "role": "Software Engineer",
       "period": "Jan 2020 - Mar 2023",
