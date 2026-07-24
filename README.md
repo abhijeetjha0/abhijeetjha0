@@ -2,9 +2,9 @@
 
 <img src="./.github/assets/typing-header.svg" width="620" alt="Senior Software Engineer | React &amp; TypeScript Specialist | UI Performance, L10n &amp; Accessibility" />
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat&logo=linkedin&logoColor=white)](https://linkedin.com/in/abhijeetjha0)
-[![Website](https://img.shields.io/badge/Live_Portfolio-EAB308?style=flat&logo=firefox&logoColor=white)](https://abhijeetjha0.github.io/abhijeetjha0/)
-[![Email](https://img.shields.io/badge/Email-abhijeetjha0%40hotmail.com-10B981?style=flat&logo=gmail&logoColor=white)](mailto:abhijeetjha0@hotmail.com)
+[![Portfolio](./.github/assets/portfolio-badge.svg)](https://abhijeetjha0.github.io/abhijeetjha0/)
+[![LinkedIn](./.github/assets/linkedin-badge.svg)](https://linkedin.com/in/abhijeetjha0)
+[![Email](./.github/assets/email-badge.svg)](mailto:abhijeetjha0@hotmail.com)
 
 ---
 
@@ -36,6 +36,17 @@ Senior Software Engineer with **6+ years of experience** leading UI development 
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)
 ![jQuery](https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white)
 
+### 🤖 Artificial Intelligence
+![Claude Code](https://img.shields.io/badge/Claude_Code-D97706?style=for-the-badge&logo=anthropic&logoColor=white)
+![Google Antigravity](https://img.shields.io/badge/Google_Antigravity-4285F4?style=for-the-badge&logo=google&logoColor=white)
+![Google Gemini](https://img.shields.io/badge/Google_Gemini-8E75B2?style=for-the-badge&logo=googlegemini&logoColor=white)
+![Google Jules](https://img.shields.io/badge/Google_Jules-4285F4?style=for-the-badge&logo=google&logoColor=white)
+![AI-Assisted Development](https://img.shields.io/badge/AI--Assisted_Development-0052CC?style=for-the-badge&logo=probot&logoColor=white)
+![AI Skill Generation](https://img.shields.io/badge/AI_Skill_Generation-7C3AED?style=for-the-badge&logo=sparkles&logoColor=white)
+![Prompt Engineering](https://img.shields.io/badge/Prompt_Engineering-059669?style=for-the-badge&logo=lightning&logoColor=white)
+![AI-Assisted Documentation](https://img.shields.io/badge/AI--Assisted_Documentation-2563EB?style=for-the-badge&logo=read-the-docs&logoColor=white)
+![AI-Assisted Code Review](https://img.shields.io/badge/AI--Assisted_Code_Review-D97706?style=for-the-badge&logo=githubactions&logoColor=white)
+
 ### ⚡ Build Tools & Code Quality
 ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 ![Webpack](https://img.shields.io/badge/Webpack-8DD6F9?style=for-the-badge&logo=webpack&logoColor=black)
@@ -46,6 +57,7 @@ Senior Software Engineer with **6+ years of experience** leading UI development 
 
 ### ⚙️ Tools, DevOps & Workflows
 ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
+![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
 ![GitLab](https://img.shields.io/badge/GitLab-FC6D26?style=for-the-badge&logo=gitlab&logoColor=white)
 ![Jira](https://img.shields.io/badge/Jira-0052CC?style=for-the-badge&logo=jira&logoColor=white)
 ![Confluence](https://img.shields.io/badge/Confluence-172B4D?style=for-the-badge&logo=confluence&logoColor=white)
@@ -74,12 +86,3 @@ Senior Software Engineer with **6+ years of experience** leading UI development 
 
 - **B.Tech in Information Technology** (Aug 2016 - Jul 2020)  
   *Swami Keshwanand Institute of Technology (SKIT), Jaipur, India*
-
-## 📬 Connect With Me
-
-- 🌐 **Portfolio Website**: [https://abhijeetjha0.github.io/abhijeetjha0/](https://abhijeetjha0.github.io/abhijeetjha0/)
-- 📊 **Live Code Coverage**: [https://abhijeetjha0.github.io/abhijeetjha0/coverage/](https://abhijeetjha0.github.io/abhijeetjha0/coverage/)
-- 💼 **LinkedIn**: [linkedin.com/in/abhijeetjha0](https://linkedin.com/in/abhijeetjha0)
-- ✉️ **Email**: [abhijeetjha0@hotmail.com](mailto:abhijeetjha0@hotmail.com)
-
----
