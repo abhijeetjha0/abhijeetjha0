@@ -21,46 +21,63 @@ Senior Software Engineer with **6+ years of experience** leading UI development 
 
 ## 🛠️ Tech Stack & Capabilities
 
-### 💻 Programming Languages & Core Web
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
-![Sass](https://img.shields.io/badge/Sass-CC6699?style=for-the-badge&logo=sass&logoColor=white)
+### ⚛️ Libraries & Frameworks
+![React](https://img.shields.io/badge/React-C7F9CC?style=flat&logo=react&logoColor=black)
+![React Router](https://img.shields.io/badge/React_Router-FECDCA?style=flat&logo=react-router&logoColor=black)
+![Jest](https://img.shields.io/badge/Jest-FECDCA?style=flat&logo=jest&logoColor=black)
+![Ember.js](https://img.shields.io/badge/Ember.js-FFD6A5?style=flat&logo=ember.js&logoColor=black)
+![jQuery](https://img.shields.io/badge/jQuery-DBEAFE?style=flat&logo=jquery&logoColor=black)
+![Bootstrap](https://img.shields.io/badge/Bootstrap-E9D5FF?style=flat&logo=bootstrap&logoColor=black)
+![Material UI](https://img.shields.io/badge/Material_UI-E0F2FE?style=flat&logo=mui&logoColor=black)
 
-### ⚛️ Frameworks & Libraries
-![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
-![React Router](https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white)
-![Ember.js](https://img.shields.io/badge/Ember.js-E04E39?style=for-the-badge&logo=ember.js&logoColor=white)
-![Jest](https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest&logoColor=white)
-![Bootstrap](https://img.shields.io/badge/Bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)
-![jQuery](https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white)
+### 💻 Languages
+![JavaScript](https://img.shields.io/badge/JavaScript-FEF08A?style=flat&logo=javascript&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-D1E3FF?style=flat&logo=typescript&logoColor=black)
+![HTML5](https://img.shields.io/badge/HTML5-FFD6A5?style=flat&logo=html5&logoColor=black)
+![CSS3](https://img.shields.io/badge/CSS3-CAE9FF?style=flat&logo=css3&logoColor=black)
+![Sass](https://img.shields.io/badge/Sass-FAD2E1?style=flat&logo=sass&logoColor=black)
 
-### 🤖 Artificial Intelligence
-![Claude Code](https://img.shields.io/badge/Claude_Code-D97706?style=for-the-badge&logo=anthropic&logoColor=white)
-![Google Antigravity](https://img.shields.io/badge/Google_Antigravity-4285F4?style=for-the-badge&logo=google&logoColor=white)
-![Google Gemini](https://img.shields.io/badge/Google_Gemini-8E75B2?style=for-the-badge&logo=googlegemini&logoColor=white)
-![Google Jules](https://img.shields.io/badge/Google_Jules-4285F4?style=for-the-badge&logo=google&logoColor=white)
-![AI-Assisted Development](https://img.shields.io/badge/AI--Assisted_Development-0052CC?style=for-the-badge&logo=probot&logoColor=white)
-![AI Skill Generation](https://img.shields.io/badge/AI_Skill_Generation-7C3AED?style=for-the-badge&logo=sparkles&logoColor=white)
-![Prompt Engineering](https://img.shields.io/badge/Prompt_Engineering-059669?style=for-the-badge&logo=lightning&logoColor=white)
-![AI-Assisted Documentation](https://img.shields.io/badge/AI--Assisted_Documentation-2563EB?style=for-the-badge&logo=read-the-docs&logoColor=white)
-![AI-Assisted Code Review](https://img.shields.io/badge/AI--Assisted_Code_Review-D97706?style=for-the-badge&logo=githubactions&logoColor=white)
+### 🌐 Web Technologies
+![Cross-Browser Extensions](https://img.shields.io/badge/Cross--Browser_Extensions-E2E8F0?style=flat&logo=googlechrome&logoColor=black)
+![Internationalization](https://img.shields.io/badge/Internationalization-E0E7FF?style=flat&logo=i18next&logoColor=black)
+![WCAG Accessibility](https://img.shields.io/badge/WCAG_Accessibility-D1FAE5?style=flat&logo=w3c&logoColor=black)
 
-### ⚡ Build Tools & Code Quality
-![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
-![Webpack](https://img.shields.io/badge/Webpack-8DD6F9?style=for-the-badge&logo=webpack&logoColor=black)
-![Rollup](https://img.shields.io/badge/Rollup-EC4A3F?style=for-the-badge&logo=rollup.js&logoColor=white)
-![Babel](https://img.shields.io/badge/Babel-F9DC3E?style=for-the-badge&logo=babel&logoColor=black)
-![ESLint](https://img.shields.io/badge/ESLint-4B32C3?style=for-the-badge&logo=eslint&logoColor=white)
-![SonarQube](https://img.shields.io/badge/SonarQube-4E9BCD?style=for-the-badge&logo=sonarqube&logoColor=white)
+### 🧠 AI Skills & Practices
+![AI-Assisted Development](https://img.shields.io/badge/AI--Assisted_Development-E0F2FE?style=flat&logo=probot&logoColor=black)
+![AI Skill Generation](https://img.shields.io/badge/AI_Skill_Generation-F3E8FF?style=flat&logo=sparkles&logoColor=black)
+![Prompt Engineering](https://img.shields.io/badge/Prompt_Engineering-D1FAE5?style=flat&logo=lightning&logoColor=black)
+![AI-Assisted Documentation](https://img.shields.io/badge/AI--Assisted_Documentation-DBEAFE?style=flat&logo=read-the-docs&logoColor=black)
+![AI-Assisted Code Review](https://img.shields.io/badge/AI--Assisted_Code_Review-FEF3C7?style=flat&logo=githubactions&logoColor=black)
 
-### ⚙️ Tools, DevOps & Workflows
-![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
-![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
-![GitLab](https://img.shields.io/badge/GitLab-FC6D26?style=for-the-badge&logo=gitlab&logoColor=white)
-![Jira](https://img.shields.io/badge/Jira-0052CC?style=for-the-badge&logo=jira&logoColor=white)
-![Confluence](https://img.shields.io/badge/Confluence-172B4D?style=for-the-badge&logo=confluence&logoColor=white)
+### 🤖 AI Tools
+![Claude Code](https://img.shields.io/badge/Claude_Code-FEF3C7?style=flat&logo=anthropic&logoColor=black)
+![Google Antigravity](https://img.shields.io/badge/Google_Antigravity-DBEAFE?style=flat&logo=google&logoColor=black)
+![Google Gemini](https://img.shields.io/badge/Google_Gemini-EDE9FE?style=flat&logo=googlegemini&logoColor=black)
+![Google Jules](https://img.shields.io/badge/Google_Jules-E0E7FF?style=flat&logo=google&logoColor=black)
+
+### ⚡ Build Tools
+![Vite](https://img.shields.io/badge/Vite-EDE9FE?style=flat&logo=vite&logoColor=black)
+![Webpack](https://img.shields.io/badge/Webpack-E0F2FE?style=flat&logo=webpack&logoColor=black)
+![Babel](https://img.shields.io/badge/Babel-FEF08A?style=flat&logo=babel&logoColor=black)
+![Rollup](https://img.shields.io/badge/Rollup-FECDCA?style=flat&logo=rollup.js&logoColor=black)
+
+### 🛡️ Quality & Linting
+![ESLint](https://img.shields.io/badge/ESLint-EDE9FE?style=flat&logo=eslint&logoColor=black)
+![Stylelint](https://img.shields.io/badge/Stylelint-FCE7F3?style=flat&logo=stylelint&logoColor=black)
+![SonarQube](https://img.shields.io/badge/SonarQube-E0F2FE?style=flat&logo=sonarqube&logoColor=black)
+
+### ⚙️ Tools & Workflows
+![Git](https://img.shields.io/badge/Git-FFD6A5?style=flat&logo=git&logoColor=black)
+![GitHub](https://img.shields.io/badge/GitHub-E5E7EB?style=flat&logo=github&logoColor=black)
+![GitLab](https://img.shields.io/badge/GitLab-FFD6A5?style=flat&logo=gitlab&logoColor=black)
+![Jira](https://img.shields.io/badge/Jira-DBEAFE?style=flat&logo=jira&logoColor=black)
+![Confluence](https://img.shields.io/badge/Confluence-E0F2FE?style=flat&logo=confluence&logoColor=black)
+![AWS](https://img.shields.io/badge/AWS-FFD6A5?style=flat&logo=amazonwebservices&logoColor=black)
+
+### 👥 Leadership & Management
+![Agile Methodologies](https://img.shields.io/badge/Agile_Methodologies-DBEAFE?style=flat&logo=scrumalliance&logoColor=black)
+![Team Leadership](https://img.shields.io/badge/Team_Leadership-FEF3C7?style=flat&logo=scrumalliance&logoColor=black)
+![Mentorship](https://img.shields.io/badge/Mentorship-D1FAE5?style=flat&logo=handshake&logoColor=black)
 
 ---
 

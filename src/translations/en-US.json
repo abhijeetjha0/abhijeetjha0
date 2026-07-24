@@ -46,12 +46,15 @@
     }
   ],
   "skills": {
-    "frameworks": ["React", "React Router", "Jest", "Ember.js", "jQuery"],
-    "languages": ["JavaScript", "TypeScript"],
+    "frameworks": ["React", "React Router", "Jest", "Ember.js", "jQuery", "Bootstrap", "Material UI"],
+    "languages": ["JavaScript", "TypeScript", "HTML5", "CSS3", "Sass"],
+    "webTech": ["Cross-Browser Extensions", "Internationalization (i18n)", "WCAG Accessibility (a11y)"],
+    "aiSkills": ["AI-Assisted Development", "AI Skill Generation", "Prompt Engineering", "AI-Assisted Documentation", "AI-Assisted Code Review"],
+    "aiTools": ["Claude Code", "Google Antigravity", "Google Gemini", "Google Jules"],
     "buildTools": ["Vite", "Webpack", "Babel", "Rollup"],
-    "webTech": ["HTML5", "Bootstrap", "Sass", "CSS"],
-    "linting": ["ESLint", "Stylelint"],
-    "others": ["Git", "Localization", "Responsive Web Design", "Agile Methodologies", "Jira", "Confluence", "Cross Browser Extensions"]
+    "linting": ["ESLint", "Stylelint", "SonarQube"],
+    "others": ["Git", "GitHub", "GitLab", "Jira", "Confluence", "AWS"],
+    "leadership": ["Agile Methodologies", "Team Leadership", "Mentorship"]
   },
   "education": {
     "degree": "B.Tech in IT",

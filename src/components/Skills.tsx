@@ -59,6 +59,34 @@ export default function Skills() {
       ),
     },
     {
+      id: 'aiSkills',
+      label: 'AI Skills & Practices',
+      data: skills.aiSkills || [],
+      color: '#7c3aed',
+      bgLight: '#f5f3ff',
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3z" />
+        </svg>
+      ),
+    },
+    {
+      id: 'aiTools',
+      label: 'AI Tools & Platforms',
+      data: skills.aiTools || [],
+      color: '#8b5cf6',
+      bgLight: '#f3e8ff',
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="11" width="18" height="10" rx="2" />
+          <circle cx="12" cy="5" r="2" />
+          <path d="M12 7v4" />
+          <line x1="8" y1="16" x2="8" y2="16.01" />
+          <line x1="16" y1="16" x2="16" y2="16.01" />
+        </svg>
+      ),
+    },
+    {
       id: 'buildTools',
       label: 'Build Tools',
       data: skills.buildTools || [],
@@ -96,7 +124,22 @@ export default function Skills() {
         </svg>
       ),
     },
-  ], [skills.frameworks, skills.languages, skills.webTech, skills.buildTools, skills.linting, skills.others]);
+    {
+      id: 'leadership',
+      label: 'Leadership & Management',
+      data: skills.leadership || [],
+      color: '#ea580c',
+      bgLight: '#fff7ed',
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+      ),
+    },
+  ], [skills.frameworks, skills.languages, skills.webTech, skills.aiSkills, skills.aiTools, skills.buildTools, skills.linting, skills.others, skills.leadership]);
 
   const filteredCategories = useMemo(() => {
     return activeFilter === 'all'
