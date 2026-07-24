@@ -141,4 +141,7 @@ To eliminate external third-party dependencies, custom badge SVGs are maintained
 2. **i18n Localization Integrity**: Whenever adding or updating skills, ensure both `README.md` and `src/translations/en-US.json` are synchronized with matching category structures.
 3. **Casing & Style Enforcement**: Always maintain exact title casing (e.g. `TypeScript`, `Ember.js`, `Stylelint`) when editing documentation or badges.
 4. **No Placeholders**: Maintain exact production URLs and valid Simple Icons logo parameters across all markdown files.
-4. **Prefer Native Github tools in README**: When adding badges, logo etc, prefer Github's built ins. They are more reliable and maintained.
+5. **Prefer Native Github tools in README**: When adding badges, logo etc, prefer Github's built ins. They are more reliable and maintained.
+6. **Keep AGENTS.md up to date**: It helps AI tools work with our repo more effectively.
+7. **Add test cases for components**: When adding a component, make sure to write test cases for it and ensure the test passes.
+8. **Prefer not to disable any lint rules**: If a lint rule is disabled, try to fix it instead of disabling it. If not, then it should be documented in the code with a reason.
