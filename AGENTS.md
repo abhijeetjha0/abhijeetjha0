@@ -26,7 +26,7 @@ Subdirectory-specific guidelines are maintained in modular `AGENTS.md` files thr
 ├── package.json             # Dependencies, scripts, and engine boundaries
 ├── package-lock.json        # Locked dependency manifest
 ├── setupTests.ts            # Testing environment initialization
-├── stylelint.config.js      # Stylelint SCSS rules
+├── .stylelintrc.json        # Stylelint SCSS rules configuration
 ├── tsconfig.json            # Main TypeScript compiler configuration
 ├── tsconfig.app.json        # Client application TypeScript settings
 ├── tsconfig.node.json       # Node environment TypeScript settings
@@ -46,6 +46,7 @@ Subdirectory-specific guidelines are maintained in modular `AGENTS.md` files thr
 | `npm run build` | Production Build | Executes TypeScript type check (`tsc -b`) and Vite production bundle build. |
 | `npm run test` | Unit Tests | Executes Jest unit tests and generates coverage metrics. |
 | `npm run lint` | Code Quality | Runs ESLint across TypeScript/JavaScript files. |
+| `npm run lint-style` | SCSS Linting | Runs Stylelint across all SCSS files (`stylelint '**/*.scss'`). |
 ---
 
 ## 📌 Master Rules for AI Agents
