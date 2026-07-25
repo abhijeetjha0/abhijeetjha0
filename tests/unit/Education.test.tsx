@@ -50,7 +50,7 @@ describe('Education Component', () => {
     };
 
     (useTranslation as jest.Mock).mockReturnValue({
-      t: (key: string, options?: any) => {
+      t: (key: string, options?: Record<string, unknown>) => {
         if (key === 'sections.education') return 'Academic Background';
         if (key === 'education' && options?.returnObjects) return mockEducation;
         return key;
@@ -67,7 +67,7 @@ describe('Education Component', () => {
 
   test('handles empty or missing education object gracefully without crashing', () => {
     (useTranslation as jest.Mock).mockReturnValue({
-      t: (key: string, options?: any) => {
+      t: (key: string, options?: Record<string, unknown>) => {
         if (key === 'sections.education') return 'Education';
         if (key === 'education' && options?.returnObjects) return null;
         return key;

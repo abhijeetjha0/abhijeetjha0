@@ -6,10 +6,10 @@ import { CategoryConfig, SkillsDictionary } from '../@types';
 
 export default function Skills() {
   const { t } = useTranslation();
-  const skills = (t('skills', { returnObjects: true }) || {}) as SkillsDictionary;
   const [activeFilter, setActiveFilter] = useState<string>('all');
 
   const categories: CategoryConfig[] = useMemo(() => {
+    const skills = (t('skills', { returnObjects: true }) || {}) as SkillsDictionary;
     return SKILL_CATEGORY_METADATA.map((meta) => ({
       ...meta,
       data: skills[meta.translationKey] || [],
@@ -18,7 +18,7 @@ export default function Skills() {
         '--accent-bg': meta.bgLight,
       } as CSSProperties,
     }));
-  }, [skills]);
+  }, [t]);
 
   const filteredCategories = useMemo(() => {
     return activeFilter === 'all'

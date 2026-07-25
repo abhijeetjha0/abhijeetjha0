@@ -67,7 +67,7 @@ describe('Experience Component', () => {
     ];
 
     (useTranslation as jest.Mock).mockReturnValue({
-      t: (key: string, options?: any) => {
+      t: (key: string, options?: Record<string, unknown>) => {
         if (key === 'sections.experience') return 'Work Experience';
         if (key === 'experience' && options?.returnObjects) return mockExperiences;
         return key;
@@ -87,7 +87,7 @@ describe('Experience Component', () => {
 
   test('handles empty or invalid experience array gracefully without crashing', () => {
     (useTranslation as jest.Mock).mockReturnValue({
-      t: (key: string, options?: any) => {
+      t: (key: string, options?: Record<string, unknown>) => {
         if (key === 'sections.experience') return 'Professional Experience';
         if (key === 'experience' && options?.returnObjects) return null;
         return key;

@@ -50,7 +50,7 @@ Subdirectory-specific guidelines are maintained in modular `AGENTS.md` files thr
 
 ## 📌 Master Rules for AI Agents
 
-1. **Verification Requirement**: Never declare a task resolved without running `npm test`, `npm run build`, and `npm run lint`.
+1. **Verification Requirement**: Never declare a task resolved without running `npm test`, `npm run build`, and `npm run lint` when modifying application code files. Verification commands can be skipped when only updating Markdown (`.md`) documentation files.
 2. **No Placeholders**: Maintain exact production URLs and valid Simple Icons logo parameters across all documentation files.
 3. **Keep AGENTS.md Up to Date**: Update relevant modular `AGENTS.md` files whenever tooling, configuration, or directory architecture changes.
 

@@ -28,6 +28,7 @@ export const APP_CONFIG = {
   DEFAULT_LOCALE: 'en-US',
   SUPPORTED_LOCALES: ['en-US'] as const,
   GITHUB_REPO_URL: 'https://github.com/abhijeetjha0/abhijeetjha0',
+  DEFAULT_BASENAME: '/abhijeetjha0/',
 } as const;
 
 export const SKILL_CATEGORY_METADATA: CategoryMeta[] = [
