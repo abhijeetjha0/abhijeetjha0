@@ -43,11 +43,11 @@ describe('Education Component', () => {
   });
 
   test('handles custom mock education data gracefully', () => {
-    const mockEducation = {
+    const mockEducation = [{
       degree: 'Master of Computer Science',
       institution: 'Stanford University',
       period: '2021 - 2023',
-    };
+    }];
 
     (useTranslation as jest.Mock).mockReturnValue({
       t: (key: string, options?: Record<string, unknown>) => {

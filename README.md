@@ -10,12 +10,11 @@
 
 ## 👨‍💻 About Me
 
-Senior Software Engineer with **6+ years of experience** leading UI development and crafting high-performance, responsive web applications. Specialized in **React, TypeScript, Ember.js, and Modern Frontend Tooling**. Passionate about performance optimization, web accessibility (a11y), internationalization/localization (l10n/i18n), and cross-browser extensions.
+Senior Software Engineer with **6+ years of experience** leading UI development and crafting high-performance, responsive web applications. Specialized in **React, TypeScript, Ember.js, and Modern Frontend Tooling**. Passionate about performance optimization, web accessibility (a11y), internationalization/localization (l10n/i18n), and cross-browser development.
 
 - 📍 **Location**: Jaipur, India
 - 💼 **Current Role**: Senior Software Engineer @ Metacube Software
 - 🎓 **Education**: B.Tech in IT @ Swami Keshwanand Institute of Technology (SKIT), Jaipur
-- ⚡ **Core Focus**: UI Architecture, Web Performance (reducing load times by 30%+), Automated Testing (99% coverage), Team Mentorship
 
 ---
 
@@ -85,17 +84,21 @@ Senior Software Engineer with **6+ years of experience** leading UI development 
 
 ### 🚀 **Senior Software Engineer** | Metacube Software Pvt. Ltd.
 *Apr 2023 - Present | Jaipur, India*
-- **Team Leadership**: Mentored and led an engineering team of 7-10 junior developers, accelerating product releases for a NASDAQ-listed USA client.
+- **Team Leadership**: Mentored and led an engineering team of 7-10 developers, accelerating product releases for a NASDAQ-listed USA client.
 - **Performance Optimization**: Designed responsive web applications using ReactJS, achieving a **30% reduction in initial load times**.
 - **Bundle Optimization**: Configured Vite, Rollup, Webpack, and Babel with tree-shaking to minimize UI bundle sizes.
-- **Localization & Accessibility**: Developed fully localized (l10n/i18n) and web-accessible pages across Chromium, Apple WebKit, and Gecko browser engines.
-- **Code Quality**: Built Jest unit testing suites achieving **99% code coverage** and established enterprise linting standards with ESLint, Stylelint, and SonarQube.
+- **Localization & Accessibility**: Developed fully localized (l10n/i18n) and web-accessible pages (WCAG) across Chromium, Apple WebKit, and Gecko browser engines.
+- **Code Quality**: Built Jest unit testing suites achieving **99% code coverage** and established industry-level linting and coding standards with ESLint, Stylelint, and SonarQube.
+- **AI**: Well versed with AI-assisted coding, strategic code reviews, code quality and maintenance as well as using it for prompt engineering, skill generation, documentation and more. Currently exploring more ways to integrate AI in SDLC to improvise it.
 
 ### 💻 **Software Engineer** | Metacube Software Pvt. Ltd.
 *Jan 2020 - Mar 2023 | Jaipur, India*
 - Developed robust web applications using **React** and **Ember.js**.
 - Built and integrated secure Single Sign-On (SSO) portals for a NASDAQ-listed USA enterprise client.
 - Received multiple awards and executive commendations for meeting tight release deadlines and exceeding performance expectations.
+- Developed SSO based Browser extensions that was cross platform (Supported Safari, Chromium and Firefox).
+- Guided Native mobile team in designing Web View based pages for client side interaction.
+- Initiated and developed responsive design guidelines that drastically improved user experience across different devices.
 
 ---
 
@@ -103,3 +106,6 @@ Senior Software Engineer with **6+ years of experience** leading UI development 
 
 - **B.Tech in Information Technology** (Aug 2016 - Jul 2020)  
   *Swami Keshwanand Institute of Technology (SKIT), Jaipur, India*
+
+- **Senior School in Science** (Jun 2013 - Mar 2015)  
+  Rajkiya Pratibha Vikas Vidyalaya, Lajpat Nagar, New Delhi, India  

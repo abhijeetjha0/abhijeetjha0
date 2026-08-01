@@ -15,6 +15,12 @@ export interface EducationInfo {
   period: string;
 }
 
+export interface ProjectInfo {
+  name: string;
+  description: string;
+  link: string;
+}
+
 export interface PersonalInfo {
   name: string;
   title: string;
@@ -50,7 +56,7 @@ export interface CategoryConfig extends CategoryMeta {
 
 export type SkillsDictionary = Record<SkillCategoryId, string[]>;
 
-export type SectionId = 'home' | 'experience' | 'skills' | 'education';
+export type SectionId = 'home' | 'experience' | 'skills' | 'education' | 'projects';
 
 export interface NavLinkItem {
   id: SectionId;

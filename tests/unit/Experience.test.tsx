@@ -40,7 +40,7 @@ describe('Experience Component', () => {
     expect(screen.getAllByText('Jaipur, India').length).toBeGreaterThan(0);
 
     // Highlights
-    expect(screen.getByText(/Mentored and led a team of 7-10 junior developers/i)).toBeDefined();
+    expect(screen.getByText(/Mentored and led a team of 7-10 developers/i)).toBeDefined();
     expect(screen.getByText(/Utilized React and Ember.js to deliver robust/i)).toBeDefined();
   });
 

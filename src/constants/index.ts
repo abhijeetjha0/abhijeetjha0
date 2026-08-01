@@ -6,11 +6,13 @@ export const SECTION_IDS = {
   EXPERIENCE: 'experience',
   SKILLS: 'skills',
   EDUCATION: 'education',
+  PROJECTS: 'projects',
 } as const;
 
 export const NAV_LINKS = [
   { id: SECTION_IDS.EXPERIENCE, href: `#${SECTION_IDS.EXPERIENCE}`, labelKey: 'sections.experience' },
   { id: SECTION_IDS.SKILLS, href: `#${SECTION_IDS.SKILLS}`, labelKey: 'sections.skills' },
+  { id: SECTION_IDS.PROJECTS, href: `#${SECTION_IDS.PROJECTS}`, labelKey: 'sections.projects' },
   { id: SECTION_IDS.EDUCATION, href: `#${SECTION_IDS.EDUCATION}`, labelKey: 'sections.education' },
 ] as const;
 

@@ -10,7 +10,8 @@
     "experience": "Professional Experience",
     "skills": "Skills",
     "education": "Education",
-    "about": "About Me"
+    "about": "About Me",
+    "projects": "Projects"
   },
   "about": {
     "description": "Leading UI development and crafting responsive web designs with expertise in React, Ember.js, and TypeScript. Focused on building efficient, high-performance web applications that are localized, accessible, and cross-browser compatible."
@@ -23,13 +24,14 @@
       "period": "Apr 2023 - Present",
       "location": "Jaipur, India",
       "highlights": [
-        "Mentored and led a team of 7-10 junior developers, improving team productivity and successfully releasing products for a NASDAQ-listed USA client.",
+        "Mentored and led a team of 7-10 developers, improving team productivity and successfully releasing products for a NASDAQ-listed USA client.",
         "Designed multiple responsive web applications with ReactJS, reducing load times by 30%.",
-        "Developed localized (l10n) and web-accessible pages across Chromium, Apple Webkit, and Gecko platforms.",
+        "Developed localized (l10n) and web-accessible pages (WCAG) across Chromium, Apple Webkit, and Gecko platforms.",
         "Utilized Vite, Rollup, Webpack, and Babel with tree-shaking to optimize UI bundle sizes.",
         "Wrote Jest-based tests achieving 99% code coverage.",
-        "Established coding standards using ESLint, Stylelint, and SonarQube.",
-        "Created CI/CD scripts using JavaScript, YAML, Maven, and GitLab."
+        "Established industry-level linting and coding standards using ESLint, Stylelint, and SonarQube.",
+        "Created CI/CD scripts using JavaScript, YAML, Maven, and GitLab.",
+        "Well versed with AI-assisted coding, strategic code reviews, code quality and maintenance as well as using it for prompt engineering, skill generation, documentation and more. Currently exploring more ways to integrate AI in SDLC to improvise it."
       ]
     },
     {
@@ -43,14 +45,17 @@
         "Designed and integrated RESTful APIs to optimize system interoperability.",
         "Played a critical role in project delivery through Agile methodologies.",
         "Worked on several SSO applications for a NASDAQ-listed USA client.",
-        "Received several awards and appreciation for meeting release deadlines and exceeding expectations."
+        "Received several awards and appreciation for meeting release deadlines and exceeding expectations.",
+        "Developed SSO based Browser extensions that was cross platform (Supported Safari, Chromium and Firefox).",
+        "Guided Native mobile team in designing Web View based pages for client side interaction.",
+        "Initiated and developed responsive design guidelines that drastically improved user experience across different devices."
       ]
     }
   ],
   "skills": {
     "frameworks": ["React", "React Router", "Jest", "Ember.js", "jQuery", "Bootstrap", "Material UI"],
     "languages": ["JavaScript", "TypeScript", "HTML5", "CSS3", "Sass"],
-    "webTech": ["Cross-Browser Extensions", "Internationalization (i18n)", "WCAG Accessibility (a11y)"],
+    "webTech": ["Cross-Browser Development", "Internationalization (i18n)", "WCAG Accessibility (a11y)"],
     "aiSkills": ["AI-Assisted Development", "AI Skill Generation", "Prompt Engineering", "AI-Assisted Documentation", "AI-Assisted Code Review"],
     "aiTools": ["Claude Code", "Google Antigravity", "Google Gemini", "Google Jules"],
     "buildTools": ["Vite", "Webpack", "Babel", "Rollup"],
@@ -58,9 +63,33 @@
     "others": ["Git", "GitHub", "GitLab", "Jira", "Confluence", "AWS"],
     "leadership": ["Agile Methodologies", "Team Leadership", "Mentorship"]
   },
-  "education": {
-    "degree": "B.Tech in IT",
-    "institution": "Swami Keshwanand Institute of Technology, Jaipur",
-    "period": "Aug 2016 - Jul 2020"
-  }
+  "education": [
+    {
+      "degree": "B.Tech in IT",
+      "institution": "Swami Keshwanand Institute of Technology, Jaipur",
+      "period": "Aug 2016 - Jul 2020"
+    },
+    {
+      "degree": "Senior School in Science",
+      "institution": "Rajkiya Pratibha Vikas Vidyalaya, Lajpat Nagar, New Delhi",
+      "period": "Jun 2013 - Mar 2015"
+    }
+  ],
+  "projects": [
+    {
+      "name": "Poke-Dexter",
+      "description": "A Pokédex application showcasing modern web development techniques and Pokémon data integration.",
+      "link": "https://github.com/abhijeetjha0/poke-dexter"
+    },
+    {
+      "name": "Personal Portfolio",
+      "description": "My personal portfolio website built with React, showcasing my professional experience, skills, and projects.",
+      "link": "https://github.com/abhijeetjha0/abhijeetjha0"
+    },
+    {
+      "name": "Vaccination Slots Monitor",
+      "description": "A monitoring tool designed to track and notify users about available vaccination slots.",
+      "link": "https://github.com/abhijeetjha0/VaccinationSlotsMonitor"
+    }
+  ]
 }
