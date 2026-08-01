@@ -10,10 +10,11 @@ export default function Skills() {
 
   const categories: CategoryConfig[] = useMemo(() => {
     const skills = (t('skills', { returnObjects: true }) || {}) as SkillsDictionary;
+
     return SKILL_CATEGORY_METADATA.map((meta) => ({
       ...meta,
       data: skills[meta.translationKey] || [],
-      pillStyle: {
+      customStyle: {
         '--accent-color': meta.color,
         '--accent-bg': meta.bgLight,
       } as CSSProperties,
@@ -34,12 +35,9 @@ export default function Skills() {
     <section id={SECTION_IDS.SKILLS} className="py-5 skills-section">
       <Container>
         <div className="text-center mb-5">
-          <span className="badge bg-primary-subtle text-primary fw-semibold px-3 py-2 rounded-pill mb-2">
-            Technical Expertise
-          </span>
           <h2 className="display-6 fw-bold text-dark mb-2">{t('sections.skills')}</h2>
-          <p className="text-muted mx-auto" style={{ maxWidth: '600px' }}>
-            A comprehensive overview of technical capabilities, frameworks, and modern tools I leverage to craft high-performance web applications.
+          <p className="text-muted mx-auto max-width-600">
+            {t('skillsSection.description')}
           </p>
 
           {/* Interactive Filter Bar */}
@@ -51,7 +49,7 @@ export default function Skills() {
                   : 'btn-outline-secondary border-0 bg-white shadow-sm'
                 }`}
             >
-              All ({totalSkillsCount})
+              {t('skillsSection.filterAll')} ({totalSkillsCount})
             </button>
             {categories.map((cat) => (
               <button
@@ -72,27 +70,16 @@ export default function Skills() {
         <Row className="g-4">
           {filteredCategories.map((category) => (
             <Col md={6} lg={4} key={category.id}>
-              <div className="skill-card card h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative">
-                <div
-                  className="card-accent-bar"
-                  style={{ backgroundColor: category.color }}
-                />
+              <div tabIndex={0} className="skill-card card h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative" style={category.customStyle}>
+                <div className="card-accent-bar" />
                 <div className="card-body p-4">
-                  <div className="d-flex align-items-center mb-3">
-                    <div
-                      className="category-icon-box rounded-3 d-flex align-items-center justify-content-center me-3"
-                      style={{
-                        backgroundColor: category.bgLight,
-                        color: category.color,
-                        width: '42px',
-                        height: '42px',
-                      }}
-                    >
+                  <div className="d-flex align-items-center mb-3 gap-3">
+                    <div className="category-icon-box rounded-3 d-flex align-items-center justify-content-center flex-shrink-0">
                       {category.icon}
                     </div>
                     <div>
                       <h3 className="h6 fw-bold mb-0 text-dark">{category.label}</h3>
-                      <span className="text-muted small">{category.data.length} skills</span>
+                      <span className="text-muted small">{category.data.length} {t('skillsSection.skillsCount')}</span>
                     </div>
                   </div>
 
@@ -100,8 +87,8 @@ export default function Skills() {
                     {category.data.map((skill: string) => (
                       <span
                         key={skill}
+                        tabIndex={0}
                         className="skill-pill rounded-pill px-3 py-1 text-dark small fw-medium"
-                        style={category.pillStyle}
                       >
                         {skill}
                       </span>

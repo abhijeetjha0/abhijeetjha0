@@ -13,8 +13,20 @@
     "about": "About Me",
     "projects": "Projects"
   },
+  "errorBoundary": "This is not expected!",
+  "loading": "Loading...",
+  "notFound": {
+    "title": "Page Not Found",
+    "description": "Oops! The page you are looking for doesn't exist, has been moved, or is temporarily unavailable.",
+    "backHome": "Back to Home"
+  },
   "about": {
     "description": "Leading UI development and crafting responsive web designs with expertise in React, Ember.js, and TypeScript. Focused on building efficient, high-performance web applications that are localized, accessible, and cross-browser compatible."
+  },
+  "contactLabels": {
+    "email": "Email:",
+    "location": "Location:",
+    "linkedin": "LinkedIn:"
   },
   "experience": [
     {
@@ -91,5 +103,13 @@
       "description": "A monitoring tool designed to track and notify users about available vaccination slots.",
       "link": "https://github.com/abhijeetjha0/VaccinationSlotsMonitor"
     }
-  ]
+  ],
+  "footer": {
+    "developedBy": "Developed by"
+  },
+  "skillsSection": {
+    "description": "A comprehensive overview of technical capabilities, frameworks, and modern tools I leverage to craft high-performance web applications.",
+    "filterAll": "All",
+    "skillsCount": "skills"
+  }
 }

@@ -22,13 +22,11 @@ describe('Home Component', () => {
     expect(screen.getByRole('heading', { level: 2, name: /Professional Experience/i })).toBeDefined();
 
     // Skills section
-    expect(screen.getByText(/Technical Expertise/i)).toBeDefined();
 
     // Education section
     expect(screen.getByRole('heading', { level: 2, name: /Education/i })).toBeDefined();
 
     // Footer section
-    const currentYear = new Date().getFullYear().toString();
-    expect(screen.getByText(new RegExp(`${currentYear}.*All rights reserved`, 'i'))).toBeDefined();
+    expect(screen.getByText(/Developed by/i)).toBeDefined();
   });
 });

@@ -1,3 +1,5 @@
+@use '../variables' as *;
+
 .portfolio-content {
   scroll-behavior: smooth;
 
@@ -26,6 +28,12 @@
     &:hover {
       transform: translateY(-5px);
     }
+    
+    &:focus-visible {
+      outline: 3px solid var(--bs-primary);
+      outline-offset: 4px;
+      transform: translateY(-5px);
+    }
   }
 
   .badge {
@@ -40,51 +48,84 @@ html {
 
 // Adjust padding for anchor links to account for sticky header
 #about, #experience, #skills, #education {
-  scroll-margin-top: 70px;
+  scroll-margin-top: $header-height;
 }
 
 // Skills Section UX & Visual Enhancements
 .skills-section {
-  background: linear-gradient(180deg, rgba(248, 250, 252, 0.6) 0%, rgba(241, 245, 249, 1) 100%);
+  background: linear-gradient(180deg, rgba($color-slate-50, 0.6) 0%, $color-slate-100 100%);
 
   .skill-card {
     transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
-    background: #ffffff;
-    border: 1px solid rgba(226, 232, 240, 0.8) !important;
+    background: $color-white;
+    border: 1px solid rgba($color-slate-200, 0.8) !important;
 
     .card-accent-bar {
       height: 4px;
       width: 100%;
+      background-color: var(--accent-color);
+    }
+
+    .category-icon-box {
+      width: 42px;
+      height: 42px;
+      min-width: 42px;
+      flex-shrink: 0;
+      background-color: var(--accent-bg);
+      color: var(--accent-color);
     }
 
     &:hover {
       transform: translateY(-6px);
       box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.08), 0 4px 16px -4px rgba(0, 0, 0, 0.04) !important;
     }
+
+    &:focus-visible {
+      outline: 3px solid var(--accent-color);
+      outline-offset: 4px;
+      transform: translateY(-6px);
+      box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.08), 0 4px 16px -4px rgba(0, 0, 0, 0.04) !important;
+    }
   }
 
   .skill-pill {
-    background-color: var(--accent-bg, #f1f5f9);
+    background-color: var(--accent-bg, $color-slate-100);
     border: 1px solid rgba(0, 0, 0, 0.04);
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     display: inline-flex;
     align-items: center;
 
-    &:hover {
-      background-color: #ffffff;
-      border-color: var(--accent-color, #2563eb);
+    &:hover, &:focus-visible {
+      background-color: $color-white;
+      border-color: var(--accent-color, $color-primary-blue);
       box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
       transform: translateY(-2px);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--accent-color, $color-primary-blue);
+      outline-offset: 2px;
+    }
+  }
+
+  .btn {
+    &:focus-visible {
+      outline: 2px solid var(--bs-primary) !important;
+      outline-offset: 2px;
     }
   }
 
   .btn-outline-secondary {
-    color: #475569;
-    border-color: #e2e8f0;
-    &:hover {
-      background-color: #f1f5f9;
-      color: #0f172a;
+    color: $color-slate-600;
+    border-color: $color-slate-200;
+    &:hover, &:focus-visible {
+      background-color: $color-slate-100;
+      color: $color-slate-900;
     }
   }
 }
 
+// Utility class for max width
+.max-width-600 {
+  max-width: $max-width-md;
+}

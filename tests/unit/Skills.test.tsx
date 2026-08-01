@@ -11,7 +11,6 @@ describe('Skills Component', () => {
       </I18nextProvider>
     );
 
-    expect(screen.getByText(/Technical Expertise/i)).toBeDefined();
     expect(screen.getAllByText(/Programming Languages/i).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/Libraries & Frameworks/i).length).toBeGreaterThan(0);
   });

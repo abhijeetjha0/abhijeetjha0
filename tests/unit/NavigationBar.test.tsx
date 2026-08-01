@@ -5,6 +5,7 @@ import i18n from '../../src/i18n';
 
 jest.mock('react-i18next', () => {
   const original = jest.requireActual('react-i18next');
+
   return {
     ...original,
     useTranslation: jest.fn().mockImplementation(original.useTranslation),
@@ -69,6 +70,7 @@ describe('NavigationBar Component', () => {
           'sections.skills': 'Expertise',
           'sections.education': 'Qualifications',
         };
+
         return translations[key] || key;
       },
     });

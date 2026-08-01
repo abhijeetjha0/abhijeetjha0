@@ -5,14 +5,12 @@ import { EducationInfo } from '../@types';
 export default function Education() {
   const { t } = useTranslation();
   const rawEducation = t('education', { returnObjects: true });
-  const education = Array.isArray(rawEducation)
-    ? (rawEducation as EducationInfo[])
-    : ([] as EducationInfo[]);
+  const education = (Array.isArray(rawEducation) ? rawEducation : []) as EducationInfo[];
 
   return (
     <section id="education" className="py-5 mb-5">
       <Container>
-        <h2 className="text-center mb-5">{t('sections.education')}</h2>
+        <h2 className="display-6 fw-bold text-dark text-center mb-5">{t('sections.education')}</h2>
         {education.map((edu, index) => (
           <Card key={index} className="shadow-sm border-0 mb-4">
             <Card.Body className="p-4">

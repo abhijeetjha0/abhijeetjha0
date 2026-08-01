@@ -18,3 +18,6 @@ This document guides AI Coding Assistants writing, running, and maintaining unit
 
 4. **Verification**:
    - Always run `npm test` after adding or updating any test file and ensure zero test failures.
+
+5. **i18next Mocking Considerations**:
+   - If a component calls `t('key', { returnObjects: true })` and expects an array, ensure the mock `t` function returns a valid array to prevent `.map()` from crashing.

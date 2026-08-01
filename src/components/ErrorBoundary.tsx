@@ -1,7 +1,7 @@
+import { useTranslation } from 'react-i18next';
+
 export default function ErrorBoundary() {
-    return (
-        <>
-            <h1>This is not expected!</h1>
-        </>
-    )
+    const { t } = useTranslation();
+
+    return <h1>{t('errorBoundary')}</h1>;
 }

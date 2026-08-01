@@ -5,6 +5,7 @@ import i18n from '../../src/i18n';
 
 jest.mock('react-i18next', () => {
   const original = jest.requireActual('react-i18next');
+
   return {
     ...original,
     useTranslation: jest.fn().mockImplementation(original.useTranslation),
@@ -53,6 +54,7 @@ describe('Education Component', () => {
       t: (key: string, options?: Record<string, unknown>) => {
         if (key === 'sections.education') return 'Academic Background';
         if (key === 'education' && options?.returnObjects) return mockEducation;
+
         return key;
       },
     });
@@ -70,6 +72,7 @@ describe('Education Component', () => {
       t: (key: string, options?: Record<string, unknown>) => {
         if (key === 'sections.education') return 'Education';
         if (key === 'education' && options?.returnObjects) return null;
+
         return key;
       },
     });

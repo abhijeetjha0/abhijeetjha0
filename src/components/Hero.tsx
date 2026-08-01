@@ -16,9 +16,9 @@ export default function Hero() {
           </Col>
           <Col md={4} className="text-md-end mt-4 mt-md-0">
             <div className="contact-info">
-              <p className="mb-1"><strong>Email:</strong> <a href={`mailto:${t('personalInfo.email')}`}>{t('personalInfo.email')}</a></p>
-              <p className="mb-1"><strong>Location:</strong> {t('personalInfo.location')}</p>
-              <p className="mb-0"><strong>LinkedIn:</strong> <a href={`https://${t('personalInfo.linkedin')}`} target="_blank" rel="noopener noreferrer">{t('personalInfo.linkedin')}</a></p>
+              <p className="mb-1"><strong>{t('contactLabels.email')}</strong> <a href={`mailto:${t('personalInfo.email')}`}>{t('personalInfo.email')}</a></p>
+              <p className="mb-1"><strong>{t('contactLabels.location')}</strong> {t('personalInfo.location')}</p>
+              <p className="mb-0"><strong>{t('contactLabels.linkedin')}</strong> <a href={`https://${t('personalInfo.linkedin')}`} target="_blank" rel="noopener noreferrer">{t('personalInfo.linkedin')}</a></p>
             </div>
           </Col>
         </Row>

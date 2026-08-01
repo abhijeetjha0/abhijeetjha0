@@ -51,7 +51,7 @@ export interface CategoryMeta {
 
 export interface CategoryConfig extends CategoryMeta {
   data: string[];
-  pillStyle?: CSSProperties;
+  customStyle?: CSSProperties;
 }
 
 export type SkillsDictionary = Record<SkillCategoryId, string[]>;

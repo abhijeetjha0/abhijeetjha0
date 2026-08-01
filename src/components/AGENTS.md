@@ -18,3 +18,7 @@ This document specifies rules and standards for AI Coding Assistants creating or
 3. **Mandatory Unit Tests**:
    - Whenever creating or modifying a component in `src/components/`, create or update a corresponding test file in `tests/unit/Component.test.tsx`.
    - Ensure the test suite passes cleanly with `@testing-library/react`.
+
+4. **Styling & Framework Constraints**:
+   - The project uses **Bootstrap 5**. Utility classes like `gap-*`, `me-*`, `ms-*`, and `flex-shrink-0` are fully supported.
+   - Strictly avoid inline `style={{ ... }}` objects in JSX for dynamic parameters when possible. Use SCSS variables (e.g. `var(--accent-color)`) and classes for dynamic thematic properties.

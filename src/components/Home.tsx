@@ -18,7 +18,7 @@ export default function Home() {
       <Education />
       <footer className="bg-dark text-white py-4 mt-5">
         <Container className="text-center">
-          <p className="mb-0">&copy; {new Date().getFullYear()} {t('personalInfo.name')}. All rights reserved.</p>
+          <p className="mb-0">{t('footer.developedBy')} {t('personalInfo.name')}</p>
         </Container>
       </footer>
     </div>

@@ -1,5 +1,6 @@
 import ErrorBoundary from "../components/ErrorBoundary";
 import Home from "../components/Home";
+import NotFound from "../components/NotFound";
 import Loader from "../components/Loader";
 import Layout from "../Layout";
 
@@ -15,6 +16,10 @@ const routes = [{
         {
             index: true,
             Component: Home
+        },
+        {
+            path: "*",
+            Component: NotFound
         }
     ],
     HydrateFallback: Loader

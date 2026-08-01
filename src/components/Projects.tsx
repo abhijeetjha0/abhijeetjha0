@@ -12,7 +12,7 @@ export default function Projects() {
   return (
     <section id="projects" className="py-5 mb-5">
       <Container>
-        <h2 className="text-center mb-5">{t('sections.projects')}</h2>
+        <h2 className="display-6 fw-bold text-dark text-center mb-5">{t('sections.projects')}</h2>
         <Row className="g-4">
           {projects.map((project, index) => (
             <Col key={index} xs={12} md={6} lg={4}>

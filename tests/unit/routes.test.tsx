@@ -2,6 +2,7 @@ import routes from '../../src/routes';
 import Layout from '../../src/Layout';
 import ErrorBoundary from '../../src/components/ErrorBoundary';
 import Home from '../../src/components/Home';
+import NotFound from '../../src/components/NotFound';
 import Loader from '../../src/components/Loader';
 
 describe('Application Routes Configuration', () => {
@@ -13,10 +14,14 @@ describe('Application Routes Configuration', () => {
     expect(rootRoute.Component).toBe(Layout);
     expect(rootRoute.ErrorBoundary).toBe(ErrorBoundary);
     expect(rootRoute.HydrateFallback).toBe(Loader);
-    expect(rootRoute.children).toHaveLength(1);
+    expect(rootRoute.children).toHaveLength(2);
     expect(rootRoute.children?.[0]).toEqual({
       index: true,
       Component: Home,
+    });
+    expect(rootRoute.children?.[1]).toEqual({
+      path: "*",
+      Component: NotFound,
     });
   });
 

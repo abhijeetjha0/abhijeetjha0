@@ -10,11 +10,12 @@ export default function Experience() {
   return (
     <section id="experience" className="py-5">
       <Container>
-        <h2 className="text-center mb-5">{t('sections.experience')}</h2>
+        <h2 className="display-6 fw-bold text-dark text-center mb-5">{t('sections.experience')}</h2>
         {experiences.map((exp) => {
           const itemKey = exp.id || `${exp.company}-${exp.role}-${exp.period}`;
+
           return (
-            <Card key={itemKey} className="mb-4 shadow-sm border-0">
+            <Card key={itemKey} className="mb-4 shadow-sm border-0" tabIndex={0}>
               <Card.Body>
                 <Row>
                   <Col md={8}>

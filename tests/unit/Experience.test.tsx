@@ -6,6 +6,7 @@ import i18n from '../../src/i18n';
 // Mock module for custom translation scenarios
 jest.mock('react-i18next', () => {
   const original = jest.requireActual('react-i18next');
+
   return {
     ...original,
     useTranslation: jest.fn().mockImplementation(original.useTranslation),
@@ -70,6 +71,7 @@ describe('Experience Component', () => {
       t: (key: string, options?: Record<string, unknown>) => {
         if (key === 'sections.experience') return 'Work Experience';
         if (key === 'experience' && options?.returnObjects) return mockExperiences;
+
         return key;
       },
     });
@@ -90,6 +92,7 @@ describe('Experience Component', () => {
       t: (key: string, options?: Record<string, unknown>) => {
         if (key === 'sections.experience') return 'Professional Experience';
         if (key === 'experience' && options?.returnObjects) return null;
+
         return key;
       },
     });

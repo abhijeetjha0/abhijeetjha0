@@ -28,6 +28,10 @@ export default defineConfig([
             'react/react-in-jsx-scope': 'off',
             'react/prop-types': 'off',
             'react/no-unescaped-entities': 'off',
+            'padding-line-between-statements': [
+                'error',
+                { blankLine: 'always', prev: '*', next: 'return' }
+            ],
         },
         settings: {
             react: {
