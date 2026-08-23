@@ -31,6 +31,10 @@ export default defineConfig([
             'react/prop-types': 'off',
             '@stylistic/indent': ['error', 4],
             'react/no-unescaped-entities': 'off',
+            '@typescript-eslint/no-unused-vars': [
+                'error',
+                { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }
+            ],
             'padding-line-between-statements': [
                 'error',
                 { blankLine: 'always', prev: '*', next: 'return' }

@@ -72,8 +72,8 @@ export default function AiChatPanel({
                                 <ReactMarkdown 
                                     remarkPlugins={[remarkGfm]}
                                     components={{
-                                        table: ({node, ...props}) => <div className="table-responsive"><table className="table table-sm table-bordered mb-0" {...props} /></div>,
-                                        p: ({node, ...props}) => <p className="mb-2 last-p-mb-0" {...props} />
+                                        table: ({ node: _node, ...props }) => <div className="table-responsive"><table className="table table-sm table-bordered mb-0" {...props} /></div>,
+                                        p: ({ node: _node, ...props }) => <p className="mb-2 last-p-mb-0" {...props} />
                                     }}
                                 >
                                     {msg.content}

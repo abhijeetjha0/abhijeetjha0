@@ -27,6 +27,7 @@ export default async function handler(req: Request) {
         const { success } = await chatRateLimit.limit(ip);
         if (!success) {
             console.warn(`[api/models] Rate limit exceeded for IP: ${ip}`);
+
             return new Response(JSON.stringify({ error: 'Too Many Requests' }), { 
                 status: 429, 
                 headers: CORS_HEADERS 
@@ -102,6 +103,7 @@ export default async function handler(req: Request) {
 
         if (freeModels.length === 0) {
             console.warn(`[api/models] No free models could be found out of ${allModels.length} tested models.`);
+
             return new Response(JSON.stringify({ error: 'No free models available' }), { 
                 status: 503, 
                 headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' } 

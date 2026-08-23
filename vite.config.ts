@@ -17,5 +17,17 @@ export default defineConfig(({ mode }) => {
                 },
             }),
         ],
+        build: {
+            rollupOptions: {
+                output: {
+                    manualChunks: {
+                        'vendor-react': ['react', 'react-dom', 'react-router'],
+                        'vendor-bootstrap': ['react-bootstrap'],
+                        'vendor-markdown': ['react-markdown', 'remark-gfm'],
+                        'vendor-i18n': ['i18next', 'react-i18next'],
+                    },
+                },
+            },
+        },
     };
 });

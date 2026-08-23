@@ -38,14 +38,14 @@ EXPERIENCE
 - Initiated and developed responsive design guidelines that drastically improved user experience across different devices.
 
 SKILLS
-- Frameworks: React, React Router, Jest, Ember.js, jQuery, Bootstrap, Material UI
+- Frameworks: React, React Router, Jest, Vitest, Ember.js, jQuery, Bootstrap, Material UI
 - Languages: JavaScript, TypeScript, HTML5, CSS3, Sass
 - Web Tech: Cross-Browser Development, Internationalization (i18n), WCAG Accessibility (a11y)
 - AI Skills: AI-Assisted Development, AI Skill Generation, Prompt Engineering, AI-Assisted Documentation, AI-Assisted Code Review
-- AI Tools: Claude Code, Google Antigravity, Google Gemini, Google Jules
+- AI Tools: Claude Code, Google Antigravity, Google Gemini, Google Jules, Google Opal, Ollama
 - Build Tools: Vite, Webpack, Babel, Rollup
 - Linting: ESLint, Stylelint, SonarQube
-- Others: Git, GitHub, GitLab, Jira, Confluence, AWS
+- Tools & Workflows: Git, GitHub, GitHub Pages, GitLab, GitLab Deployment, Vercel Deployment, AWS Console, Firebase Console, Google Cloud Console, Jira, Confluence
 - Leadership: Agile Methodologies, Team Leadership, Mentorship
 
 EDUCATION

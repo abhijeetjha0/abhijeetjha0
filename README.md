@@ -24,6 +24,7 @@ Senior Software Engineer with **6+ years of experience** leading UI development 
 ![React](https://img.shields.io/badge/React-C7F9CC?style=flat&logo=react&logoColor=black)
 ![React Router](https://img.shields.io/badge/React_Router-FECDCA?style=flat&logo=react-router&logoColor=black)
 ![Jest](https://img.shields.io/badge/Jest-FECDCA?style=flat&logo=jest&logoColor=black)
+![Vitest](https://img.shields.io/badge/Vitest-FCC72C?style=flat&logo=vitest&logoColor=black)
 ![Ember.js](https://img.shields.io/badge/Ember.js-FFD6A5?style=flat&logo=ember.js&logoColor=black)
 ![jQuery](https://img.shields.io/badge/jQuery-DBEAFE?style=flat&logo=jquery&logoColor=black)
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-E9D5FF?style=flat&logo=bootstrap&logoColor=black)
@@ -53,6 +54,8 @@ Senior Software Engineer with **6+ years of experience** leading UI development 
 ![Google Antigravity](https://img.shields.io/badge/Google_Antigravity-DBEAFE?style=flat&logo=google&logoColor=black)
 ![Google Gemini](https://img.shields.io/badge/Google_Gemini-EDE9FE?style=flat&logo=googlegemini&logoColor=black)
 ![Google Jules](https://img.shields.io/badge/Google_Jules-E0E7FF?style=flat&logo=google&logoColor=black)
+![Google Opal](https://img.shields.io/badge/Google_Opal-E0F2FE?style=flat&logo=google&logoColor=black)
+![Ollama](https://img.shields.io/badge/Ollama-FFFFFF?style=flat&logo=ollama&logoColor=black)
 
 ### ⚡ Build Tools
 ![Vite](https://img.shields.io/badge/Vite-EDE9FE?style=flat&logo=vite&logoColor=black)
@@ -68,10 +71,15 @@ Senior Software Engineer with **6+ years of experience** leading UI development 
 ### ⚙️ Tools & Workflows
 ![Git](https://img.shields.io/badge/Git-FFD6A5?style=flat&logo=git&logoColor=black)
 ![GitHub](https://img.shields.io/badge/GitHub-E5E7EB?style=flat&logo=github&logoColor=black)
+![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-E5E7EB?style=flat&logo=github&logoColor=black)
 ![GitLab](https://img.shields.io/badge/GitLab-FFD6A5?style=flat&logo=gitlab&logoColor=black)
+![GitLab Deployment](https://img.shields.io/badge/GitLab_Deployment-FFD6A5?style=flat&logo=gitlab&logoColor=black)
+![Vercel Deployment](https://img.shields.io/badge/Vercel_Deployment-E5E7EB?style=flat&logo=vercel&logoColor=black)
+![AWS Console](https://img.shields.io/badge/AWS_Console-FFD6A5?style=flat&logo=amazonwebservices&logoColor=black)
+![Firebase Console](https://img.shields.io/badge/Firebase_Console-FFCA28?style=flat&logo=firebase&logoColor=black)
+![Google Cloud Console](https://img.shields.io/badge/Google_Cloud_Console-E0F2FE?style=flat&logo=googlecloud&logoColor=black)
 ![Jira](https://img.shields.io/badge/Jira-DBEAFE?style=flat&logo=jira&logoColor=black)
 ![Confluence](https://img.shields.io/badge/Confluence-E0F2FE?style=flat&logo=confluence&logoColor=black)
-![AWS](https://img.shields.io/badge/AWS-FFD6A5?style=flat&logo=amazonwebservices&logoColor=black)
 
 ### 👥 Leadership & Management
 ![Agile Methodologies](https://img.shields.io/badge/Agile_Methodologies-DBEAFE?style=flat&logo=scrumalliance&logoColor=black)

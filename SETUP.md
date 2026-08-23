@@ -29,15 +29,15 @@ npm install
 
 # 4. Set up environment variables
 cp .env.example .env.local
-# Edit .env.local and add your OLLAMA_API_KEY
+# Edit .env.local:
+# - Set OLLAMA_API_KEY for Ollama Cloud models
+# - (Optional) Set KV_REST_API_URL and KV_REST_API_TOKEN for Upstash Redis rate limiting locally
 
 # 5. Start local development server
 npm run dev
 ```
 
-> **Note**: The local frontend automatically points to the production Vercel Edge functions API for Chat features (`https://abhijeetjha0-xyz.vercel.app/`). If you wish to test backend changes locally, you must use `npx vercel dev` instead of `npm run dev` and update your local `.env.local` file with the `OLLAMA_API_KEY`.
-
-The frontend application will be accessible at `http://localhost:5173/`.
+> **Note**: Local frontend development relies exclusively on `npm run dev`. The frontend communicates with the deployed Vercel Edge API backend configured via `VITE_AI_BACKEND_URL`.
 
 ---
 
@@ -59,7 +59,7 @@ npm run test-watch
 ## 📦 Production Build & Preview
 
 ```bash
-# Compile TypeScript and build Vite production bundle
+# Compile TypeScript and build Vite production bundle (with automated vendor chunking)
 npm run build
 
 # Preview production build locally
@@ -78,6 +78,9 @@ Automated via GitHub Actions ([`.github/workflows/deploy.yml`](.github/workflows
 4. **Application Build**: `npm run build` compiles Vite bundle to `dist`.
 5. **Deployment**: Deploys `dist` to GitHub Pages (`https://abhijeetjha0.github.io/abhijeetjha0/`).
 
-> **Note on Backend API Deployment**: The GitHub Actions pipeline deploys the frontend to GitHub Pages. To deploy the `/api/chat.ts` AI backend, you must link this repository to a **Vercel Project** and set the `OLLAMA_API_KEY` in your Vercel project settings. Vercel automatically deploys the backend serverless functions.
->
-> Detailed Edge logs (including `console.time` metrics for Ollama responses and discovery) are available in your Vercel Dashboard under the **Logs** tab.
+> **Note on Backend API & Rate Limiting Deployment**:
+> - Frontend is automatically deployed to GitHub Pages via GitHub Actions.
+> - Backend Edge functions (`/api/chat.ts` and `/api/models.ts`) are deployed via **Vercel**.
+> - Rate Limiting uses **Vercel KV (Upstash Redis)**. To activate in production, create a KV database under the **Storage** tab in your Vercel Dashboard and link it to the project.
+> - Verify active rate limit keys in the Vercel Storage **REPL** tab using `KEYS *`.
+> - Edge performance timing logs are available in the Vercel Dashboard under **Logs**.

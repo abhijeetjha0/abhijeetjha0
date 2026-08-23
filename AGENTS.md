@@ -43,8 +43,8 @@ Subdirectory-specific guidelines are maintained in modular `AGENTS.md` files thr
 
 | Command | Action | Description |
 | :--- | :--- | :--- |
-| `npm run dev` | Dev Server | Launches Vite frontend-only development server. |
-| `npx vercel dev` | Full-Stack Server | Launches Vite frontend + Vercel API backend locally. |
+| `npm run dev` | Dev Server | Launches Vite frontend development server (configured with remote Edge backend). |
+| `npm run preview` | Production Preview | Locally serves the compiled production build output from `dist`. |
 | `npm run build` | Production Build | Executes TypeScript type check (`tsc -b`) and Vite production bundle build. |
 | `npm run test` | Unit Tests | Executes Jest unit tests and generates coverage metrics. |
 | `npm run lint` | Code Quality | Runs ESLint across TypeScript/JavaScript files. |
@@ -62,6 +62,12 @@ Subdirectory-specific guidelines are maintained in modular `AGENTS.md` files thr
     - **Context Management**: Ollama API context is managed strictly by passing the entire chat history array in each request. Edge functions remain stateless.
     - **Markdown Rendering**: The UI utilizes `react-markdown` with the `remark-gfm` plugin to support GitHub Flavored Markdown (including tables). The backend Edge function proactively strips wrapping markdown code blocks (` ```markdown `) if the LLM incorrectly formats its output.
 6. **Jest Mocking for ESM**: Packages like `react-markdown` and `remark-gfm` use pure ECMAScript Modules (ESM) which natively conflict with Jest out of the box. Always mock these dependencies via `moduleNameMapper` inside `jest.config.ts` mapping to `tests/__mocks__/`.
+7. **Edge Rate Limiting (Upstash / Vercel KV)**: Edge functions employ `@upstash/ratelimit` with Redis for global IP rate limiting (5 req / 10s). Rate limiters must fail gracefully (bypass) if KV tokens are absent from the environment.
+8. **Vite Code Splitting & Vendor Chunking**: Maintain explicit `manualChunks` object mapping in `vite.config.ts` (`vendor-react`, `vendor-bootstrap`, `vendor-markdown`, `vendor-i18n`) to ensure chunk sizes remain strictly below 500 kB and prevent monolithic bundles.
+9. **ESLint & Code Standards**: 
+    - Standard 4-space indentation enforced via `@stylistic/eslint-plugin`.
+    - Mandatory blank lines before `return` statements (`padding-line-between-statements`).
+    - Unused variables/arguments must be prefixed with `_` (`argsIgnorePattern: '^_'`).
 
 > **Note**: Subdirectory-specific guidelines (React component interfaces, constant declarations, i18n parity, shell script standards, and Jest testing patterns) are maintained directly within their respective modular `AGENTS.md` files:
 > - [.github/AGENTS.md](file:///.github/AGENTS.md)

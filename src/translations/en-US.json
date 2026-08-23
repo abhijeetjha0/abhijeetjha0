@@ -65,14 +65,14 @@
     }
   ],
   "skills": {
-    "frameworks": ["React", "React Router", "Jest", "Ember.js", "jQuery", "Bootstrap", "Material UI"],
+    "frameworks": ["React", "React Router", "Jest", "Vitest", "Ember.js", "jQuery", "Bootstrap", "Material UI"],
     "languages": ["JavaScript", "TypeScript", "HTML5", "CSS3", "Sass"],
     "webTech": ["Cross-Browser Development", "Internationalization (i18n)", "WCAG Accessibility (a11y)"],
     "aiSkills": ["AI-Assisted Development", "AI Skill Generation", "Prompt Engineering", "AI-Assisted Documentation", "AI-Assisted Code Review"],
-    "aiTools": ["Claude Code", "Google Antigravity", "Google Gemini", "Google Jules"],
+    "aiTools": ["Claude Code", "Google Antigravity", "Google Gemini", "Google Jules", "Google Opal", "Ollama"],
     "buildTools": ["Vite", "Webpack", "Babel", "Rollup"],
     "linting": ["ESLint", "Stylelint", "SonarQube"],
-    "others": ["Git", "GitHub", "GitLab", "Jira", "Confluence", "AWS"],
+    "others": ["Git", "GitHub", "GitHub Pages", "GitLab", "GitLab Deployment", "Vercel Deployment", "AWS Console", "Firebase Console", "Google Cloud Console", "Jira", "Confluence"],
     "leadership": ["Agile Methodologies", "Team Leadership", "Mentorship"]
   },
   "education": [
