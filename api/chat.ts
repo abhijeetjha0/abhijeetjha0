@@ -77,7 +77,7 @@ export default async function handler(req: Request) {
 
     // Prepend the system prompt to the message history
     const payload = {
-      model: 'llama3', // Or whichever model you prefer on Ollama Cloud (e.g. 'llama3.1' or 'mistral')
+      model: 'phi4-mini:latest', // Using phi4-mini as requested
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
         ...messages
@@ -94,7 +94,7 @@ export default async function handler(req: Request) {
     }
 
     // Call Ollama Cloud API (OpenAI compatible endpoint)
-    const response = await fetch('https://api.ollama.com/v1/chat/completions', {
+    const response = await fetch('https://ollama.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
