@@ -43,6 +43,8 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          VITE_AI_BACKEND_URL: ${{ vars.VITE_AI_BACKEND_URL }}
 
       - name: Copy coverage report to dist
         run: cp -r coverage/lcov-report dist/coverage
