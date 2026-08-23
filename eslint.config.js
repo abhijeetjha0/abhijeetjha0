@@ -4,12 +4,13 @@ import reactPlugin from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
+import stylistic from '@stylistic/eslint-plugin'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-    globalIgnores(['dist', 'coverage']),
+    globalIgnores(['dist', 'coverage', 'scripts']),
     {
-        files: ['**/*.{ts,tsx}'],
+        files: ['**/*.{js,jsx,ts,tsx}'],
         extends: [
             js.configs.recommended,
             ...tseslint.configs.recommended,
@@ -23,10 +24,12 @@ export default defineConfig([
         },
         plugins: {
             react: reactPlugin,
+            '@stylistic': stylistic,
         },
         rules: {
             'react/react-in-jsx-scope': 'off',
             'react/prop-types': 'off',
+            '@stylistic/indent': ['error', 4],
             'react/no-unescaped-entities': 'off',
             'padding-line-between-statements': [
                 'error',
