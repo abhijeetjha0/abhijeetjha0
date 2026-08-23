@@ -83,6 +83,9 @@ export function useAiChat() {
             });
 
             if (!response.ok) {
+                if (response.status === 429) {
+                    throw new Error('You are sending messages too fast. Please wait a moment.');
+                }
                 throw new Error(t('aiChat.error'));
             }
 

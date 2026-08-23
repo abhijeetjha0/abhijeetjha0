@@ -1,4 +1,6 @@
-import { SYSTEM_PROMPT, OLLAMA_API, CORS_HEADERS } from './constants';
+import { AI_CHAT_CONFIG, CORS_HEADERS, SYSTEM_PROMPT } from './constants';
+import { chatRateLimit } from './rateLimit';
+import { OLLAMA_API } from './constants';
 
 export const config = {
     runtime: 'edge',
@@ -23,6 +25,16 @@ export default async function handler(req: Request) {
 
     try {
         console.info(`[api/chat] Received POST request to /api/chat`);
+
+        const ip = req.headers.get('x-forwarded-for') ?? '127.0.0.1';
+        if (chatRateLimit) {
+            const { success } = await chatRateLimit.limit(ip);
+            if (!success) {
+                console.warn(`[api/chat] Rate limit exceeded for IP: ${ip}`);
+                return new Response('Too Many Requests', { status: 429, headers: CORS_HEADERS });
+            }
+        }
+
         const { messages, modelsToTry } = await req.json();
 
         if (!messages || !Array.isArray(messages)) {

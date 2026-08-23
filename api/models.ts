@@ -1,4 +1,5 @@
 import { OLLAMA_API, CORS_HEADERS } from './constants';
+import { chatRateLimit } from './rateLimit';
 
 export const config = {
     runtime: 'edge',
@@ -19,6 +20,18 @@ export default async function handler(req: Request) {
 
     if (req.method !== 'GET') {
         return new Response('Method Not Allowed', { status: 405, headers: CORS_HEADERS });
+    }
+
+    const ip = req.headers.get('x-forwarded-for') ?? '127.0.0.1';
+    if (chatRateLimit) {
+        const { success } = await chatRateLimit.limit(ip);
+        if (!success) {
+            console.warn(`[api/models] Rate limit exceeded for IP: ${ip}`);
+            return new Response(JSON.stringify({ error: 'Too Many Requests' }), { 
+                status: 429, 
+                headers: CORS_HEADERS 
+            });
+        }
     }
 
     const apiKey = process.env.OLLAMA_API_KEY;
