@@ -69,36 +69,21 @@ export function useAiChat() {
         throw new Error(t('aiChat.error'));
       }
 
-      const reader = response.body?.getReader();
-      const decoder = new TextDecoder();
+      const responseText = await response.text();
 
-      if (!reader) {
-        throw new Error('No readable stream returned');
-      }
+      setState(prev => {
+        const newMessages = [...prev.messages];
+        const lastMsgIndex = newMessages.length - 1;
 
-      let done = false;
-      while (!done) {
-        const { value, done: readerDone } = await reader.read();
-        done = readerDone;
-        
-        if (value) {
-          const chunk = decoder.decode(value, { stream: true });
-          
-          setState(prev => {
-            const newMessages = [...prev.messages];
-            const lastMsgIndex = newMessages.length - 1;
-            
-            if (newMessages[lastMsgIndex].id === assistantMessageId) {
-              newMessages[lastMsgIndex] = {
-                ...newMessages[lastMsgIndex],
-                content: newMessages[lastMsgIndex].content + chunk,
-              };
-            }
-
-            return { ...prev, messages: newMessages };
-          });
+        if (newMessages[lastMsgIndex].id === assistantMessageId) {
+          newMessages[lastMsgIndex] = {
+            ...newMessages[lastMsgIndex],
+            content: responseText,
+          };
         }
-      }
+
+        return { ...prev, messages: newMessages };
+      });
     } catch (err) {
       console.error('Chat error:', err);
       setState(prev => ({

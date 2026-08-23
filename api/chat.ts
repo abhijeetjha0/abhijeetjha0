@@ -122,7 +122,7 @@ export default async function handler(req: Request) {
           { role: 'system', content: SYSTEM_PROMPT },
           ...messages
         ],
-        stream: true,
+        stream: false,
       };
 
       const response = await fetch(`${OLLAMA_API}/chat/completions`, {
@@ -131,36 +131,15 @@ export default async function handler(req: Request) {
         body: JSON.stringify(payload),
       });
 
-      // If the model works, stream the response back!
+      // If the model works, return the full response instantly
       if (response.ok) {
         console.log(`Successfully using model: ${model}`);
+        const data = await response.json();
+        const content = data.choices?.[0]?.message?.content ?? '';
 
-        const transformStream = new TransformStream({
-          transform(chunk, controller) {
-            const text = new TextDecoder().decode(chunk);
-            const lines = text.split('\n').filter(line => line.trim() !== '');
-
-            for (const line of lines) {
-              if (line.includes('[DONE]')) continue;
-              if (line.startsWith('data: ')) {
-                try {
-                  const data = JSON.parse(line.slice(6));
-                  if (data.choices?.[0]?.delta?.content) {
-                    controller.enqueue(new TextEncoder().encode(data.choices[0].delta.content));
-                  }
-                } catch {
-                  // Ignore malformed JSON chunks
-                }
-              }
-            }
-          }
-        });
-
-        return new Response(response.body?.pipeThrough(transformStream), {
+        return new Response(content, {
           headers: {
             'Content-Type': 'text/plain; charset=utf-8',
-            'Cache-Control': 'no-cache',
-            'Connection': 'keep-alive',
             ...CORS_HEADERS,
           }
         });
