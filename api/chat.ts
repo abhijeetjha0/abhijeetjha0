@@ -75,16 +75,6 @@ export default async function handler(req: Request) {
       return new Response('Invalid request body', { status: 400, headers: { 'Access-Control-Allow-Origin': '*' } });
     }
 
-    // Prepend the system prompt to the message history
-    const payload = {
-      model: 'deepseek-v4-flash:preview', // Using a valid, extremely lightweight model hosted on Ollama Cloud
-      messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
-        ...messages
-      ],
-      stream: true,
-    };
-
     const apiKey = process.env.OLLAMA_API_KEY;
 
     if (!apiKey) {
@@ -93,55 +83,108 @@ export default async function handler(req: Request) {
       return new Response('Server configuration error', { status: 500, headers: { 'Access-Control-Allow-Origin': '*' } });
     }
 
-    // Call Ollama Cloud API (OpenAI compatible endpoint)
-    const response = await fetch('https://ollama.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify(payload),
-    });
+    const OLLAMA_API = 'https://ollama.com/v1';
+    const CORS_HEADERS = { 'Access-Control-Allow-Origin': '*' };
+    const AUTH_HEADERS = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+    };
 
-    if (!response.ok) {
-      const error = await response.text();
-      console.error('Ollama API error:', error);
+    // 1. Fetch all available model IDs from Ollama Cloud
+    let modelsToTry: string[] = [];
+    try {
+      const modelsResponse = await fetch(`${OLLAMA_API}/models`, {
+        headers: { 'Authorization': `Bearer ${apiKey}` }
+      });
 
-      return new Response(`Ollama Cloud Error: ${error}`, { status: 502, headers: { 'Access-Control-Allow-Origin': '*' } });
-    }
-
-    // The frontend expects a raw text stream, but Ollama/OpenAI streams SSE JSON.
-    // We need to parse the SSE JSON and just stream the raw text tokens back to the client.
-    const transformStream = new TransformStream({
-      transform(chunk, controller) {
-        const text = new TextDecoder().decode(chunk);
-        const lines = text.split('\n').filter(line => line.trim() !== '');
-        
-        for (const line of lines) {
-          if (line.includes('[DONE]')) continue;
-          if (line.startsWith('data: ')) {
-            try {
-              const data = JSON.parse(line.slice(6));
-              if (data.choices && data.choices[0].delta && data.choices[0].delta.content) {
-                controller.enqueue(new TextEncoder().encode(data.choices[0].delta.content));
-              }
-            } catch {
-              // Ignore malformed JSON chunks
-            }
-          }
+      if (modelsResponse.ok) {
+        const modelsData = await modelsResponse.json();
+        if (modelsData?.data && Array.isArray(modelsData.data)) {
+          modelsToTry = modelsData.data.map((m: { id: string }) => m.id);
         }
       }
-    });
+    } catch (err) {
+      console.error('Failed to fetch models list:', err);
+    }
 
-    return new Response(response.body?.pipeThrough(transformStream), {
-      headers: {
-        'Content-Type': 'text/plain; charset=utf-8',
-        'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive',
-        // Enable CORS for local dev and GitHub Pages
-        'Access-Control-Allow-Origin': '*',
+    // If fetching failed, try these as a last resort
+    if (modelsToTry.length === 0) {
+      modelsToTry = ['gemma4:31b', 'gpt-oss:20b', 'minimax-m2.7'];
+    }
+
+    // 2. Try each model until one works (skip subscription-required models)
+    for (const model of modelsToTry) {
+      console.log(`Trying model: ${model}`);
+
+      const payload = {
+        model,
+        messages: [
+          { role: 'system', content: SYSTEM_PROMPT },
+          ...messages
+        ],
+        stream: true,
+      };
+
+      const response = await fetch(`${OLLAMA_API}/chat/completions`, {
+        method: 'POST',
+        headers: AUTH_HEADERS,
+        body: JSON.stringify(payload),
+      });
+
+      // If the model works, stream the response back!
+      if (response.ok) {
+        console.log(`Successfully using model: ${model}`);
+
+        const transformStream = new TransformStream({
+          transform(chunk, controller) {
+            const text = new TextDecoder().decode(chunk);
+            const lines = text.split('\n').filter(line => line.trim() !== '');
+
+            for (const line of lines) {
+              if (line.includes('[DONE]')) continue;
+              if (line.startsWith('data: ')) {
+                try {
+                  const data = JSON.parse(line.slice(6));
+                  if (data.choices?.[0]?.delta?.content) {
+                    controller.enqueue(new TextEncoder().encode(data.choices[0].delta.content));
+                  }
+                } catch {
+                  // Ignore malformed JSON chunks
+                }
+              }
+            }
+          }
+        });
+
+        return new Response(response.body?.pipeThrough(transformStream), {
+          headers: {
+            'Content-Type': 'text/plain; charset=utf-8',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive',
+            ...CORS_HEADERS,
+          }
+        });
       }
-    });
+
+      // If the model requires a subscription, skip it and try the next one
+      const errorText = await response.text();
+      if (errorText.includes('subscription')) {
+        console.warn(`Model "${model}" requires a subscription, trying next...`);
+        continue;
+      }
+
+      // For any other error (not subscription), return it immediately
+      console.error(`Ollama API error for model "${model}":`, errorText);
+
+      return new Response(`Ollama Cloud Error: ${errorText}`, { status: 502, headers: CORS_HEADERS });
+    }
+
+    // If ALL models failed (all require subscriptions)
+
+    return new Response(
+      'No free models available on Ollama Cloud. Please check your subscription or try again later.',
+      { status: 503, headers: CORS_HEADERS }
+    );
 
   } catch (error) {
     console.error('Chat API Error:', error);

@@ -1,0 +1,8 @@
+{
+    "installCommand": "npm install",
+    "buildCommand": "echo 'Skipping frontend build, API only deployment.'",
+    "outputDirectory": "public",
+    "github": {
+        "silent": true
+    }
+}
