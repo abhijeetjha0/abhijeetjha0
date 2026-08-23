@@ -111,5 +111,20 @@
     "description": "A comprehensive overview of technical capabilities, frameworks, and modern tools I leverage to craft high-performance web applications.",
     "filterAll": "All",
     "skillsCount": "skills"
+  },
+  "aiChat": {
+    "title": "Ask Abhijit's AI",
+    "placeholder": "Ask me anything about Abhijit...",
+    "send": "Send",
+    "loading": "Connecting to AI...",
+    "ready": "AI is ready!",
+    "error": "Something went wrong. Please try again.",
+    "welcomeMessage": "👋 Hi! I'm Abhijit's AI assistant. Ask me about his skills, experience, or projects!",
+    "suggestedQuestions": [
+      "What technologies does Abhijit use?",
+      "Tell me about his experience",
+      "What projects has he built?"
+    ]
   }
 }
+

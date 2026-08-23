@@ -157,3 +157,8 @@ export const SKILL_CATEGORY_METADATA: CategoryMeta[] = [
     ),
   },
 ];
+
+export const AI_CHAT_CONFIG = {
+  // We use process.env to remain compatible with Jest, and use Vite's define to inject it during build
+  BACKEND_URL: process.env.VITE_AI_BACKEND_URL || 'http://localhost:3000/api/chat',
+} as const;

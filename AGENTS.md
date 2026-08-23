@@ -13,6 +13,7 @@ Subdirectory-specific guidelines are maintained in modular `AGENTS.md` files thr
 ├── .github/                 # GitHub workflows, static assets, and CI/CD AGENTS.md
 ├── .gitignore               # Git ignore pattern rules
 ├── .nvmrc                   # Target Node.js engine version declaration
+├── api/                     # Vercel Serverless Backend API functions
 ├── coverage/                # Generated Jest test coverage reports & badges
 ├── dist/                    # Compiled Vite production bundle output
 ├── node_modules/            # Installed npm packages and dependencies
@@ -42,7 +43,8 @@ Subdirectory-specific guidelines are maintained in modular `AGENTS.md` files thr
 
 | Command | Action | Description |
 | :--- | :--- | :--- |
-| `npm run dev` | Dev Server | Launches Vite local development server. |
+| `npm run dev` | Dev Server | Launches Vite frontend-only development server. |
+| `npx vercel dev` | Full-Stack Server | Launches Vite frontend + Vercel API backend locally. |
 | `npm run build` | Production Build | Executes TypeScript type check (`tsc -b`) and Vite production bundle build. |
 | `npm run test` | Unit Tests | Executes Jest unit tests and generates coverage metrics. |
 | `npm run lint` | Code Quality | Runs ESLint across TypeScript/JavaScript files. |

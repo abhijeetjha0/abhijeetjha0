@@ -1,131 +1,147 @@
-@use '../variables' as *;
+@use "../variables" as *;
+@use "ai-chat" as *;
 
 .portfolio-content {
-  scroll-behavior: smooth;
+    scroll-behavior: smooth;
 
-  section {
-    padding: 4rem 0;
-  }
-
-  .hero-section {
-    min-height: 50vh;
-    display: flex;
-    align-items: center;
-  }
-
-  .contact-info {
-    a {
-      text-decoration: none;
-      color: inherit;
-      &:hover {
-        color: var(--bs-primary);
-      }
+    section {
+        padding: 4rem 0;
     }
-  }
 
-  .card {
-    transition: transform 0.2s ease-in-out;
-    &:hover {
-      transform: translateY(-5px);
+    .hero-section {
+        min-height: 50vh;
+        display: flex;
+        align-items: center;
     }
-    
-    &:focus-visible {
-      outline: 3px solid var(--bs-primary);
-      outline-offset: 4px;
-      transform: translateY(-5px);
-    }
-  }
 
-  .badge {
-    font-size: 0.9rem;
-  }
+    .contact-info {
+        a {
+            text-decoration: none;
+            color: inherit;
+            &:hover {
+                color: var(--bs-primary);
+            }
+        }
+    }
+
+    .card {
+        transition: transform 0.2s ease-in-out;
+        &:hover {
+            transform: translateY(-5px);
+        }
+
+        &:focus-visible {
+            outline: 3px solid var(--bs-primary);
+            outline-offset: 4px;
+            transform: translateY(-5px);
+        }
+    }
+
+    .badge {
+        font-size: 0.9rem;
+    }
 }
 
 // Ensure smooth scrolling for navigation links
 html {
-  scroll-behavior: smooth;
+    scroll-behavior: smooth;
 }
 
 // Adjust padding for anchor links to account for sticky header
-#about, #experience, #skills, #education {
-  scroll-margin-top: $header-height;
+#about,
+#experience,
+#skills,
+#education {
+    scroll-margin-top: $header-height;
 }
 
 // Skills Section UX & Visual Enhancements
 .skills-section {
-  background: linear-gradient(180deg, rgba($color-slate-50, 0.6) 0%, $color-slate-100 100%);
+    background: linear-gradient(
+        180deg,
+        rgba($color-slate-50, 0.6) 0%,
+        $color-slate-100 100%
+    );
 
-  .skill-card {
-    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
-    background: $color-white;
-    border: 1px solid rgba($color-slate-200, 0.8) !important;
+    .skill-card {
+        transition:
+            transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+            box-shadow 0.25s ease;
+        background: $color-white;
+        border: 1px solid rgba($color-slate-200, 0.8) !important;
 
-    .card-accent-bar {
-      height: 4px;
-      width: 100%;
-      background-color: var(--accent-color);
+        .card-accent-bar {
+            height: 4px;
+            width: 100%;
+            background-color: var(--accent-color);
+        }
+
+        .category-icon-box {
+            width: 42px;
+            height: 42px;
+            min-width: 42px;
+            flex-shrink: 0;
+            background-color: var(--accent-bg);
+            color: var(--accent-color);
+        }
+
+        &:hover {
+            transform: translateY(-6px);
+            box-shadow:
+                0 12px 24px -6px rgba(0, 0, 0, 0.08),
+                0 4px 16px -4px rgba(0, 0, 0, 0.04) !important;
+        }
+
+        &:focus-visible {
+            outline: 3px solid var(--accent-color);
+            outline-offset: 4px;
+            transform: translateY(-6px);
+            box-shadow:
+                0 12px 24px -6px rgba(0, 0, 0, 0.08),
+                0 4px 16px -4px rgba(0, 0, 0, 0.04) !important;
+        }
     }
 
-    .category-icon-box {
-      width: 42px;
-      height: 42px;
-      min-width: 42px;
-      flex-shrink: 0;
-      background-color: var(--accent-bg);
-      color: var(--accent-color);
+    .skill-pill {
+        background-color: var(--accent-bg, $color-slate-100);
+        border: 1px solid rgba(0, 0, 0, 0.04);
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        display: inline-flex;
+        align-items: center;
+
+        &:hover,
+        &:focus-visible {
+            background-color: $color-white;
+            border-color: var(--accent-color, $color-primary-blue);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+            transform: translateY(-2px);
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--accent-color, $color-primary-blue);
+            outline-offset: 2px;
+        }
     }
 
-    &:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.08), 0 4px 16px -4px rgba(0, 0, 0, 0.04) !important;
+    .btn {
+        &:focus-visible {
+            outline: 2px solid var(--bs-primary) !important;
+            outline-offset: 2px;
+        }
     }
 
-    &:focus-visible {
-      outline: 3px solid var(--accent-color);
-      outline-offset: 4px;
-      transform: translateY(-6px);
-      box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.08), 0 4px 16px -4px rgba(0, 0, 0, 0.04) !important;
+    .btn-outline-secondary {
+        color: $color-slate-600;
+        border-color: $color-slate-200;
+        &:hover,
+        &:focus-visible {
+            background-color: $color-slate-100;
+            color: $color-slate-900;
+        }
     }
-  }
-
-  .skill-pill {
-    background-color: var(--accent-bg, $color-slate-100);
-    border: 1px solid rgba(0, 0, 0, 0.04);
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    display: inline-flex;
-    align-items: center;
-
-    &:hover, &:focus-visible {
-      background-color: $color-white;
-      border-color: var(--accent-color, $color-primary-blue);
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
-      transform: translateY(-2px);
-    }
-
-    &:focus-visible {
-      outline: 2px solid var(--accent-color, $color-primary-blue);
-      outline-offset: 2px;
-    }
-  }
-
-  .btn {
-    &:focus-visible {
-      outline: 2px solid var(--bs-primary) !important;
-      outline-offset: 2px;
-    }
-  }
-
-  .btn-outline-secondary {
-    color: $color-slate-600;
-    border-color: $color-slate-200;
-    &:hover, &:focus-visible {
-      background-color: $color-slate-100;
-      color: $color-slate-900;
-    }
-  }
 }
 
 // Utility class for max width
 .max-width-600 {
-  max-width: $max-width-md;
+    max-width: $max-width-md;
 }

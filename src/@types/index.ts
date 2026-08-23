@@ -56,10 +56,24 @@ export interface CategoryConfig extends CategoryMeta {
 
 export type SkillsDictionary = Record<SkillCategoryId, string[]>;
 
-export type SectionId = 'home' | 'experience' | 'skills' | 'education' | 'projects';
+export type SectionId = 'home' | 'experience' | 'skills' | 'education' | 'projects' | 'chat';
 
 export interface NavLinkItem {
   id: SectionId;
   href: string;
   labelKey: string;
+}
+
+export interface ChatMessage {
+  id: string;
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  timestamp: number;
+}
+
+export interface AiChatState {
+  messages: ChatMessage[];
+  isLoading: boolean;
+  isOpen: boolean;
+  error: string | null;
 }

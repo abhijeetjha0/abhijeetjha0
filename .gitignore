@@ -9,3 +9,11 @@ coverage
 .vscode
 .eslintcache
 tmp
+
+# Local Env files
+.env
+.env.*
+!.env.example
+
+# Vercel
+.vercel

@@ -27,9 +27,15 @@ nvm use
 # 3. Install dependencies
 npm install
 
-# 4. Start local development server
-npm run dev
+# 4. Set up environment variables
+cp .env.example .env.local
+# Edit .env.local and add your OLLAMA_API_KEY
+
+# 5. Start full-stack local development server (Frontend + API Backend)
+npx vercel dev
 ```
+
+> **Note**: If you only want to test the React frontend without the AI backend, you can still use `npm run dev`.
 
 The application will be accessible at `http://localhost:5173/`.
 
@@ -71,3 +77,5 @@ Automated via GitHub Actions ([`.github/workflows/deploy.yml`](.github/workflows
 3. **Dynamic Badge Generation**: `bash scripts/generate-coverage-badge.sh` generates `badge.json` & `badge.svg`.
 4. **Application Build**: `npm run build` compiles Vite bundle to `dist`.
 5. **Deployment**: Deploys `dist` to GitHub Pages (`https://abhijeetjha0.github.io/abhijeetjha0/`).
+
+> **Note on Backend API Deployment**: The GitHub Actions pipeline deploys the frontend to GitHub Pages. To deploy the `/api/chat.ts` AI backend, you must link this repository to a **Vercel Project** and set the `OLLAMA_API_KEY` in your Vercel project settings. Vercel automatically deploys the backend serverless functions.
