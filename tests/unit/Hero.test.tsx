@@ -12,5 +12,7 @@ describe('Hero Component', () => {
         );
         expect(screen.getByText(/Abhijit Kumar Jha/i)).toBeDefined();
         expect(screen.getByText(/Senior Software Engineer/i)).toBeDefined();
+        expect(screen.getByText(/github\.com\/abhijeetjha0/i)).toBeDefined();
+        expect(screen.getByText(/linkedin\.com\/in\/abhijeetjha0/i)).toBeDefined();
     });
 });

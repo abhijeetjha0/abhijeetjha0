@@ -18,6 +18,7 @@ export default function Hero() {
                         <div className="contact-info">
                             <p className="mb-1"><strong>{t('contactLabels.email')}</strong> <a href={`mailto:${t('personalInfo.email')}`}>{t('personalInfo.email')}</a></p>
                             <p className="mb-1"><strong>{t('contactLabels.location')}</strong> {t('personalInfo.location')}</p>
+                            <p className="mb-1"><strong>{t('contactLabels.github')}</strong> <a href={`https://${t('personalInfo.github')}`} target="_blank" rel="noopener noreferrer">{t('personalInfo.github')}</a></p>
                             <p className="mb-0"><strong>{t('contactLabels.linkedin')}</strong> <a href={`https://${t('personalInfo.linkedin')}`} target="_blank" rel="noopener noreferrer">{t('personalInfo.linkedin')}</a></p>
                         </div>
                     </Col>

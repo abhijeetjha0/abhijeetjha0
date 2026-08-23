@@ -3,6 +3,7 @@
     "name": "Abhijit Kumar Jha",
     "title": "Senior Software Engineer",
     "email": "abhijeetjha0@hotmail.com",
+    "github": "github.com/abhijeetjha0",
     "linkedin": "linkedin.com/in/abhijeetjha0",
     "location": "Jaipur, India"
   },
@@ -26,6 +27,7 @@
   "contactLabels": {
     "email": "Email:",
     "location": "Location:",
+    "github": "GitHub:",
     "linkedin": "LinkedIn:"
   },
   "experience": [
@@ -89,13 +91,33 @@
   ],
   "projects": [
     {
+      "name": "Markdown Notes App",
+      "description": "Google Keep inspired note-taking web app featuring rich WYSIWYG Markdown editing, real-time sync with Firebase Firestore, and Google Authentication.",
+      "link": "https://github.com/abhijeetjha0/markdown-notes-app"
+    },
+    {
+      "name": "Leave Planner",
+      "description": "Conversational vacation and leave optimization dashboard built with React 19 and Vite to discover bridge-day holidays and export customized schedules.",
+      "link": "https://github.com/abhijeetjha0/leave-planner"
+    },
+    {
+      "name": "AI Agent Skills & Ecosystem",
+      "description": "A tool-agnostic ecosystem for organizing, testing, and distributing modular AI coding agent skills, system prompts, plugins, and MCP integrations.",
+      "link": "https://github.com/abhijeetjha0/ai"
+    },
+    {
+      "name": "Frontend Project Builder",
+      "description": "Interactive CLI and autonomous AI agent skill for scaffolding production-ready frontend project boilerplates in modern Node.js and TypeScript ecosystems.",
+      "link": "https://github.com/abhijeetjha0/node-project-builder"
+    },
+    {
       "name": "Poke-Dexter",
       "description": "A Pokédex application showcasing modern web development techniques and Pokémon data integration.",
       "link": "https://github.com/abhijeetjha0/poke-dexter"
     },
     {
       "name": "Personal Portfolio",
-      "description": "My personal portfolio website built with React, showcasing my professional experience, skills, and projects.",
+      "description": "My personal portfolio website built with React, TypeScript, and Vite, featuring an AI chat assistant with Edge rate limiting.",
       "link": "https://github.com/abhijeetjha0/abhijeetjha0"
     },
     {

@@ -20,6 +20,8 @@ export const PERSONAL_INFO = {
     NAME: 'Abhijit Kumar Jha',
     TITLE: 'Senior Software Engineer',
     EMAIL: 'abhijeetjha0@hotmail.com',
+    GITHUB: 'github.com/abhijeetjha0',
+    GITHUB_URL: 'https://github.com/abhijeetjha0',
     LINKEDIN: 'linkedin.com/in/abhijeetjha0',
     LINKEDIN_URL: 'https://linkedin.com/in/abhijeetjha0',
     PORTFOLIO_URL: 'https://abhijeetjha0.github.io/abhijeetjha0/',

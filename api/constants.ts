@@ -11,6 +11,7 @@ Name: Abhijit Kumar Jha
 Title: Senior Software Engineer
 Location: Jaipur, India
 Email: abhijeetjha0@hotmail.com
+GitHub: github.com/abhijeetjha0
 LinkedIn: linkedin.com/in/abhijeetjha0
 
 ABOUT
@@ -53,9 +54,13 @@ EDUCATION
 - Senior School in Science from Rajkiya Pratibha Vikas Vidyalaya, Lajpat Nagar, New Delhi (Jun 2013 - Mar 2015)
 
 PROJECTS
-1. Poke-Dexter: A Pokédex application showcasing modern web development techniques and Pokémon data integration. (Link: https://github.com/abhijeetjha0/poke-dexter)
-2. Personal Portfolio: My personal portfolio website built with React, showcasing my professional experience, skills, and projects. (Link: https://github.com/abhijeetjha0/abhijeetjha0)
-3. Vaccination Slots Monitor: A monitoring tool designed to track and notify users about available vaccination slots. (Link: https://github.com/abhijeetjha0/VaccinationSlotsMonitor)
+1. Markdown Notes App: Google Keep inspired note-taking web app featuring rich WYSIWYG Markdown editing, real-time sync with Firebase Firestore, and Google Authentication. (Link: https://github.com/abhijeetjha0/markdown-notes-app)
+2. Leave Planner: Conversational vacation and leave optimization dashboard built with React 19 and Vite to discover bridge-day holidays and export customized schedules. (Link: https://github.com/abhijeetjha0/leave-planner)
+3. AI Agent Skills & Ecosystem: A tool-agnostic architecture for organizing, testing, and distributing modular AI coding agent skills, system prompts, plugins, and MCP integrations. (Link: https://github.com/abhijeetjha0/ai)
+4. Frontend Project Builder: Interactive CLI and autonomous AI agent skill for scaffolding production-ready frontend project boilerplates in modern Node.js and TypeScript ecosystems. (Link: https://github.com/abhijeetjha0/node-project-builder)
+5. Poke-Dexter: A Pokédex application showcasing modern web development techniques and Pokémon data integration. (Link: https://github.com/abhijeetjha0/poke-dexter)
+6. Personal Portfolio: My personal portfolio website built with React, TypeScript, and Vite, featuring an AI chat assistant with Edge rate limiting. (Link: https://github.com/abhijeetjha0/abhijeetjha0)
+7. Vaccination Slots Monitor: A monitoring tool designed to track and notify users about available vaccination slots. (Link: https://github.com/abhijeetjha0/VaccinationSlotsMonitor)
 ---`;
 
 export const OLLAMA_API = 'https://ollama.com/v1';
