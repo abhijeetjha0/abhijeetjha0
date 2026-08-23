@@ -10,7 +10,9 @@ const config: Config = {
         }],
     },
     moduleNameMapper: {
-        '\\.(css|scss)$': 'identity-obj-proxy',
+        '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+        '^react-markdown$': '<rootDir>/tests/__mocks__/react-markdown.tsx',
+        '^remark-gfm$': '<rootDir>/tests/__mocks__/remark-gfm.ts',
     },
     setupFilesAfterEnv: ['./setupTests.ts'],
     roots: ['src/', 'tests/'],

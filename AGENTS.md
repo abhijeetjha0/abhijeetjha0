@@ -57,6 +57,12 @@ Subdirectory-specific guidelines are maintained in modular `AGENTS.md` files thr
 2. **No Placeholders**: Maintain exact production URLs and valid Simple Icons logo parameters across all documentation files.
 3. **Keep AGENTS.md Up to Date**: Update relevant modular `AGENTS.md` files whenever tooling, configuration, or directory architecture changes.
 
+4. **Vercel Edge Functions Architecture**: All backend AI integrations (like `/api/chat.ts` and `/api/models.ts`) are deployed as Vercel Edge Functions. Do not use Node-specific modules (like `fs` or `path`). All shared configuration and system prompts MUST be maintained in `/api/constants.ts` to adhere to Edge Runtime constraints.
+5. **AI Chat Context & Formatting**: 
+    - **Context Management**: Ollama API context is managed strictly by passing the entire chat history array in each request. Edge functions remain stateless.
+    - **Markdown Rendering**: The UI utilizes `react-markdown` with the `remark-gfm` plugin to support GitHub Flavored Markdown (including tables). The backend Edge function proactively strips wrapping markdown code blocks (` ```markdown `) if the LLM incorrectly formats its output.
+6. **Jest Mocking for ESM**: Packages like `react-markdown` and `remark-gfm` use pure ECMAScript Modules (ESM) which natively conflict with Jest out of the box. Always mock these dependencies via `moduleNameMapper` inside `jest.config.ts` mapping to `tests/__mocks__/`.
+
 > **Note**: Subdirectory-specific guidelines (React component interfaces, constant declarations, i18n parity, shell script standards, and Jest testing patterns) are maintained directly within their respective modular `AGENTS.md` files:
 > - [.github/AGENTS.md](file:///.github/AGENTS.md)
 > - [scripts/AGENTS.md](file:///scripts/AGENTS.md)

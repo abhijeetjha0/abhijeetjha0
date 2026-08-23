@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react';
+import { renderHook, act, waitFor } from '@testing-library/react';
 import { useAiChat } from '../../src/hooks/useAiChat';
 
 // Mock translation
@@ -44,7 +44,7 @@ describe('useAiChat hook', () => {
         expect(result.current.messages[0].role).toBe('assistant');
     });
 
-    it('toggles chat open state', () => {
+    it('toggles chat open state', async () => {
         const { result } = renderHook(() => useAiChat());
     
         act(() => {
@@ -52,6 +52,11 @@ describe('useAiChat hook', () => {
         });
     
         expect(result.current.isOpen).toBe(true);
+
+        // Wait for the async fetch triggered by isOpen=true to finish
+        await waitFor(() => {
+            expect(result.current.modelsToTry).toEqual(['mock-model-1']);
+        });
     
         act(() => {
             result.current.toggleChat();

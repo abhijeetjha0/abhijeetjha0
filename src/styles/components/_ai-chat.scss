@@ -110,6 +110,25 @@
             overflow-wrap: break-word;
             font-size: 0.95rem;
             line-height: 1.5;
+
+            p:last-child {
+                margin-bottom: 0 !important;
+            }
+
+            .table-responsive {
+                border-radius: 4px;
+                overflow: hidden;
+                border: 1px solid $color-slate-200;
+                margin-bottom: 0.5rem;
+
+                table {
+                    font-size: 0.85rem;
+                    
+                    th {
+                        background-color: $color-slate-100;
+                    }
+                }
+            }
         }
     }
 

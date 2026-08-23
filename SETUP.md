@@ -31,13 +31,13 @@ npm install
 cp .env.example .env.local
 # Edit .env.local and add your OLLAMA_API_KEY
 
-# 5. Start full-stack local development server (Frontend + API Backend)
-npx vercel dev
+# 5. Start local development server
+npm run dev
 ```
 
-> **Note**: If you only want to test the React frontend without the AI backend, you can still use `npm run dev`.
+> **Note**: The local frontend automatically points to the production Vercel Edge functions API for Chat features (`https://abhijeetjha0-xyz.vercel.app/`). If you wish to test backend changes locally, you must use `npx vercel dev` instead of `npm run dev` and update your local `.env.local` file with the `OLLAMA_API_KEY`.
 
-The application will be accessible at `http://localhost:5173/`.
+The frontend application will be accessible at `http://localhost:5173/`.
 
 ---
 
@@ -79,3 +79,5 @@ Automated via GitHub Actions ([`.github/workflows/deploy.yml`](.github/workflows
 5. **Deployment**: Deploys `dist` to GitHub Pages (`https://abhijeetjha0.github.io/abhijeetjha0/`).
 
 > **Note on Backend API Deployment**: The GitHub Actions pipeline deploys the frontend to GitHub Pages. To deploy the `/api/chat.ts` AI backend, you must link this repository to a **Vercel Project** and set the `OLLAMA_API_KEY` in your Vercel project settings. Vercel automatically deploys the backend serverless functions.
+>
+> Detailed Edge logs (including `console.time` metrics for Ollama responses and discovery) are available in your Vercel Dashboard under the **Logs** tab.

@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Form, Button } from 'react-bootstrap';
 import { ChatMessage } from '../@types';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface AiChatPanelProps {
     isOpen: boolean;
@@ -66,7 +68,19 @@ export default function AiChatPanel({
                 {messages.map((msg, index) => (
                     <div key={msg.id || index} className={`message-bubble-wrapper ${msg.role === 'user' ? 'user' : 'assistant'}`}>
                         <div className={`message-bubble ${msg.role === 'user' ? 'bg-primary text-white' : 'bg-light text-dark'} p-2 px-3 rounded-4 mb-2 shadow-sm`}>
-                            {msg.content || (msg.role === 'assistant' && isLoading && index === messages.length - 1 ? <span className="typing-indicator">...</span> : null)}
+                            {msg.content ? (
+                                <ReactMarkdown 
+                                    remarkPlugins={[remarkGfm]}
+                                    components={{
+                                        table: ({node, ...props}) => <div className="table-responsive"><table className="table table-sm table-bordered mb-0" {...props} /></div>,
+                                        p: ({node, ...props}) => <p className="mb-2 last-p-mb-0" {...props} />
+                                    }}
+                                >
+                                    {msg.content}
+                                </ReactMarkdown>
+                            ) : (
+                                msg.role === 'assistant' && isLoading && index === messages.length - 1 ? <span className="typing-indicator">...</span> : null
+                            )}
                         </div>
                     </div>
                 ))}
