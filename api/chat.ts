@@ -77,7 +77,7 @@ export default async function handler(req: Request) {
 
     // Prepend the system prompt to the message history
     const payload = {
-      model: 'phi4-mini:latest', // Using phi4-mini as requested
+      model: 'deepseek-v4-flash:preview', // Using a valid, extremely lightweight model hosted on Ollama Cloud
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
         ...messages
@@ -107,7 +107,7 @@ export default async function handler(req: Request) {
       const error = await response.text();
       console.error('Ollama API error:', error);
 
-      return new Response('Error communicating with AI service', { status: 502, headers: { 'Access-Control-Allow-Origin': '*' } });
+      return new Response(`Ollama Cloud Error: ${error}`, { status: 502, headers: { 'Access-Control-Allow-Origin': '*' } });
     }
 
     // The frontend expects a raw text stream, but Ollama/OpenAI streams SSE JSON.
