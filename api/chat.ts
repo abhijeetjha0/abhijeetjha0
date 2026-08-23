@@ -65,14 +65,14 @@ export default async function handler(req: Request) {
   }
 
   if (req.method !== 'POST') {
-    return new Response('Method Not Allowed', { status: 405 });
+    return new Response('Method Not Allowed', { status: 405, headers: { 'Access-Control-Allow-Origin': '*' } });
   }
 
   try {
     const { messages } = await req.json();
 
     if (!messages || !Array.isArray(messages)) {
-      return new Response('Invalid request body', { status: 400 });
+      return new Response('Invalid request body', { status: 400, headers: { 'Access-Control-Allow-Origin': '*' } });
     }
 
     // Prepend the system prompt to the message history
@@ -90,7 +90,7 @@ export default async function handler(req: Request) {
     if (!apiKey) {
       console.error('OLLAMA_API_KEY is not set');
 
-      return new Response('Server configuration error', { status: 500 });
+      return new Response('Server configuration error', { status: 500, headers: { 'Access-Control-Allow-Origin': '*' } });
     }
 
     // Call Ollama Cloud API (OpenAI compatible endpoint)
@@ -107,7 +107,7 @@ export default async function handler(req: Request) {
       const error = await response.text();
       console.error('Ollama API error:', error);
 
-      return new Response('Error communicating with AI service', { status: 502 });
+      return new Response('Error communicating with AI service', { status: 502, headers: { 'Access-Control-Allow-Origin': '*' } });
     }
 
     // The frontend expects a raw text stream, but Ollama/OpenAI streams SSE JSON.
@@ -146,6 +146,6 @@ export default async function handler(req: Request) {
   } catch (error) {
     console.error('Chat API Error:', error);
 
-    return new Response('Internal Server Error', { status: 500 });
+    return new Response('Internal Server Error', { status: 500, headers: { 'Access-Control-Allow-Origin': '*' } });
   }
 }
