@@ -1,5 +1,5 @@
 export const config = {
-  runtime: 'edge',
+    runtime: 'edge',
 };
 
 // We will construct the system prompt using the portfolio data
@@ -52,122 +52,105 @@ PROJECTS
 ---`;
 
 export default async function handler(req: Request) {
-  // Handle CORS preflight
-  if (req.method === 'OPTIONS') {
-    return new Response(null, {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      },
-      status: 204,
-    });
-  }
-
-  if (req.method !== 'POST') {
-    return new Response('Method Not Allowed', { status: 405, headers: { 'Access-Control-Allow-Origin': '*' } });
-  }
-
-  try {
-    const { messages } = await req.json();
-
-    if (!messages || !Array.isArray(messages)) {
-      return new Response('Invalid request body', { status: 400, headers: { 'Access-Control-Allow-Origin': '*' } });
-    }
-
-    const apiKey = process.env.OLLAMA_API_KEY;
-
-    if (!apiKey) {
-      console.error('OLLAMA_API_KEY is not set');
-
-      return new Response('Server configuration error', { status: 500, headers: { 'Access-Control-Allow-Origin': '*' } });
-    }
-
-    const OLLAMA_API = 'https://ollama.com/v1';
-    const CORS_HEADERS = { 'Access-Control-Allow-Origin': '*' };
-    const AUTH_HEADERS = {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
-    };
-
-    // 1. Fetch all available model IDs from Ollama Cloud
-    let modelsToTry: string[] = [];
-    try {
-      const modelsResponse = await fetch(`${OLLAMA_API}/models`, {
-        headers: { 'Authorization': `Bearer ${apiKey}` }
-      });
-
-      if (modelsResponse.ok) {
-        const modelsData = await modelsResponse.json();
-        if (modelsData?.data && Array.isArray(modelsData.data)) {
-          modelsToTry = modelsData.data.map((m: { id: string }) => m.id);
-        }
-      }
-    } catch (err) {
-      console.error('Failed to fetch models list:', err);
-    }
-
-    // If fetching failed, try these as a last resort
-    if (modelsToTry.length === 0) {
-      modelsToTry = ['gemma4:31b', 'gpt-oss:20b', 'minimax-m2.7'];
-    }
-
-    // 2. Try each model until one works (skip subscription-required models)
-    for (const model of modelsToTry) {
-      console.log(`Trying model: ${model}`);
-
-      const payload = {
-        model,
-        messages: [
-          { role: 'system', content: SYSTEM_PROMPT },
-          ...messages
-        ],
-        stream: false,
-      };
-
-      const response = await fetch(`${OLLAMA_API}/chat/completions`, {
-        method: 'POST',
-        headers: AUTH_HEADERS,
-        body: JSON.stringify(payload),
-      });
-
-      // If the model works, return the full response instantly
-      if (response.ok) {
-        console.log(`Successfully using model: ${model}`);
-        const data = await response.json();
-        const content = data.choices?.[0]?.message?.content ?? '';
-
-        return new Response(content, {
-          headers: {
-            'Content-Type': 'text/plain; charset=utf-8',
-            ...CORS_HEADERS,
-          }
+    // Handle CORS preflight
+    if (req.method === 'OPTIONS') {
+        return new Response(null, {
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'POST, OPTIONS',
+                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+            },
+            status: 204,
         });
-      }
-
-      // If the model requires a subscription, skip it and try the next one
-      const errorText = await response.text();
-      if (errorText.includes('subscription')) {
-        console.warn(`Model "${model}" requires a subscription, trying next...`);
-        continue;
-      }
-
-      // For any other error (not subscription), return it immediately
-      console.error(`Ollama API error for model "${model}":`, errorText);
-
-      return new Response(`Ollama Cloud Error: ${errorText}`, { status: 502, headers: CORS_HEADERS });
     }
 
-    // If ALL models failed (all require subscriptions)
+    if (req.method !== 'POST') {
+        return new Response('Method Not Allowed', { status: 405, headers: { 'Access-Control-Allow-Origin': '*' } });
+    }
 
-    return new Response(
-      'No free models available on Ollama Cloud. Please check your subscription or try again later.',
-      { status: 503, headers: CORS_HEADERS }
-    );
+    try {
+        const { messages, modelsToTry } = await req.json();
 
-  } catch (error) {
-    console.error('Chat API Error:', error);
+        if (!messages || !Array.isArray(messages)) {
+            return new Response('Invalid request body', { status: 400, headers: { 'Access-Control-Allow-Origin': '*' } });
+        }
 
-    return new Response('Internal Server Error', { status: 500, headers: { 'Access-Control-Allow-Origin': '*' } });
-  }
+        const apiKey = process.env.OLLAMA_API_KEY;
+
+        if (!apiKey) {
+            console.error('OLLAMA_API_KEY is not set');
+
+            return new Response('Server configuration error', { status: 500, headers: { 'Access-Control-Allow-Origin': '*' } });
+        }
+
+        const OLLAMA_API = 'https://ollama.com/v1';
+        const CORS_HEADERS = { 'Access-Control-Allow-Origin': '*' };
+        const AUTH_HEADERS = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`,
+        };
+
+        // 1. Use the models provided by the frontend, or fall back to defaults
+        const models = Array.isArray(modelsToTry) && modelsToTry.length > 0 
+            ? modelsToTry 
+            : ['gemma4:31b', 'gpt-oss:20b', 'minimax-m2.7'];
+
+        // 2. Try each model until one works (skip subscription-required models)
+        for (const model of models) {
+            console.log(`Trying model: ${model}`);
+
+            const payload = {
+                model,
+                messages: [
+                    { role: 'system', content: SYSTEM_PROMPT },
+                    ...messages
+                ],
+                stream: false,
+            };
+
+            const response = await fetch(`${OLLAMA_API}/chat/completions`, {
+                method: 'POST',
+                headers: AUTH_HEADERS,
+                body: JSON.stringify(payload),
+            });
+
+            // If the model works, return the full response instantly
+            if (response.ok) {
+                console.log(`Successfully using model: ${model}`);
+                const data = await response.json();
+                const content = data.choices?.[0]?.message?.content ?? '';
+
+                return new Response(content, {
+                    headers: {
+                        'Content-Type': 'text/plain; charset=utf-8',
+                        ...CORS_HEADERS,
+                    }
+                });
+            }
+
+            // If the model requires a subscription, skip it and try the next one
+            const errorText = await response.text();
+            if (errorText.includes('subscription')) {
+                console.warn(`Model "${model}" requires a subscription, trying next...`);
+                continue;
+            }
+
+            // For any other error (not subscription), return it immediately
+            console.error(`Ollama API error for model "${model}":`, errorText);
+
+            return new Response(`Ollama Cloud Error: ${errorText}`, { status: 502, headers: CORS_HEADERS });
+        }
+
+        // If ALL models failed (all require subscriptions)
+
+        return new Response(
+            'No free models available on Ollama Cloud. Please check your subscription or try again later.',
+            { status: 503, headers: CORS_HEADERS }
+        );
+
+    } catch (error) {
+        console.error('Chat API Error:', error);
+
+        return new Response('Internal Server Error', { status: 500, headers: { 'Access-Control-Allow-Origin': '*' } });
+    }
 }

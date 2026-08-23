@@ -76,4 +76,5 @@ export interface AiChatState {
   isLoading: boolean;
   isOpen: boolean;
   error: string | null;
+  modelsToTry?: string[];
 }

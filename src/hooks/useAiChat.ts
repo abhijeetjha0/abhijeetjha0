@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AiChatState, ChatMessage } from '../@types';
 import { AI_CHAT_CONFIG } from '../constants';
@@ -23,6 +23,20 @@ export function useAiChat() {
   const toggleChat = useCallback(() => {
     setState(prev => ({ ...prev, isOpen: !prev.isOpen }));
   }, []);
+
+  useEffect(() => {
+    if (state.isOpen && !state.modelsToTry) {
+      // Pre-fetch free models from the edge function
+      fetch('/api/models')
+        .then(res => res.json())
+        .then(models => {
+          if (Array.isArray(models) && models.length > 0) {
+            setState(s => ({ ...s, modelsToTry: models }));
+          }
+        })
+        .catch(err => console.error('Failed to pre-fetch models:', err));
+    }
+  }, [state.isOpen, state.modelsToTry]);
 
   const sendMessage = useCallback(async (content: string) => {
     if (!content.trim()) return;
@@ -62,7 +76,10 @@ export function useAiChat() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ messages: messagesToSend }),
+        body: JSON.stringify({ 
+          messages: messagesToSend,
+          modelsToTry: state.modelsToTry 
+        }),
       });
 
       if (!response.ok) {
@@ -93,7 +110,7 @@ export function useAiChat() {
     } finally {
       setState(prev => ({ ...prev, isLoading: false }));
     }
-  }, [state.messages, t]);
+  }, [state.messages, state.modelsToTry, t]);
 
   return {
     ...state,
