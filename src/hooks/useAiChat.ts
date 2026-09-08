@@ -25,18 +25,34 @@ export function useAiChat() {
     }, []);
 
     useEffect(() => {
-        if (state.isOpen && !state.modelsToTry) {
-            // Pre-fetch free models from the edge function
+        let isMounted = true;
+
+        if (!state.modelsToTry) {
+            // Pre-fetch free models from the edge function on landing
             fetch(AI_CHAT_CONFIG.MODELS_URL)
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok) {
+                        return null;
+                    }
+
+                    return res.json();
+                })
                 .then(models => {
-                    if (Array.isArray(models) && models.length > 0) {
+                    if (isMounted && Array.isArray(models) && models.length > 0) {
                         setState(s => ({ ...s, modelsToTry: models }));
                     }
                 })
-                .catch(err => console.error('Failed to pre-fetch models:', err));
+                .catch(err => {
+                    if (isMounted) {
+                        console.error('Failed to pre-fetch models:', err);
+                    }
+                });
         }
-    }, [state.isOpen, state.modelsToTry]);
+
+        return () => {
+            isMounted = false;
+        };
+    }, [state.modelsToTry]);
 
     const sendMessage = useCallback(async (content: string) => {
         if (!content.trim()) return;

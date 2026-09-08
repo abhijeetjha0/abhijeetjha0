@@ -4,5 +4,12 @@
     "outputDirectory": "public",
     "github": {
         "silent": true
-    }
+    },
+    "redirects": [
+        {
+            "source": "/((?!api(?:/|$)).*)",
+            "destination": "https://abhijeetjha0.github.io/abhijeetjha0/",
+            "permanent": false
+        }
+    ]
 }

@@ -1,15 +1,24 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import Home from '../../src/components/Home';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../../src/i18n';
 
 describe('Home Component', () => {
-    test('renders all child components and footer with copyright notice', () => {
-        const { container } = render(
-            <I18nextProvider i18n={i18n}>
-                <Home />
-            </I18nextProvider>
-        );
+    beforeEach(() => {
+        fetchMock.mockResponse(JSON.stringify(['mock-model-1']));
+    });
+
+    test('renders all child components and footer with copyright notice', async () => {
+        let container: HTMLElement = document.createElement('div');
+
+        await act(async () => {
+            const rendered = render(
+                <I18nextProvider i18n={i18n}>
+                    <Home />
+                </I18nextProvider>
+            );
+            container = rendered.container;
+        });
 
         // Root container
         expect(container.querySelector('.portfolio-content')).not.toBeNull();
