@@ -76,4 +76,8 @@ PROJECTS
 ---`;
 
 export const OLLAMA_API = 'https://ollama.com/v1';
-export const CORS_HEADERS = { 'Access-Control-Allow-Origin': '*' };
+export const CORS_HEADERS = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Expose-Headers': 'X-AI-Provider, X-AI-Model',
+};
+

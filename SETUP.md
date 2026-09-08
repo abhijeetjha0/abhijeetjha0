@@ -30,7 +30,10 @@ npm install
 # 4. Set up environment variables
 cp .env.example .env.local
 # Edit .env.local:
-# - Set OLLAMA_API_KEY for Ollama Cloud models
+# - Set GITHUB_TOKEN (free GitHub Personal Access Token) to enable ChatGPT (gpt-4o-mini) for free!
+# - (Optional) Set OPENROUTER_API_KEY for free OpenRouter models (DeepSeek R1 / Llama 3.3)
+# - (Optional) Set HF_TOKEN for free Hugging Face inference
+# - (Optional) Set OLLAMA_API_KEY for Ollama Cloud
 # - (Optional) Set KV_REST_API_URL and KV_REST_API_TOKEN for Upstash Redis rate limiting locally
 
 # 5. Start local development server

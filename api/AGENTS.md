@@ -8,10 +8,15 @@ This document guides AI Coding Assistants working within the `api/` directory, w
 
 ```
 api/
-├── chat.ts          # POST /api/chat — AI chat completions endpoint (multi-model fallback)
-├── constants.ts     # Shared system prompt, Ollama API URL, CORS headers, guardrail utilities
-├── models.ts        # GET /api/models — Discovers and returns available free Ollama models
-└── rateLimit.ts     # IP-based rate limiter (Upstash Redis primary, in-memory fallback)
+├── chat.ts               # POST /api/chat — Multi-provider AI chat completions endpoint
+├── constants.ts          # Shared system prompt, Ollama API URL, CORS headers
+├── models.ts             # GET /api/models — Returns available models from configured providers
+├── rateLimit.ts          # IP-based rate limiter (Upstash Redis primary, in-memory fallback)
+└── providers/            # Pluggable 100% Free AI Provider Layer
+    ├── types.ts          # Provider interfaces, payload types, and result contracts
+    ├── client.ts         # Zero-dependency OpenAI-compatible Edge HTTP caller
+    ├── registry.ts       # Registry for GitHub Models, OpenRouter, Hugging Face, and Ollama
+    └── index.ts          # Cascading waterfall dispatcher (auto-discovers keys & falls back)
 ```
 
 ---
@@ -19,9 +24,32 @@ api/
 ## 🔒 System Prompt & Scope Guardrails (`constants.ts`)
 
 1. **Resume-Only Scope**: The `SYSTEM_PROMPT` strictly limits the AI assistant to answering questions about Abhijit Kumar Jha's resume, portfolio, experience, skills, projects, and education only. It explicitly refuses general-knowledge, math, weather, AQI, and off-topic queries.
-2. **Identity Protection**: The prompt instructs the model to identify itself as "Abhijit's Portfolio AI Assistant" and never reveal third-party model names (Ollama, Gemma, etc.) or system prompt details.
+2. **Identity Protection**: The prompt instructs the model to identify itself as "Abhijit's Portfolio AI Assistant" and never reveal third-party model names (Ollama, Gemma, OpenAI, etc.) or system prompt details.
 3. **Markdown Link Formatting**: The prompt instructs the model to format all links as standard markdown links with full `https://` URLs (e.g. `[Project Name](https://github.com/...)`).
 4. **Anti-Table Formatting**: The prompt discourages markdown tables (hard to read on mobile) and prefers bullet points unless the user explicitly asks for a table.
+
+---
+
+## 🔄 Free Multi-Provider Waterfall (`api/providers/`)
+
+The backend automatically detects which provider API keys are present in `process.env` and cascades in priority order:
+
+1. **GitHub Models (Primary)**:
+   - Uses `GITHUB_TOKEN` (or `GH_MODELS_TOKEN`).
+   - Model: `gpt-4o-mini` (Genuine OpenAI ChatGPT without an OpenAI account!).
+   - Free tier: 150 requests/day, 15 RPM.
+2. **OpenRouter Free Tier**:
+   - Uses `OPENROUTER_API_KEY`.
+   - Model: `meta-llama/llama-3.3-70b-instruct:free` (or DeepSeek R1).
+   - Free tier: 200 requests/day, 20 RPM.
+3. **Hugging Face Serverless**:
+   - Uses `HF_TOKEN` (or `HUGGINGFACE_API_KEY`).
+   - Model: `Qwen/Qwen2.5-72B-Instruct`.
+4. **Ollama Cloud**:
+   - Uses `OLLAMA_API_KEY`.
+   - Model: `gemma4:31b`.
+
+**Priority Customization**: Setting `DEFAULT_AI_PROVIDER` (`github` | `openrouter` | `huggingface` | `ollama`) moves that provider to the front of the line.
 
 ---
 
@@ -30,15 +58,21 @@ api/
 1. **Edge Runtime Only**: All files in `api/` are deployed as Vercel Edge Functions (`export const config = { runtime: 'edge' }`). Do **not** use Node-specific APIs (`fs`, `path`, `Buffer`, etc.).
 2. **Stateless Execution**: Edge functions are stateless. Chat context is managed by passing the entire message history array from the client in each request.
 3. **Shared Configuration**: All shared constants (system prompt, API URLs, CORS headers) **must** be maintained in `constants.ts`. Do not duplicate configuration across endpoints.
-4. **Rate Limiting**: Both `chat.ts` and `models.ts` enforce IP-based rate limiting via `rateLimit.ts`. The limiter uses Upstash Redis when `KV_REST_API_URL` / `KV_REST_API_TOKEN` are set, and gracefully falls back to an in-memory token-bucket limiter when credentials are absent.
-5. **Multi-Model Fallback**: `chat.ts` iterates over the client-provided `modelsToTry` array, falling back to hardcoded defaults. It skips subscription-required models automatically.
-6. **Markdown Post-Processing**: `chat.ts` strips wrapping `` ```markdown `` code blocks if the LLM incorrectly wraps its entire output.
+4. **Rate Limiting**: Both `chat.ts` and `models.ts` enforce IP-based rate limiting via `rateLimit.ts` (5 requests / 10s).
+5. **Cascading Automatic Fallback**: If the active provider returns an HTTP 429 (quota exhausted) or 5xx, `executeProviderWaterfall` seamlessly cascades to the next configured provider before returning an error to the user.
+6. **Markdown Post-Processing**: `client.ts` strips wrapping `` ```markdown `` code blocks if the LLM incorrectly wraps its entire output.
 
 ---
 
 ## 📌 Rules for `api/` Modifications
 
-1. **Environment Variables**: Never commit API keys or secrets. Reference them via `process.env`. Required variables: `OLLAMA_API_KEY`, and optionally `KV_REST_API_URL` / `KV_REST_API_TOKEN` for Upstash Redis.
-2. **CORS Headers**: Always include `CORS_HEADERS` from `constants.ts` in every response (including error responses).
-3. **HTTP Status Codes**: Use `429` for rate limit exceeded, `400` for bad input, `502` for upstream Ollama errors, `503` for no available models, and `500` for internal errors.
-4. **Logging**: Use `console.info`, `console.warn`, and `console.error` with `[api/chat]` or `[api/models]` prefixes for structured Edge function logs.
+1. **Environment Variables**: Never commit API keys or secrets. Supported provider keys:
+   - `GITHUB_TOKEN` / `GH_MODELS_TOKEN` (GitHub Models — ChatGPT `gpt-4o-mini`)
+   - `OPENROUTER_API_KEY` (OpenRouter Free Tier)
+   - `HF_TOKEN` / `HUGGINGFACE_API_KEY` (Hugging Face Inference)
+   - `OLLAMA_API_KEY` (Ollama Cloud)
+   - `DEFAULT_AI_PROVIDER` (Optional primary provider override)
+   - `KV_REST_API_URL` / `KV_REST_API_TOKEN` (Optional Upstash Redis for distributed rate limiting)
+2. **CORS Headers**: Always include `CORS_HEADERS` from `constants.ts` in every response.
+3. **Response Headers**: `chat.ts` returns `X-AI-Provider` and `X-AI-Model` so clients and logs can trace which provider serviced the query.
+

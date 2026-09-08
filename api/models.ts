@@ -1,5 +1,6 @@
-import { OLLAMA_API, CORS_HEADERS } from './constants';
+import { CORS_HEADERS, OLLAMA_API } from './constants';
 import { chatRateLimit } from './rateLimit';
+import { getConfiguredProviders } from './providers';
 
 export const config = {
     runtime: 'edge',
@@ -35,96 +36,59 @@ export default async function handler(req: Request) {
         }
     }
 
-    const apiKey = process.env.OLLAMA_API_KEY;
-
-    if (!apiKey) {
-        console.error('OLLAMA_API_KEY is not set');
-
-        return new Response('Server configuration error', { status: 500, headers: CORS_HEADERS });
-    }
-
-    const AUTH_HEADERS = {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-    };
-
     try {
-    // 1. Fetch all available models
-        console.info(`[api/models] Fetching all available models from Ollama API...`);
-        const modelsResponse = await fetch(`${OLLAMA_API}/models`, {
-            headers: { 'Authorization': `Bearer ${apiKey}` }
-        });
+        const configured = getConfiguredProviders();
 
-        if (!modelsResponse.ok) {
-            throw new Error(`Failed to fetch models: ${await modelsResponse.text()}`);
+        // If no providers are configured at all
+        if (configured.length === 0) {
+            console.warn('[api/models] No AI providers are configured in environment variables');
+
+            return new Response(JSON.stringify(['gpt-4o-mini']), {
+                headers: {
+                    ...CORS_HEADERS,
+                    'Content-Type': 'application/json',
+                },
+            });
         }
 
-        const modelsData = await modelsResponse.json();
-        const allModels = modelsData?.data?.map((m: { id: string }) => m.id) || [];
-        console.info(`[api/models] Discovered ${allModels.length} total models. Testing for free-tier access...`);
+        // Collect the default models for all configured providers
+        const models: string[] = [];
+        for (const p of configured) {
+            models.push(p.defaultModel);
+        }
 
-        // 2. Test models until we find 3 free ones
-        const freeModels: string[] = [];
-    
-        for (const model of allModels) {
-            if (freeModels.length >= 3) break;
-
-            console.info(`[api/models] Testing model: ${model}...`);
-            console.time(`ollama-test-${model}`);
-
-            const payload = {
-                model,
-                messages: [{ role: 'user', content: 'test' }],
-                stream: false,
-            };
-
-            const response = await fetch(`${OLLAMA_API}/chat/completions`, {
-                method: 'POST',
-                headers: AUTH_HEADERS,
-                body: JSON.stringify(payload),
-            });
-
-            console.timeEnd(`ollama-test-${model}`);
-
-            if (response.ok) {
-                console.info(`[api/models] Success! Model ${model} is available.`);
-                freeModels.push(model);
-            } else {
-                const errorText = await response.text();
-                if (errorText.includes('subscription')) {
-                    console.warn(`[api/models] Model ${model} requires subscription. Skipping.`);
-                }
-                // Stop entirely if unauthorized/invalid key, but ignore subscription errors
-                if (response.status === 401 && !errorText.includes('subscription')) {
-                    throw new Error('API Key Unauthorized');
+        // If Ollama is configured and is the only provider, optionally fetch extra models
+        if (configured.length === 1 && configured[0].name === 'ollama') {
+            const apiKey = process.env.OLLAMA_API_KEY;
+            if (apiKey) {
+                try {
+                    const res = await fetch(`${OLLAMA_API}/models`, {
+                        headers: { Authorization: `Bearer ${apiKey}` },
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        const ollamaModels = data?.data?.map((m: { id: string }) => m.id) || [];
+                        if (ollamaModels.length > 0) {
+                            models.push(...ollamaModels.filter((m: string) => !models.includes(m)));
+                        }
+                    }
+                } catch {
+                    // Ignore Ollama fetch errors and use default
                 }
             }
         }
 
-        if (freeModels.length === 0) {
-            console.warn(`[api/models] No free models could be found out of ${allModels.length} tested models.`);
-
-            return new Response(JSON.stringify({ error: 'No free models available' }), { 
-                status: 503, 
-                headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' } 
-            });
-        }
-
-        console.info(`[api/models] Successfully identified ${freeModels.length} free models: ${freeModels.join(', ')}`);
-
-        // 3. Return the array of free models, heavily cached at the Edge
-        return new Response(JSON.stringify(freeModels), {
+        return new Response(JSON.stringify(models), {
             headers: {
                 ...CORS_HEADERS,
                 'Content-Type': 'application/json',
-                // Cache at edge for 1 hour, serve stale while revalidating
                 'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=600',
-            }
+            },
         });
-
     } catch (error) {
         console.error('Models API Error:', error);
 
         return new Response('Internal Server Error', { status: 500, headers: CORS_HEADERS });
     }
 }
+
