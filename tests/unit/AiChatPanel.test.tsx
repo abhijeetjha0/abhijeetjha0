@@ -10,7 +10,13 @@ jest.mock('react-i18next', () => ({
                 'aiChat.title': 'Ask Abhijit\'s AI',
                 'aiChat.placeholder': 'Ask me anything...',
                 'aiChat.send': 'Send',
-                'aiChat.suggestedQuestions': ['Question 1', 'Question 2']
+                'aiChat.suggestedQuestions': ['Question 1', 'Question 2'],
+                'aiChat.queriesRemaining': `${options?.count ?? 25} queries left`,
+                'aiChat.cooldown': `Wait ${options?.seconds ?? 0}s...`,
+                'aiChat.quotaReached': 'Session query limit reached',
+                'aiChat.rateLimitNotice': 'Demo notice',
+                'aiChat.contactEmail': 'Send Email',
+                'aiChat.contactLinkedIn': 'LinkedIn Profile',
             };
       
             if (options && options.returnObjects) {
@@ -37,7 +43,10 @@ describe('AiChatPanel Component', () => {
         isLoading: false,
         error: null,
         sendMessage: jest.fn(),
-        toggleChat: jest.fn()
+        toggleChat: jest.fn(),
+        cooldownRemaining: 0,
+        remainingQuota: 25,
+        isQuotaExceeded: false,
     };
 
     it('does not render when isOpen is false', () => {
@@ -45,12 +54,24 @@ describe('AiChatPanel Component', () => {
         expect(container).toBeEmptyDOMElement();
     });
 
-    it('renders messages correctly', () => {
+    it('renders messages correctly and displays continuous quota badge', () => {
         render(<AiChatPanel {...defaultProps} />);
     
         expect(screen.getByText('Hello')).toBeInTheDocument();
         expect(screen.getByText('Hi')).toBeInTheDocument();
         expect(screen.getByText("Ask Abhijit's AI")).toBeInTheDocument();
+        expect(screen.getByText('25 queries left')).toBeInTheDocument();
+        expect(screen.getByText('Demo notice')).toBeInTheDocument();
+    });
+
+    it('displays character counter as input changes', () => {
+        render(<AiChatPanel {...defaultProps} />);
+
+        const input = screen.getByPlaceholderText('Ask me anything...');
+        expect(screen.getByText('0/200')).toBeInTheDocument();
+
+        fireEvent.change(input, { target: { value: 'Hello' } });
+        expect(screen.getByText('5/200')).toBeInTheDocument();
     });
 
     it('calls sendMessage on form submit', async () => {
@@ -86,6 +107,27 @@ describe('AiChatPanel Component', () => {
         expect(screen.getByText('...')).toHaveClass('typing-indicator');
     });
 
+    it('disables input and displays cooldown countdown on button when cooldownRemaining > 0', () => {
+        render(<AiChatPanel {...defaultProps} cooldownRemaining={3} />);
+
+        const input = screen.getByPlaceholderText('Ask me anything...');
+        expect(input).toBeDisabled();
+
+        const submitBtn = screen.getByLabelText('Wait 3s...');
+        expect(submitBtn).toBeDisabled();
+        expect(screen.getByText('3s')).toBeInTheDocument();
+    });
+
+    it('renders quota exhausted state when isQuotaExceeded is true', () => {
+        render(<AiChatPanel {...defaultProps} isQuotaExceeded={true} remainingQuota={0} />);
+
+        expect(screen.getByText('0 queries left')).toBeInTheDocument();
+        expect(screen.getByText('Session query limit reached')).toBeInTheDocument();
+        expect(screen.getByText('Send Email')).toHaveAttribute('href', 'mailto:abhijeetjha0@hotmail.com');
+        expect(screen.getByText('LinkedIn Profile')).toHaveAttribute('href', 'https://linkedin.com/in/abhijeetjha0');
+        expect(screen.queryByPlaceholderText('Ask me anything...')).not.toBeInTheDocument();
+    });
+
     it('renders suggested questions only when there is one message', () => {
         const singleMessage = [mockMessages[0]];
         const { rerender } = render(<AiChatPanel {...defaultProps} messages={singleMessage} />);
@@ -108,4 +150,28 @@ describe('AiChatPanel Component', () => {
         fireEvent.click(screen.getByText('Question 1'));
         expect(sendMessageMock).toHaveBeenCalledWith('Question 1');
     });
+
+    it('renders markdown links with target="_blank" and rel="noopener noreferrer"', () => {
+        const linkMessages: ChatMessage[] = [
+            {
+                id: '1',
+                role: 'assistant',
+                content: 'Check out [My GitHub](https://github.com/abhijeetjha0) and [LinkedIn](linkedin.com/in/abhijeetjha0)',
+                timestamp: 123,
+            }
+        ];
+
+        render(<AiChatPanel {...defaultProps} messages={linkMessages} />);
+
+        const githubLink = screen.getByRole('link', { name: 'My GitHub' });
+        expect(githubLink).toHaveAttribute('href', 'https://github.com/abhijeetjha0');
+        expect(githubLink).toHaveAttribute('target', '_blank');
+        expect(githubLink).toHaveAttribute('rel', 'noopener noreferrer');
+
+        const linkedinLink = screen.getByRole('link', { name: 'LinkedIn' });
+        expect(linkedinLink).toHaveAttribute('href', 'https://linkedin.com/in/abhijeetjha0');
+        expect(linkedinLink).toHaveAttribute('target', '_blank');
+        expect(linkedinLink).toHaveAttribute('rel', 'noopener noreferrer');
+    });
 });
+

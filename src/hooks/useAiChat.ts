@@ -3,9 +3,43 @@ import { useTranslation } from 'react-i18next';
 import { AiChatState, ChatMessage } from '../@types';
 import { AI_CHAT_CONFIG } from '../constants';
 
+function getInitialUsage(): number {
+    try {
+        const stored = sessionStorage.getItem(AI_CHAT_CONFIG.STORAGE_KEY);
+        if (stored !== null) {
+            const parsed = parseInt(stored, 10);
+            if (!isNaN(parsed) && parsed >= 0) {
+                return parsed;
+            }
+        }
+    } catch {
+        // Ignore sessionStorage errors (e.g. incognito or disabled)
+    }
+
+    return 0;
+}
+
+function getCachedModels(): string[] | undefined {
+    try {
+        const stored = sessionStorage.getItem(AI_CHAT_CONFIG.MODELS_STORAGE_KEY);
+        if (stored) {
+            const parsed = JSON.parse(stored);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+                return parsed;
+            }
+        }
+    } catch {
+        // Ignore JSON or storage errors
+    }
+
+    return undefined;
+}
+
 export function useAiChat() {
     const { t } = useTranslation();
-  
+    const initialUsage = getInitialUsage();
+    const initialRemaining = Math.max(0, AI_CHAT_CONFIG.MAX_MESSAGES_PER_SESSION - initialUsage);
+
     const [state, setState] = useState<AiChatState>({
         messages: [
             {
@@ -18,16 +52,46 @@ export function useAiChat() {
         isLoading: false,
         isOpen: false,
         error: null,
+        modelsToTry: getCachedModels(),
+        cooldownRemaining: 0,
+        remainingQuota: initialRemaining,
+        isQuotaExceeded: initialRemaining <= 0,
     });
 
     const toggleChat = useCallback(() => {
         setState(prev => ({ ...prev, isOpen: !prev.isOpen }));
     }, []);
 
+    // Cooldown countdown timer
+    useEffect(() => {
+        if (state.cooldownRemaining <= 0) {
+            return;
+        }
+
+        const timer = setTimeout(() => {
+            setState(s => ({
+                ...s,
+                cooldownRemaining: Math.max(0, s.cooldownRemaining - 1),
+            }));
+        }, 1000);
+
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [state.cooldownRemaining]);
+
+    // Pre-fetch models on landing with session caching
     useEffect(() => {
         let isMounted = true;
 
         if (!state.modelsToTry) {
+            const cached = getCachedModels();
+            if (cached) {
+                setState(s => ({ ...s, modelsToTry: cached }));
+
+                return;
+            }
+
             // Pre-fetch free models from the edge function on landing
             fetch(AI_CHAT_CONFIG.MODELS_URL)
                 .then(res => {
@@ -39,6 +103,11 @@ export function useAiChat() {
                 })
                 .then(models => {
                     if (isMounted && Array.isArray(models) && models.length > 0) {
+                        try {
+                            sessionStorage.setItem(AI_CHAT_CONFIG.MODELS_STORAGE_KEY, JSON.stringify(models));
+                        } catch {
+                            // Ignore storage error
+                        }
                         setState(s => ({ ...s, modelsToTry: models }));
                     }
                 })
@@ -55,12 +124,44 @@ export function useAiChat() {
     }, [state.modelsToTry]);
 
     const sendMessage = useCallback(async (content: string) => {
-        if (!content.trim()) return;
+        const trimmed = content.trim();
+        if (!trimmed) {
+            return;
+        }
+
+        // Block if quota is exceeded
+        if (state.remainingQuota <= 0) {
+            setState(prev => ({
+                ...prev,
+                isQuotaExceeded: true,
+                error: t('aiChat.quotaReached'),
+            }));
+
+            return;
+        }
+
+        // Block if cooldown is active
+        if (state.cooldownRemaining > 0) {
+            return;
+        }
+
+        // Enforce max character limit
+        const sanitizedContent = trimmed.slice(0, AI_CHAT_CONFIG.MAX_INPUT_LENGTH);
+
+        // Update quota in session storage
+        const nextUsage = getInitialUsage() + 1;
+        try {
+            sessionStorage.setItem(AI_CHAT_CONFIG.STORAGE_KEY, nextUsage.toString());
+        } catch {
+            // Ignore storage errors
+        }
+
+        const nextRemaining = Math.max(0, AI_CHAT_CONFIG.MAX_MESSAGES_PER_SESSION - nextUsage);
 
         const userMessage: ChatMessage = {
             id: Date.now().toString(),
             role: 'user',
-            content: content.trim(),
+            content: sanitizedContent,
             timestamp: Date.now(),
         };
 
@@ -77,6 +178,8 @@ export function useAiChat() {
             messages: [...prev.messages, userMessage, initialAssistantMessage],
             isLoading: true,
             error: null,
+            remainingQuota: nextRemaining,
+            isQuotaExceeded: nextRemaining <= 0,
         }));
 
         try {
@@ -92,14 +195,15 @@ export function useAiChat() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ 
+                body: JSON.stringify({
                     messages: messagesToSend,
-                    modelsToTry: state.modelsToTry 
+                    modelsToTry: state.modelsToTry
                 }),
             });
 
             if (!response.ok) {
                 if (response.status === 429) {
+                    setState(s => ({ ...s, cooldownRemaining: 10 }));
                     throw new Error('You are sending messages too fast. Please wait a moment.');
                 }
                 throw new Error(t('aiChat.error'));
@@ -127,9 +231,15 @@ export function useAiChat() {
                 error: err instanceof Error ? err.message : t('aiChat.error'),
             }));
         } finally {
-            setState(prev => ({ ...prev, isLoading: false }));
+            setState(prev => ({
+                ...prev,
+                isLoading: false,
+                cooldownRemaining: prev.cooldownRemaining > AI_CHAT_CONFIG.COOLDOWN_SECONDS
+                    ? prev.cooldownRemaining
+                    : AI_CHAT_CONFIG.COOLDOWN_SECONDS,
+            }));
         }
-    }, [state.messages, state.modelsToTry, t]);
+    }, [state.messages, state.modelsToTry, state.remainingQuota, state.cooldownRemaining, t]);
 
     return {
         ...state,

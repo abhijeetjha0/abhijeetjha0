@@ -21,3 +21,12 @@ This document guides AI Coding Assistants writing, running, and maintaining unit
 
 5. **i18next Mocking Considerations**:
    - If a component calls `t('key', { returnObjects: true })` and expects an array, ensure the mock `t` function returns a valid array to prevent `.map()` from crashing.
+
+6. **SessionStorage in JSDOM**:
+   - `sessionStorage` persists across tests within the same file. Always call `sessionStorage.clear()` in `beforeEach()` to prevent state leakage between tests (e.g. cached models preventing fetch assertions).
+   - Use `jest.resetAllMocks()` (not just `clearAllMocks()`) in `beforeEach()` when tests use `mockImplementation` to avoid mock leaks across tests.
+
+7. **react-markdown Mock** (`tests/__mocks__/react-markdown.tsx`):
+   - The mock parses markdown link syntax (`[text](url)`) and renders them via the custom `components.a` passed by `AiChatPanel`. This enables testing `target="_blank"` and `rel="noopener noreferrer"` attributes.
+   - When updating the mock, ensure it handles multiple markdown links in a single string.
+

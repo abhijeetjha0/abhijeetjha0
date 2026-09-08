@@ -78,4 +78,19 @@ export interface AiChatState {
     isOpen: boolean;
     error: string | null;
     modelsToTry?: string[];
+    cooldownRemaining: number;
+    remainingQuota: number;
+    isQuotaExceeded: boolean;
+}
+
+export interface AiChatPanelProps {
+    isOpen: boolean;
+    messages: ChatMessage[];
+    isLoading: boolean;
+    error: string | null;
+    sendMessage: (msg: string) => Promise<void>;
+    toggleChat: () => void;
+    cooldownRemaining?: number;
+    remainingQuota?: number;
+    isQuotaExceeded?: boolean;
 }

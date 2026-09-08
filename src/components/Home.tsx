@@ -11,7 +11,17 @@ import { useAiChat } from '../hooks/useAiChat';
 
 export default function Home() {
     const { t } = useTranslation();
-    const { messages, isLoading, isOpen, error, sendMessage, toggleChat } = useAiChat();
+    const { 
+        messages, 
+        isLoading, 
+        isOpen, 
+        error, 
+        sendMessage, 
+        toggleChat,
+        cooldownRemaining,
+        remainingQuota,
+        isQuotaExceeded
+    } = useAiChat();
 
     return (
         <div className="portfolio-content">
@@ -28,7 +38,10 @@ export default function Home() {
                 isLoading={isLoading} 
                 error={error} 
                 sendMessage={sendMessage} 
-                toggleChat={toggleChat} 
+                toggleChat={toggleChat}
+                cooldownRemaining={cooldownRemaining}
+                remainingQuota={remainingQuota}
+                isQuotaExceeded={isQuotaExceeded}
             />
 
             <footer className="bg-dark text-white py-4 mt-5">

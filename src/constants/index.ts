@@ -164,4 +164,9 @@ export const AI_CHAT_CONFIG = {
     // We use process.env to remain compatible with Jest, and use Vite's define to inject it during build
     BACKEND_URL: process.env.VITE_AI_BACKEND_URL || 'http://localhost:3000/api/chat',
     MODELS_URL: (process.env.VITE_AI_BACKEND_URL || 'http://localhost:3000/api/chat').replace('/api/chat', '/api/models'),
+    MAX_MESSAGES_PER_SESSION: 25,
+    COOLDOWN_SECONDS: 4,
+    MAX_INPUT_LENGTH: 200,
+    STORAGE_KEY: 'abhijeetjha0_ai_chat_usage',
+    MODELS_STORAGE_KEY: 'abhijeetjha0_ai_models',
 } as const;

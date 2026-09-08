@@ -24,10 +24,12 @@ global.TextDecoder = mockTextDecoder as unknown as typeof TextDecoder;
 
 describe('useAiChat hook', () => {
     beforeEach(() => {
-        jest.clearAllMocks();
+        jest.resetAllMocks();
+        sessionStorage.clear();
         // Default mock for all fetch calls (both /api/models and /api/chat)
         mockFetch.mockResolvedValue({
             ok: true,
+            status: 200,
             json: async () => ['mock-model-1'],
             text: async () => 'mock response text'
         });
@@ -42,11 +44,23 @@ describe('useAiChat hook', () => {
         expect(result.current.messages).toHaveLength(1);
         expect(result.current.messages[0].content).toBe('Welcome!');
         expect(result.current.messages[0].role).toBe('assistant');
+        expect(result.current.remainingQuota).toBe(25);
+        expect(result.current.isQuotaExceeded).toBe(false);
+        expect(result.current.cooldownRemaining).toBe(0);
 
         await waitFor(() => {
             expect(result.current.modelsToTry).toEqual(['mock-model-1']);
         });
         expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('/api/models'));
+    });
+
+    it('uses cached models from sessionStorage if available', async () => {
+        sessionStorage.setItem('abhijeetjha0_ai_models', JSON.stringify(['cached-model']));
+
+        const { result } = renderHook(() => useAiChat());
+
+        expect(result.current.modelsToTry).toEqual(['cached-model']);
+        expect(mockFetch).not.toHaveBeenCalled();
     });
 
     it('handles models fetch error gracefully on landing', async () => {
@@ -96,7 +110,7 @@ describe('useAiChat hook', () => {
         expect(result.current.isOpen).toBe(false);
     });
 
-    it('handles successful message sending', async () => {
+    it('handles successful message sending and decrements quota', async () => {
         const { result } = renderHook(() => useAiChat());
     
         await act(async () => {
@@ -104,7 +118,6 @@ describe('useAiChat hook', () => {
         });
     
         // Check fetch arguments
-        // We expect fetch to be called for the chat message (and models on landing)
         const chatFetchCall = mockFetch.mock.calls.find(call => call[1] && call[1].method === 'POST');
         expect(chatFetchCall).toBeDefined();
         const fetchBody = JSON.parse(chatFetchCall[1].body);
@@ -121,6 +134,58 @@ describe('useAiChat hook', () => {
         expect(result.current.messages[1].role).toBe('user');
         expect(result.current.messages[2].role).toBe('assistant');
         expect(result.current.messages[2].content).toBe('mock response text');
+        expect(result.current.remainingQuota).toBe(24);
+        expect(result.current.cooldownRemaining).toBe(4);
+    });
+
+    it('blocks sending messages during active cooldown', async () => {
+        const { result } = renderHook(() => useAiChat());
+
+        await act(async () => {
+            await result.current.sendMessage('First message');
+        });
+
+        expect(result.current.cooldownRemaining).toBe(4);
+        const callsCount = mockFetch.mock.calls.length;
+
+        // Attempt second message immediately
+        await act(async () => {
+            await result.current.sendMessage('Second message too soon');
+        });
+
+        // Fetch should NOT have been called again
+        expect(mockFetch.mock.calls.length).toBe(callsCount);
+    });
+
+    it('enforces maximum character limit of 200', async () => {
+        const { result } = renderHook(() => useAiChat());
+        const longMessage = 'A'.repeat(250);
+
+        await act(async () => {
+            await result.current.sendMessage(longMessage);
+        });
+
+        const chatFetchCall = mockFetch.mock.calls.find(call => call[1] && call[1].method === 'POST');
+        expect(chatFetchCall).toBeDefined();
+        const fetchBody = JSON.parse(chatFetchCall[1].body);
+        expect(fetchBody.messages[0].content).toHaveLength(200);
+    });
+
+    it('blocks sending and sets error when session quota is exhausted', async () => {
+        // Set usage to 25 in sessionStorage
+        sessionStorage.setItem('abhijeetjha0_ai_chat_usage', '25');
+
+        const { result } = renderHook(() => useAiChat());
+        expect(result.current.remainingQuota).toBe(0);
+        expect(result.current.isQuotaExceeded).toBe(true);
+
+        await act(async () => {
+            await result.current.sendMessage('Should not send');
+        });
+
+        const chatFetchCall = mockFetch.mock.calls.find(call => call[1] && call[1].method === 'POST');
+        expect(chatFetchCall).toBeUndefined();
+        expect(result.current.error).toBeDefined();
     });
 
     it('handles rate limiting (429) correctly', async () => {
@@ -129,7 +194,7 @@ describe('useAiChat hook', () => {
                 return { ok: false, status: 429 };
             }
 
-            return { ok: true, json: async () => ['mock-model-1'] };
+            return { ok: true, status: 200, json: async () => ['mock-model-1'], text: async () => '' };
         });
 
         const { result } = renderHook(() => useAiChat());
@@ -140,15 +205,16 @@ describe('useAiChat hook', () => {
 
         expect(result.current.isLoading).toBe(false);
         expect(result.current.error).toBe('You are sending messages too fast. Please wait a moment.');
+        expect(result.current.cooldownRemaining).toBe(10);
     });
 
     it('handles fetch errors correctly', async () => {
         mockFetch.mockImplementation(async (_url, options) => {
             if (options && options.method === 'POST') {
-                return { ok: false };
+                return { ok: false, status: 500 };
             }
 
-            return { ok: true, json: async () => ['mock-model-1'] };
+            return { ok: true, status: 200, json: async () => ['mock-model-1'], text: async () => '' };
         });
 
         const { result } = renderHook(() => useAiChat());

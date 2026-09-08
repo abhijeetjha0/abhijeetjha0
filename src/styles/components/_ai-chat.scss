@@ -78,6 +78,25 @@
 
     .chat-header {
         background: linear-gradient(135deg, var(--bs-primary) 0%, #4f46e5 100%);
+
+        .quota-badge {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: 500;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 9999px;
+            letter-spacing: 0.02em;
+            backdrop-filter: blur(4px);
+        }
+    }
+
+    .chat-limitation-notice {
+        font-size: 0.75rem;
+        background-color: $color-slate-100;
+        color: $color-slate-600;
+        border-bottom: 1px solid $color-slate-200;
+        line-height: 1.4;
     }
 
     .chat-messages {
@@ -176,6 +195,19 @@
         animation: typing 1.4s infinite;
         font-weight: bold;
         letter-spacing: 2px;
+    }
+
+    .chat-input-area {
+        .char-counter {
+            font-size: 0.7rem;
+            color: $color-slate-600;
+        }
+
+        .quota-exhausted-box {
+            background-color: $color-slate-50;
+            border: 1px dashed rgba($color-slate-600, 0.3);
+            border-radius: 12px;
+        }
     }
 }
 

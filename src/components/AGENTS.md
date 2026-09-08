@@ -22,3 +22,16 @@ This document specifies rules and standards for AI Coding Assistants creating or
 4. **Styling & Framework Constraints**:
    - The project uses **Bootstrap 5**. Utility classes like `gap-*`, `me-*`, `ms-*`, and `flex-shrink-0` are fully supported.
    - Strictly avoid inline `style={{ ... }}` objects in JSX for dynamic parameters when possible. Use SCSS variables (e.g. `var(--accent-color)`) and classes for dynamic thematic properties.
+
+5. **ReactMarkdown Custom Components** (`AiChatPanel.tsx`):
+   - All markdown links must open in a new tab using a custom `a` component: `target="_blank"`, `rel="noopener noreferrer"`.
+   - URLs without `http://` or `https://` protocols are auto-prefixed with `https://` to prevent relative path resolution.
+   - Tables are wrapped in `.table-responsive` divs for horizontal scroll on narrow screens.
+
+6. **AiChatPanel Rate Limiting UI**:
+   - A continuous quota badge in the header always shows remaining queries.
+   - A limitation notice banner is always visible below the header.
+   - A character counter (`X/200`) displays in the input area.
+   - The send button shows a cooldown countdown (`Xs`) and disables during active cooldown.
+   - When quota is exhausted, the input area is replaced with a contact card (Email & LinkedIn).
+
