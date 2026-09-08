@@ -53,7 +53,7 @@ The backend features an automated **Cascading Fallback Waterfall** across multip
 
 | Provider | Free Quota | Setup & Key Link | Default Model |
 | :--- | :--- | :--- | :--- |
-| **OpenRouter Free Tier (Primary)** | 200 req/day | [OpenRouter Keys](https://openrouter.ai/settings/keys) (`OPENROUTER_API_KEY`) | `meta-llama/llama-3.3-70b-instruct:free` |
+| **OpenRouter Free Tier (Primary)** | 200 req/day | [OpenRouter Keys](https://openrouter.ai/settings/keys) (`OPENROUTER_API_KEY`) | `openrouter/free` (Auto-routed) |
 | **Hugging Face Serverless** | Generous | [Hugging Face Tokens](https://huggingface.co/settings/tokens) (`HF_TOKEN`) | `Qwen/Qwen2.5-72B-Instruct` |
 | **Ollama Cloud** | Free tier | [Ollama Cloud](https://ollama.com) (`OLLAMA_API_KEY`) | `gemma4:31b` |
 

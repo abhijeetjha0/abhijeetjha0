@@ -36,7 +36,7 @@ The backend automatically detects which provider API keys are present in `proces
 
 1. **OpenRouter Free Tier (Primary)**:
    - Uses `OPENROUTER_API_KEY`.
-   - Model: `meta-llama/llama-3.3-70b-instruct:free` (or DeepSeek / Gemma).
+   - Model: `openrouter/free` (Free Models Router, auto-routes across all active free models; configurable via `OPENROUTER_MODEL`).
    - Free tier: 200 requests/day, 20 RPM.
 2. **Hugging Face Serverless**:
    - Uses `HF_TOKEN` (or `HUGGINGFACE_API_KEY`).

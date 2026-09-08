@@ -7,9 +7,18 @@ export async function callOpenAICompatibleProvider(
     systemPrompt: string,
     modelOverride?: string
 ): Promise<ProviderCallResult> {
-    const model = modelOverride || config.defaultModel;
+    let envModel: string | undefined;
+    if (config.name === 'openrouter') {
+        envModel = process.env.OPENROUTER_MODEL;
+    } else if (config.name === 'huggingface') {
+        envModel = process.env.HF_MODEL;
+    } else if (config.name === 'ollama') {
+        envModel = process.env.OLLAMA_MODEL;
+    }
 
-    const payload = {
+    const model = modelOverride || envModel || config.defaultModel;
+
+    const payload: Record<string, unknown> = {
         model,
         messages: [
             { role: 'system', content: systemPrompt },
@@ -17,6 +26,11 @@ export async function callOpenAICompatibleProvider(
         ],
         stream: false,
     };
+
+    // For OpenRouter, provide fallback to openrouter/free if a specific model was requested
+    if (config.name === 'openrouter' && model !== 'openrouter/free') {
+        payload.models = [model, 'openrouter/free'];
+    }
 
     const headers: Record<string, string> = {
         'Content-Type': 'application/json',
@@ -56,6 +70,7 @@ export async function callOpenAICompatibleProvider(
 
         const data = await response.json();
         let content: string = data.choices?.[0]?.message?.content ?? '';
+        const resolvedModel: string = data.model || model;
 
         // Proactively strip wrapping ```markdown code blocks if LLM wrapped whole output
         if (content.startsWith('```markdown\n') && content.endsWith('\n```')) {
@@ -67,7 +82,7 @@ export async function callOpenAICompatibleProvider(
             response: {
                 content,
                 provider: config.name,
-                model,
+                model: resolvedModel,
             },
         };
     } catch (err) {

@@ -93,7 +93,7 @@ describe('api endpoints (chat and models)', () => {
             const res = await chatHandler(req);
             expect(res.status).toBe(200);
             expect(res.headers.get('X-AI-Provider')).toBe('openrouter');
-            expect(res.headers.get('X-AI-Model')).toBe('meta-llama/llama-3.3-70b-instruct:free');
+            expect(res.headers.get('X-AI-Model')).toBe('openrouter/free');
 
             const text = await res.text();
             expect(text).toBe('Abhijit is a Senior Software Engineer.');
@@ -127,7 +127,7 @@ describe('api endpoints (chat and models)', () => {
             const res = await modelsHandler(req);
             expect(res.status).toBe(200);
             const models = await res.json();
-            expect(models).toContain('meta-llama/llama-3.3-70b-instruct:free');
+            expect(models).toContain('openrouter/free');
         });
 
         it('returns models corresponding to configured providers', async () => {
@@ -141,7 +141,7 @@ describe('api endpoints (chat and models)', () => {
             const res = await modelsHandler(req);
             expect(res.status).toBe(200);
             const models = await res.json();
-            expect(models).toContain('meta-llama/llama-3.3-70b-instruct:free');
+            expect(models).toContain('openrouter/free');
             expect(models).toContain('Qwen/Qwen2.5-72B-Instruct');
         });
     });

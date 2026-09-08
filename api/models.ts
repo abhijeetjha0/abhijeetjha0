@@ -43,7 +43,7 @@ export default async function handler(req: Request) {
         if (configured.length === 0) {
             console.warn('[api/models] No AI providers are configured in environment variables');
 
-            return new Response(JSON.stringify(['meta-llama/llama-3.3-70b-instruct:free']), {
+            return new Response(JSON.stringify([process.env.OPENROUTER_MODEL || 'openrouter/free']), {
                 headers: {
                     ...CORS_HEADERS,
                     'Content-Type': 'application/json',
@@ -54,7 +54,15 @@ export default async function handler(req: Request) {
         // Collect the default models for all configured providers
         const models: string[] = [];
         for (const p of configured) {
-            models.push(p.defaultModel);
+            let envModel: string | undefined;
+            if (p.name === 'openrouter') {
+                envModel = process.env.OPENROUTER_MODEL;
+            } else if (p.name === 'huggingface') {
+                envModel = process.env.HF_MODEL;
+            } else if (p.name === 'ollama') {
+                envModel = process.env.OLLAMA_MODEL;
+            }
+            models.push(envModel || p.defaultModel);
         }
 
         // If Ollama is configured and is the only provider, optionally fetch extra models

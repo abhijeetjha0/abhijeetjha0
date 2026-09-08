@@ -6,7 +6,7 @@ export const FREE_PROVIDERS: ProviderConfig[] = [
         displayName: 'OpenRouter Free Tier',
         endpoint: 'https://openrouter.ai/api/v1/chat/completions',
         apiKeyEnv: 'OPENROUTER_API_KEY',
-        defaultModel: 'meta-llama/llama-3.3-70b-instruct:free',
+        defaultModel: 'openrouter/free',
         authHeader: (key: string) => ({
             Authorization: `Bearer ${key}`,
             'HTTP-Referer': 'https://abhijeetjha0.github.io/abhijeetjha0/',
