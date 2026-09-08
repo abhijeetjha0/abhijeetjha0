@@ -203,13 +203,43 @@ export function useAiChat() {
 
             if (!response.ok) {
                 if (response.status === 429) {
+                    let errorText = '';
+                    if (typeof response.text === 'function') {
+                        errorText = await response.text().catch(() => '');
+                    }
+
+                    if (errorText.toLowerCase().includes('quota') || errorText.toLowerCase().includes('daily')) {
+                        setState(s => ({
+                            ...s,
+                            isQuotaExceeded: true,
+                            remainingQuota: 0,
+                        }));
+
+                        throw new Error(errorText || t('aiChat.quotaReached'));
+                    }
+
                     setState(s => ({ ...s, cooldownRemaining: 10 }));
+
                     throw new Error('You are sending messages too fast. Please wait a moment.');
                 }
+
                 throw new Error(t('aiChat.error'));
             }
 
-            const responseText = await response.text();
+            const responseText = typeof response.text === 'function' ? await response.text() : '';
+
+            // Sync remaining quota from backend header if provided
+            const remainingHeader = response.headers?.get ? response.headers.get('X-RateLimit-Remaining') : null;
+            if (remainingHeader !== null) {
+                const parsedRemaining = parseInt(remainingHeader, 10);
+                if (!isNaN(parsedRemaining) && parsedRemaining >= 0) {
+                    setState(s => ({
+                        ...s,
+                        remainingQuota: parsedRemaining,
+                        isQuotaExceeded: parsedRemaining <= 0,
+                    }));
+                }
+            }
 
             setState(prev => {
                 const newMessages = [...prev.messages];

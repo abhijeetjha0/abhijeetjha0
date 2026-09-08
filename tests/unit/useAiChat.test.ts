@@ -208,6 +208,57 @@ describe('useAiChat hook', () => {
         expect(result.current.cooldownRemaining).toBe(10);
     });
 
+    it('handles daily quota rate limiting (429) and locks chat', async () => {
+        mockFetch.mockImplementation(async (_url, options) => {
+            if (options && options.method === 'POST') {
+                return {
+                    ok: false,
+                    status: 429,
+                    text: async () => 'Daily message quota reached. Please try again tomorrow.',
+                };
+            }
+
+            return { ok: true, status: 200, json: async () => ['mock-model-1'], text: async () => '' };
+        });
+
+        const { result } = renderHook(() => useAiChat());
+
+        await act(async () => {
+            await result.current.sendMessage('Hello AI');
+        });
+
+        expect(result.current.isLoading).toBe(false);
+        expect(result.current.isQuotaExceeded).toBe(true);
+        expect(result.current.remainingQuota).toBe(0);
+        expect(result.current.error).toBe('Daily message quota reached. Please try again tomorrow.');
+    });
+
+    it('syncs remaining quota from X-RateLimit-Remaining response header', async () => {
+        mockFetch.mockImplementation(async (_url, options) => {
+            if (options && options.method === 'POST') {
+                return {
+                    ok: true,
+                    status: 200,
+                    text: async () => 'AI reply',
+                    headers: {
+                        get: (headerName: string) => headerName === 'X-RateLimit-Remaining' ? '12' : null,
+                    },
+                };
+            }
+
+            return { ok: true, status: 200, json: async () => ['mock-model-1'], text: async () => '' };
+        });
+
+        const { result } = renderHook(() => useAiChat());
+
+        await act(async () => {
+            await result.current.sendMessage('Hello AI');
+        });
+
+        expect(result.current.remainingQuota).toBe(12);
+        expect(result.current.isQuotaExceeded).toBe(false);
+    });
+
     it('handles fetch errors correctly', async () => {
         mockFetch.mockImplementation(async (_url, options) => {
             if (options && options.method === 'POST') {

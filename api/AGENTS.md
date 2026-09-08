@@ -54,7 +54,10 @@ The backend automatically detects which provider API keys are present in `proces
 1. **Edge Runtime Only**: All files in `api/` are deployed as Vercel Edge Functions (`export const config = { runtime: 'edge' }`). Do **not** use Node-specific APIs (`fs`, `path`, `Buffer`, etc.).
 2. **Stateless Execution**: Edge functions are stateless. Chat context is managed by passing the entire message history array from the client in each request.
 3. **Shared Configuration**: All shared constants (system prompt, API URLs, CORS headers) **must** be maintained in `constants.ts`. Do not duplicate configuration across endpoints.
-4. **Rate Limiting**: Both `chat.ts` and `models.ts` enforce IP-based rate limiting via `rateLimit.ts` (5 requests / 10s).
+4. **Rate Limiting & Daily Quota**:
+   - **Burst Protection**: Both `chat.ts` and `models.ts` enforce IP-based burst rate limiting via `rateLimit.ts` (5 requests / 10s via `chatRateLimit`).
+   - **Daily Quota**: `chat.ts` enforces an IP-based daily message quota (25 requests / 24h sliding window via `chatDailyRateLimit`) using Upstash Redis with in-memory fallback. When exceeded, it returns HTTP 429 with an informative quota message.
+   - **Rate Limit Headers**: `chat.ts` exposes `X-RateLimit-Remaining` and `X-RateLimit-Limit` in headers (configured in `CORS_HEADERS`) so the frontend client can synchronize remaining quota.
 5. **Cascading Automatic Fallback**: If the active provider returns an HTTP 429 (quota exhausted) or 5xx, `executeProviderWaterfall` seamlessly cascades to the next configured provider before returning an error to the user.
 6. **Markdown Post-Processing**: `client.ts` strips wrapping ```markdown code blocks if the LLM incorrectly wraps its entire output.
 
@@ -69,6 +72,6 @@ The backend automatically detects which provider API keys are present in `proces
    - `DEFAULT_AI_PROVIDER` (Optional primary provider override)
    - `KV_REST_API_URL` / `KV_REST_API_TOKEN` (Optional Upstash Redis for distributed rate limiting)
 2. **CORS Headers**: Always include `CORS_HEADERS` from `constants.ts` in every response.
-3. **Response Headers**: `chat.ts` returns `X-AI-Provider` and `X-AI-Model` so clients and logs can trace which provider serviced the query.
+3. **Response Headers**: `chat.ts` returns `X-AI-Provider` and `X-AI-Model` so clients and logs can trace which provider serviced the query, as well as `X-RateLimit-Remaining` and `X-RateLimit-Limit` for quota tracking.
 4. **Explicit `.js` Extensions for Relative Imports**: Because `package.json` specifies `"type": "module"`, Vercel compiles serverless/edge functions using Node16/NodeNext ESM resolution. All relative imports within `api/` MUST include explicit `.js` extensions (e.g., `import ... from './constants.js';`). Jest's `moduleNameMapper` handles mapping `.js` to `.ts` for local testing.
 

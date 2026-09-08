@@ -66,11 +66,16 @@ Subdirectory-specific guidelines are maintained in modular `AGENTS.md` files thr
     - **Markdown Rendering**: The UI utilizes `react-markdown` with the `remark-gfm` plugin to support GitHub Flavored Markdown (including tables). The backend proactively strips wrapping markdown code blocks (` ```markdown `) if the LLM incorrectly formats its output.
     - **Link Security**: All markdown links in chat responses must open in a new tab (`target="_blank"`, `rel="noopener noreferrer"`). This is enforced via a custom `a` component in `ReactMarkdown`. URLs without a protocol are auto-prefixed with `https://`.
 6. **Jest Mocking for ESM**: Packages like `react-markdown` and `remark-gfm` use pure ECMAScript Modules (ESM) which natively conflict with Jest out of the box. Always mock these dependencies via `moduleNameMapper` inside `jest.config.ts` mapping to `tests/__mocks__/`.
-7. **Edge Rate Limiting (Upstash / Vercel KV)**: Edge functions employ `@upstash/ratelimit` with Redis for global IP rate limiting (5 req / 10s). Rate limiters must fail gracefully (bypass) if KV tokens are absent from the environment. An in-memory token-bucket fallback (`InMemoryRateLimiter`) protects the backend even without Redis credentials.
-8. **Client-Side Rate Limiting & Quota**: The `useAiChat` hook enforces session-based rate limiting via `sessionStorage`:
-    - **Session Quota**: 25 messages per session (`MAX_MESSAGES_PER_SESSION`).
+7. **Edge Rate Limiting (Upstash / Vercel KV)**: Edge functions employ `@upstash/ratelimit` with Redis for global IP rate limiting:
+    - **Burst Rate Limit**: 5 requests / 10s window (`chatRateLimit`) applied to `/api/chat` and `/api/models`.
+    - **Daily Quota Limit**: 25 requests / 24h sliding window (`chatDailyRateLimit`) enforced on `/api/chat` to protect provider quotas.
+    - Rate limiters fail gracefully (bypass or use in-memory token-bucket `InMemoryRateLimiter`) if KV/Redis credentials are absent from the environment.
+    - `/api/chat` attaches `X-RateLimit-Remaining` and `X-RateLimit-Limit: 25` to successful responses and returns HTTP 429 with `X-RateLimit-Remaining: 0` when the daily quota is reached.
+8. **Client-Side Rate Limiting & Quota**: The `useAiChat` hook enforces rate limiting and quota synchronization:
+    - **Session & Daily Quota**: Defaults to 25 messages per session (`MAX_MESSAGES_PER_SESSION`) and syncs in real-time with the backend's `X-RateLimit-Remaining` header.
     - **Input Length Limit**: 200 characters per message (`MAX_INPUT_LENGTH`).
-    - **Cooldown**: 4-second cooldown between messages (`COOLDOWN_SECONDS`), extended to 10s on HTTP 429.
+    - **Cooldown**: 4-second cooldown between messages (`COOLDOWN_SECONDS`), extended to 10s on HTTP 429 burst errors.
+    - **Daily Quota 429 Locking**: When the backend returns HTTP 429 for daily quota exhaustion, the client locks chat (`isQuotaExceeded = true`, `remainingQuota = 0`).
     - **Model Caching**: Available models are cached in `sessionStorage` to avoid redundant `/api/models` calls.
     - All config constants are centralized in `src/constants/index.ts` under `AI_CHAT_CONFIG`.
 9. **Vite Code Splitting & Vendor Chunking**: Maintain explicit `manualChunks` object mapping in `vite.config.ts` (`vendor-react`, `vendor-bootstrap`, `vendor-markdown`, `vendor-i18n`) to ensure chunk sizes remain strictly below 500 kB and prevent monolithic bundles.

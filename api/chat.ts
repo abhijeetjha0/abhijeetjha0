@@ -1,5 +1,5 @@
 import { CORS_HEADERS, SYSTEM_PROMPT } from './constants.js';
-import { chatRateLimit } from './rateLimit.js';
+import { chatRateLimit, chatDailyRateLimit } from './rateLimit.js';
 import { executeProviderWaterfall } from './providers/index.js';
 
 export const config = {
@@ -27,12 +27,33 @@ export default async function handler(req: Request) {
         console.info(`[api/chat] Received POST request to /api/chat`);
 
         const ip = req.headers.get('x-forwarded-for') ?? '127.0.0.1';
+
+        // 1. Anti-abuse burst rate limit (5 requests / 10s)
         if (chatRateLimit) {
             const { success } = await chatRateLimit.limit(ip);
             if (!success) {
-                console.warn(`[api/chat] Rate limit exceeded for IP: ${ip}`);
+                console.warn(`[api/chat] Burst rate limit exceeded for IP: ${ip}`);
 
                 return new Response('Too Many Requests', { status: 429, headers: CORS_HEADERS });
+            }
+        }
+
+        // 2. Fair-use daily message quota (25 requests / 24h)
+        let dailyRemaining: number | undefined;
+        if (chatDailyRateLimit) {
+            const { success, remaining } = await chatDailyRateLimit.limit(ip);
+            dailyRemaining = remaining;
+            if (!success) {
+                console.warn(`[api/chat] Daily quota reached for IP: ${ip}`);
+
+                return new Response('Daily message quota reached (25/25). Please try again tomorrow.', {
+                    status: 429,
+                    headers: {
+                        ...CORS_HEADERS,
+                        'X-RateLimit-Remaining': '0',
+                        'X-RateLimit-Limit': '25',
+                    },
+                });
             }
         }
 
@@ -54,13 +75,20 @@ export default async function handler(req: Request) {
         );
 
         if (result.success && result.response) {
+            const responseHeaders: Record<string, string> = {
+                'Content-Type': 'text/plain; charset=utf-8',
+                'X-AI-Provider': result.response.provider,
+                'X-AI-Model': result.response.model,
+                'X-RateLimit-Limit': '25',
+                ...CORS_HEADERS,
+            };
+
+            if (dailyRemaining !== undefined) {
+                responseHeaders['X-RateLimit-Remaining'] = String(dailyRemaining);
+            }
+
             return new Response(result.response.content, {
-                headers: {
-                    'Content-Type': 'text/plain; charset=utf-8',
-                    'X-AI-Provider': result.response.provider,
-                    'X-AI-Model': result.response.model,
-                    ...CORS_HEADERS,
-                },
+                headers: responseHeaders,
             });
         }
 

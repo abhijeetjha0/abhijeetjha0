@@ -35,6 +35,7 @@ const redisUrl = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_U
 const redisToken = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN || '';
 
 let chatRateLimit: RateLimiter;
+let chatDailyRateLimit: RateLimiter;
 
 if (redisUrl && redisToken) {
     const redis = new Redis({
@@ -45,10 +46,19 @@ if (redisUrl && redisToken) {
     chatRateLimit = new Ratelimit({
         redis,
         limiter: Ratelimit.slidingWindow(5, '10 s'),
+        prefix: 'chat_burst',
+        analytics: true,
+    });
+
+    chatDailyRateLimit = new Ratelimit({
+        redis,
+        limiter: Ratelimit.slidingWindow(25, '24 h'),
+        prefix: 'chat_daily',
         analytics: true,
     });
 } else {
     chatRateLimit = new InMemoryRateLimiter(5, 10000);
+    chatDailyRateLimit = new InMemoryRateLimiter(25, 24 * 60 * 60 * 1000);
 }
 
-export { chatRateLimit };
+export { chatRateLimit, chatDailyRateLimit };
