@@ -15,7 +15,7 @@ api/
 └── providers/            # Pluggable 100% Free AI Provider Layer
     ├── types.ts          # Provider interfaces, payload types, and result contracts
     ├── client.ts         # Zero-dependency OpenAI-compatible Edge HTTP caller
-    ├── registry.ts       # Registry for GitHub Models, OpenRouter, Hugging Face, and Ollama
+    ├── registry.ts       # Registry for OpenRouter, Hugging Face, and Ollama
     └── index.ts          # Cascading waterfall dispatcher (auto-discovers keys & falls back)
 ```
 
@@ -34,22 +34,18 @@ api/
 
 The backend automatically detects which provider API keys are present in `process.env` and cascades in priority order:
 
-1. **GitHub Models (Primary)**:
-   - Uses `GITHUB_TOKEN` (or `GH_MODELS_TOKEN`).
-   - Model: `gpt-4o-mini` (Genuine OpenAI ChatGPT without an OpenAI account!).
-   - Free tier: 150 requests/day, 15 RPM.
-2. **OpenRouter Free Tier**:
+1. **OpenRouter Free Tier (Primary)**:
    - Uses `OPENROUTER_API_KEY`.
-   - Model: `meta-llama/llama-3.3-70b-instruct:free` (or DeepSeek R1).
+   - Model: `meta-llama/llama-3.3-70b-instruct:free` (or DeepSeek / Gemma).
    - Free tier: 200 requests/day, 20 RPM.
-3. **Hugging Face Serverless**:
+2. **Hugging Face Serverless**:
    - Uses `HF_TOKEN` (or `HUGGINGFACE_API_KEY`).
    - Model: `Qwen/Qwen2.5-72B-Instruct`.
-4. **Ollama Cloud**:
+3. **Ollama Cloud**:
    - Uses `OLLAMA_API_KEY`.
    - Model: `gemma4:31b`.
 
-**Priority Customization**: Setting `DEFAULT_AI_PROVIDER` (`github` | `openrouter` | `huggingface` | `ollama`) moves that provider to the front of the line.
+**Priority Customization**: Setting `DEFAULT_AI_PROVIDER` (`openrouter` | `huggingface` | `ollama`) moves that provider to the front of the line.
 
 ---
 
@@ -60,14 +56,13 @@ The backend automatically detects which provider API keys are present in `proces
 3. **Shared Configuration**: All shared constants (system prompt, API URLs, CORS headers) **must** be maintained in `constants.ts`. Do not duplicate configuration across endpoints.
 4. **Rate Limiting**: Both `chat.ts` and `models.ts` enforce IP-based rate limiting via `rateLimit.ts` (5 requests / 10s).
 5. **Cascading Automatic Fallback**: If the active provider returns an HTTP 429 (quota exhausted) or 5xx, `executeProviderWaterfall` seamlessly cascades to the next configured provider before returning an error to the user.
-6. **Markdown Post-Processing**: `client.ts` strips wrapping `` ```markdown `` code blocks if the LLM incorrectly wraps its entire output.
+6. **Markdown Post-Processing**: `client.ts` strips wrapping ```markdown code blocks if the LLM incorrectly wraps its entire output.
 
 ---
 
 ## 📌 Rules for `api/` Modifications
 
 1. **Environment Variables**: Never commit API keys or secrets. Supported provider keys:
-   - `GITHUB_TOKEN` / `GH_MODELS_TOKEN` (GitHub Models — ChatGPT `gpt-4o-mini`)
    - `OPENROUTER_API_KEY` (OpenRouter Free Tier)
    - `HF_TOKEN` / `HUGGINGFACE_API_KEY` (Hugging Face Inference)
    - `OLLAMA_API_KEY` (Ollama Cloud)
@@ -75,4 +70,5 @@ The backend automatically detects which provider API keys are present in `proces
    - `KV_REST_API_URL` / `KV_REST_API_TOKEN` (Optional Upstash Redis for distributed rate limiting)
 2. **CORS Headers**: Always include `CORS_HEADERS` from `constants.ts` in every response.
 3. **Response Headers**: `chat.ts` returns `X-AI-Provider` and `X-AI-Model` so clients and logs can trace which provider serviced the query.
+4. **Explicit `.js` Extensions for Relative Imports**: Because `package.json` specifies `"type": "module"`, Vercel compiles serverless/edge functions using Node16/NodeNext ESM resolution. All relative imports within `api/` MUST include explicit `.js` extensions (e.g., `import ... from './constants.js';`). Jest's `moduleNameMapper` handles mapping `.js` to `.ts` for local testing.
 

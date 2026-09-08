@@ -1,6 +1,6 @@
-import { CORS_HEADERS, OLLAMA_API } from './constants';
-import { chatRateLimit } from './rateLimit';
-import { getConfiguredProviders } from './providers';
+import { CORS_HEADERS, OLLAMA_API } from './constants.js';
+import { chatRateLimit } from './rateLimit.js';
+import { getConfiguredProviders } from './providers/index.js';
 
 export const config = {
     runtime: 'edge',
@@ -43,7 +43,7 @@ export default async function handler(req: Request) {
         if (configured.length === 0) {
             console.warn('[api/models] No AI providers are configured in environment variables');
 
-            return new Response(JSON.stringify(['gpt-4o-mini']), {
+            return new Response(JSON.stringify(['meta-llama/llama-3.3-70b-instruct:free']), {
                 headers: {
                     ...CORS_HEADERS,
                     'Content-Type': 'application/json',

@@ -66,7 +66,7 @@ describe('api endpoints (chat and models)', () => {
         });
 
         it('executes chat successfully with provider waterfall and returns headers', async () => {
-            process.env.GITHUB_TOKEN = 'ghp_test_token';
+            process.env.OPENROUTER_API_KEY = 'sk-or-test-token';
 
             mockFetch.mockResolvedValueOnce({
                 ok: true,
@@ -92,8 +92,8 @@ describe('api endpoints (chat and models)', () => {
 
             const res = await chatHandler(req);
             expect(res.status).toBe(200);
-            expect(res.headers.get('X-AI-Provider')).toBe('github');
-            expect(res.headers.get('X-AI-Model')).toBe('gpt-4o-mini');
+            expect(res.headers.get('X-AI-Provider')).toBe('openrouter');
+            expect(res.headers.get('X-AI-Model')).toBe('meta-llama/llama-3.3-70b-instruct:free');
 
             const text = await res.text();
             expect(text).toBe('Abhijit is a Senior Software Engineer.');
@@ -127,12 +127,12 @@ describe('api endpoints (chat and models)', () => {
             const res = await modelsHandler(req);
             expect(res.status).toBe(200);
             const models = await res.json();
-            expect(models).toContain('gpt-4o-mini');
+            expect(models).toContain('meta-llama/llama-3.3-70b-instruct:free');
         });
 
         it('returns models corresponding to configured providers', async () => {
-            process.env.GITHUB_TOKEN = 'ghp_token';
             process.env.OPENROUTER_API_KEY = 'sk-or-token';
+            process.env.HF_TOKEN = 'hf_token';
 
             const req = new Request('http://localhost:3000/api/models', {
                 method: 'GET',
@@ -141,8 +141,8 @@ describe('api endpoints (chat and models)', () => {
             const res = await modelsHandler(req);
             expect(res.status).toBe(200);
             const models = await res.json();
-            expect(models).toContain('gpt-4o-mini');
             expect(models).toContain('meta-llama/llama-3.3-70b-instruct:free');
+            expect(models).toContain('Qwen/Qwen2.5-72B-Instruct');
         });
     });
 });

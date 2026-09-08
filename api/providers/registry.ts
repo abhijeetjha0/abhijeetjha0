@@ -1,16 +1,6 @@
-import { ProviderConfig } from './types';
+import { ProviderConfig } from './types.js';
 
 export const FREE_PROVIDERS: ProviderConfig[] = [
-    {
-        name: 'github',
-        displayName: 'GitHub Models (ChatGPT gpt-4o-mini)',
-        endpoint: 'https://models.inference.ai.azure.com/chat/completions',
-        apiKeyEnv: 'GITHUB_TOKEN',
-        defaultModel: 'gpt-4o-mini',
-        authHeader: (key: string) => ({
-            Authorization: `Bearer ${key}`,
-        }),
-    },
     {
         name: 'openrouter',
         displayName: 'OpenRouter Free Tier',
@@ -26,7 +16,7 @@ export const FREE_PROVIDERS: ProviderConfig[] = [
     {
         name: 'huggingface',
         displayName: 'Hugging Face Inference',
-        endpoint: 'https://api-inference.huggingface.co/v1/chat/completions',
+        endpoint: 'https://router.huggingface.co/v1/chat/completions',
         apiKeyEnv: 'HF_TOKEN',
         defaultModel: 'Qwen/Qwen2.5-72B-Instruct',
         authHeader: (key: string) => ({
@@ -53,10 +43,6 @@ export function getProviderApiKey(config: ProviderConfig): string | undefined {
     }
 
     // Secondary fallback alias env vars
-    if (config.name === 'github') {
-        return process.env.GH_MODELS_TOKEN;
-    }
-
     if (config.name === 'huggingface') {
         return process.env.HUGGINGFACE_API_KEY;
     }

@@ -1,4 +1,4 @@
-export type FreeProviderName = 'github' | 'openrouter' | 'huggingface' | 'ollama';
+export type FreeProviderName = 'openrouter' | 'huggingface' | 'ollama';
 
 export interface ProviderConfig {
     name: FreeProviderName;

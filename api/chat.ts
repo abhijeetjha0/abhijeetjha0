@@ -1,6 +1,6 @@
-import { CORS_HEADERS, SYSTEM_PROMPT } from './constants';
-import { chatRateLimit } from './rateLimit';
-import { executeProviderWaterfall } from './providers';
+import { CORS_HEADERS, SYSTEM_PROMPT } from './constants.js';
+import { chatRateLimit } from './rateLimit.js';
+import { executeProviderWaterfall } from './providers/index.js';
 
 export const config = {
     runtime: 'edge',

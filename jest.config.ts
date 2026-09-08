@@ -13,6 +13,7 @@ const config: Config = {
         '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
         '^react-markdown$': '<rootDir>/tests/__mocks__/react-markdown.tsx',
         '^remark-gfm$': '<rootDir>/tests/__mocks__/remark-gfm.ts',
+        '^(\\.{1,2}/.*)\\.js$': '$1',
     },
     setupFilesAfterEnv: ['./setupTests.ts'],
     roots: ['src/', 'tests/'],

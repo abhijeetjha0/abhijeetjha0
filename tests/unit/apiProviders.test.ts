@@ -57,7 +57,7 @@ describe('api/providers', () => {
 
             expect(result.success).toBe(true);
             expect(result.response?.content).toBe('Hello from AI assistant!');
-            expect(result.response?.provider).toBe('github');
+            expect(result.response?.provider).toBe('openrouter');
             expect(mockFetch).toHaveBeenCalledWith(
                 testConfig.endpoint,
                 expect.objectContaining({
@@ -155,10 +155,10 @@ describe('api/providers', () => {
             expect(getConfiguredProviders()).toEqual([]);
         });
 
-        it('detects GitHub when GITHUB_TOKEN or GH_MODELS_TOKEN is set', () => {
-            process.env.GITHUB_TOKEN = 'ghp_xxx';
+        it('detects OpenRouter when OPENROUTER_API_KEY is set', () => {
+            process.env.OPENROUTER_API_KEY = 'sk-or-xxx';
             const providers = getConfiguredProviders();
-            expect(providers.map(p => p.name)).toContain('github');
+            expect(providers.map(p => p.name)).toContain('openrouter');
         });
 
         it('detects OpenRouter and Hugging Face when keys are set', () => {
@@ -181,12 +181,12 @@ describe('api/providers', () => {
         });
 
         it('uses configured provider and returns response on success', async () => {
-            process.env.GITHUB_TOKEN = 'ghp_xxx';
+            process.env.OPENROUTER_API_KEY = 'sk-or-xxx';
             mockFetch.mockResolvedValueOnce({
                 ok: true,
                 status: 200,
                 json: async () => ({
-                    choices: [{ message: { content: 'Response from GitHub Models' } }],
+                    choices: [{ message: { content: 'Response from OpenRouter' } }],
                 }),
             });
 
@@ -196,29 +196,29 @@ describe('api/providers', () => {
             );
 
             expect(result.success).toBe(true);
-            expect(result.response?.content).toBe('Response from GitHub Models');
-            expect(result.response?.provider).toBe('github');
+            expect(result.response?.content).toBe('Response from OpenRouter');
+            expect(result.response?.provider).toBe('openrouter');
             expect(result.attempts).toHaveLength(1);
             expect(result.attempts[0].success).toBe(true);
         });
 
         it('cascades to next provider when the first provider encounters rate limit (429)', async () => {
-            process.env.GITHUB_TOKEN = 'ghp_xxx';
             process.env.OPENROUTER_API_KEY = 'sk-or-xxx';
+            process.env.HF_TOKEN = 'hf_xxx';
 
-            // GitHub models 429
+            // OpenRouter 429
             mockFetch.mockResolvedValueOnce({
                 ok: false,
                 status: 429,
-                text: async () => 'Rate limit exceeded on GitHub',
+                text: async () => 'Rate limit exceeded on OpenRouter',
             });
 
-            // OpenRouter succeeds
+            // Hugging Face succeeds
             mockFetch.mockResolvedValueOnce({
                 ok: true,
                 status: 200,
                 json: async () => ({
-                    choices: [{ message: { content: 'Fallback response from OpenRouter' } }],
+                    choices: [{ message: { content: 'Fallback response from Hugging Face' } }],
                 }),
             });
 
@@ -228,23 +228,23 @@ describe('api/providers', () => {
             );
 
             expect(result.success).toBe(true);
-            expect(result.response?.content).toBe('Fallback response from OpenRouter');
-            expect(result.response?.provider).toBe('openrouter');
+            expect(result.response?.content).toBe('Fallback response from Hugging Face');
+            expect(result.response?.provider).toBe('huggingface');
             expect(result.attempts).toHaveLength(2);
             expect(result.attempts[0].rateLimited).toBe(true);
             expect(result.attempts[1].success).toBe(true);
         });
 
         it('respects DEFAULT_AI_PROVIDER to reorder priority', async () => {
-            process.env.GITHUB_TOKEN = 'ghp_xxx';
             process.env.OPENROUTER_API_KEY = 'sk-or-xxx';
-            process.env.DEFAULT_AI_PROVIDER = 'openrouter';
+            process.env.HF_TOKEN = 'hf_xxx';
+            process.env.DEFAULT_AI_PROVIDER = 'huggingface';
 
             mockFetch.mockResolvedValueOnce({
                 ok: true,
                 status: 200,
                 json: async () => ({
-                    choices: [{ message: { content: 'OpenRouter priority response' } }],
+                    choices: [{ message: { content: 'Hugging Face priority response' } }],
                 }),
             });
 
@@ -254,12 +254,12 @@ describe('api/providers', () => {
             );
 
             expect(result.success).toBe(true);
-            expect(result.response?.provider).toBe('openrouter');
-            expect(result.attempts[0].provider).toBe('openrouter');
+            expect(result.response?.provider).toBe('huggingface');
+            expect(result.attempts[0].provider).toBe('huggingface');
         });
 
         it('returns error when all configured providers fail', async () => {
-            process.env.GITHUB_TOKEN = 'ghp_xxx';
+            process.env.OPENROUTER_API_KEY = 'sk-or-xxx';
             mockFetch.mockResolvedValueOnce({
                 ok: false,
                 status: 500,

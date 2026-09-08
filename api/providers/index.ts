@@ -1,6 +1,6 @@
-import { FREE_PROVIDERS, getProviderApiKey } from './registry';
-import { callOpenAICompatibleProvider } from './client';
-import { ChatMessagePayload, ProviderResponse } from './types';
+import { FREE_PROVIDERS, getProviderApiKey } from './registry.js';
+import { callOpenAICompatibleProvider } from './client.js';
+import { ChatMessagePayload, ProviderResponse } from './types.js';
 
 export interface WaterfallResult {
     success: boolean;
@@ -31,7 +31,7 @@ export async function executeProviderWaterfall(
 
         return {
             success: false,
-            error: 'No AI provider is configured. Please configure GITHUB_TOKEN, OPENROUTER_API_KEY, HF_TOKEN, or OLLAMA_API_KEY.',
+            error: 'No AI provider is configured. Please configure OPENROUTER_API_KEY, HF_TOKEN, or OLLAMA_API_KEY.',
             attempts: [],
         };
     }
@@ -93,6 +93,6 @@ export async function executeProviderWaterfall(
     };
 }
 
-export * from './types';
-export * from './registry';
-export * from './client';
+export * from './types.js';
+export * from './registry.js';
+export * from './client.js';

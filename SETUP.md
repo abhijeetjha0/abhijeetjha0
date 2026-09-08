@@ -30,17 +30,35 @@ npm install
 # 4. Set up environment variables
 cp .env.example .env.local
 # Edit .env.local:
-# - Set GITHUB_TOKEN (free GitHub Personal Access Token) to enable ChatGPT (gpt-4o-mini) for free!
-# - (Optional) Set OPENROUTER_API_KEY for free OpenRouter models (DeepSeek R1 / Llama 3.3)
-# - (Optional) Set HF_TOKEN for free Hugging Face inference
+# - Set OPENROUTER_API_KEY (Recommended) for free OpenRouter models (Llama 3.3, Gemma 4, DeepSeek)
+# - (Optional) Set HF_TOKEN for free Hugging Face serverless inference
 # - (Optional) Set OLLAMA_API_KEY for Ollama Cloud
+# - (Optional) Set DEFAULT_AI_PROVIDER to force a primary provider (openrouter | huggingface | ollama)
 # - (Optional) Set KV_REST_API_URL and KV_REST_API_TOKEN for Upstash Redis rate limiting locally
 
 # 5. Start local development server
 npm run dev
 ```
 
-> **Note**: Local frontend development relies exclusively on `npm run dev`. The frontend communicates with the deployed Vercel Edge API backend configured via `VITE_AI_BACKEND_URL`.
+> **Note on AI Chat Backend**: 
+> - **Default Flow**: By default, `VITE_AI_BACKEND_URL` points to your deployed Vercel Edge API backend (`https://abhijeetjha0.vercel.app/api/chat`).
+> - **Local Edge Testing**: To test backend changes locally without deploying, set `VITE_AI_BACKEND_URL=http://localhost:3000/api/chat` in `.env.local` and start the local Edge runtime in a separate terminal with `npx vercel dev`.
+> - **Tracing Providers**: Every chat response returns `X-AI-Provider` and `X-AI-Model` headers, allowing you to see which free provider serviced the request via Chrome DevTools Network tab.
+
+---
+
+## 🤖 AI Provider Configuration (100% Free Tiers)
+
+The backend features an automated **Cascading Fallback Waterfall** across multiple free AI providers (zero credit card, zero subscriptions):
+
+| Provider | Free Quota | Setup & Key Link | Default Model |
+| :--- | :--- | :--- | :--- |
+| **OpenRouter Free Tier (Primary)** | 200 req/day | [OpenRouter Keys](https://openrouter.ai/settings/keys) (`OPENROUTER_API_KEY`) | `meta-llama/llama-3.3-70b-instruct:free` |
+| **Hugging Face Serverless** | Generous | [Hugging Face Tokens](https://huggingface.co/settings/tokens) (`HF_TOKEN`) | `Qwen/Qwen2.5-72B-Instruct` |
+| **Ollama Cloud** | Free tier | [Ollama Cloud](https://ollama.com) (`OLLAMA_API_KEY`) | `gemma4:31b` |
+
+If a provider reaches its daily rate limit (HTTP 429) or is temporarily unavailable, the engine automatically cascades to the next configured provider in the waterfall.
+
 
 ---
 

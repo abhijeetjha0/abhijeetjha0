@@ -1,4 +1,4 @@
-import { ProviderConfig, ChatMessagePayload, ProviderCallResult } from './types';
+import { ProviderConfig, ChatMessagePayload, ProviderCallResult } from './types.js';
 
 export async function callOpenAICompatibleProvider(
     config: ProviderConfig,
