@@ -110,6 +110,17 @@ Senior Software Engineer with **6+ years of experience** leading UI development 
 
 ---
 
+## 🏗️ Projects
+
+- **[Markdown Notes App](https://github.com/abhijeetjha0/markdown-notes-app)**: Google Keep inspired note-taking web app featuring rich WYSIWYG Markdown editing, real-time sync with Firebase Firestore, and Google Authentication.
+- **[Leave Planner](https://github.com/abhijeetjha0/leave-planner)**: Conversational vacation and leave optimization dashboard built with React 19 and Vite to discover bridge-day holidays and export customized schedules.
+- **[AI Agent Skills](https://github.com/abhijeetjha0/ai)**: A repository of modular AI coding agent skills and instructions for enhancing AI-assisted development workflows.
+- **[Poke-Dexter](https://github.com/abhijeetjha0/poke-dexter)**: A Pokédex application showcasing modern web development techniques and Pokémon data integration.
+- **[Personal Portfolio](https://github.com/abhijeetjha0/abhijeetjha0)**: My personal portfolio website built with React, TypeScript, and Vite, featuring an AI chat assistant with Edge rate limiting.
+- **[Vaccination Slots Monitor](https://github.com/abhijeetjha0/VaccinationSlotsMonitor)**: A monitoring tool designed to track and notify users about available vaccination slots.
+
+---
+
 ## 🎓 Education
 
 - **B.Tech in Information Technology** (Aug 2016 - Jul 2020)  

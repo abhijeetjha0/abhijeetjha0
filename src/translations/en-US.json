@@ -158,14 +158,9 @@
       "link": "https://github.com/abhijeetjha0/leave-planner"
     },
     {
-      "name": "AI Agent Skills & Ecosystem",
-      "description": "A tool-agnostic ecosystem for organizing, testing, and distributing modular AI coding agent skills, system prompts, plugins, and MCP integrations.",
+      "name": "AI Agent Skills",
+      "description": "A repository of modular AI coding agent skills and instructions for enhancing AI-assisted development workflows.",
       "link": "https://github.com/abhijeetjha0/ai"
-    },
-    {
-      "name": "Frontend Project Builder",
-      "description": "Interactive CLI and autonomous AI agent skill for scaffolding production-ready frontend project boilerplates in modern Node.js and TypeScript ecosystems.",
-      "link": "https://github.com/abhijeetjha0/node-project-builder"
     },
     {
       "name": "Poke-Dexter",
