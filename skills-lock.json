@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "accessibility-report": {
+      "source": "abhijeetjha0/ai",
+      "sourceType": "github",
+      "skillPath": "skills/accessibility-report/SKILL.md",
+      "computedHash": "3a4d6e74161ec80b48dfbbc1d39ad009a9cebca696ab4c36b2c752e4f739eb73"
+    },
+    "multi-agent-skill": {
+      "source": "abhijeetjha0/ai",
+      "sourceType": "github",
+      "skillPath": "skills/multi-agent-skill/SKILL.md",
+      "computedHash": "3ac171073b2ab6f92e693480d6a7d3a4a9afd346bd6b51e44a309deee6bc2cf4"
+    }
+  }
+}

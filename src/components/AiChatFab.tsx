@@ -15,6 +15,8 @@ export default function AiChatFab({ isOpen, toggleChat }: AiChatFabProps) {
             onClick={toggleChat}
             aria-label={t('aiChat.title')}
             title={t('aiChat.title')}
+            aria-expanded={isOpen}
+            aria-controls="ai-chat-panel"
         >
             <div className="fab-icon-container">
                 {isOpen ? (

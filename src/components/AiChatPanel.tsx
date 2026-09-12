@@ -20,6 +20,7 @@ export default function AiChatPanel({
     const { t } = useTranslation();
     const [input, setInput] = useState('');
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
 
     const suggestedQuestions = t('aiChat.suggestedQuestions', { returnObjects: true }) as string[];
 
@@ -30,6 +31,9 @@ export default function AiChatPanel({
     useEffect(() => {
         if (isOpen) {
             scrollToBottom();
+            if (inputRef.current) {
+                inputRef.current.focus();
+            }
         }
     }, [messages, isOpen]);
 
@@ -57,7 +61,7 @@ export default function AiChatPanel({
     }
 
     return (
-        <div className="ai-chat-panel shadow-lg rounded-top-4 rounded-start-4">
+        <div id="ai-chat-panel" role="region" aria-label={t('aiChat.title')} className="ai-chat-panel shadow-lg rounded-top-4 rounded-start-4">
             <div className="chat-header p-3 bg-primary text-white d-flex justify-content-between align-items-center rounded-top-4">
                 <div className="d-flex align-items-center gap-2">
                     <h3 className="h6 mb-0 d-flex align-items-center gap-2">
@@ -75,7 +79,7 @@ export default function AiChatPanel({
                 {t('aiChat.rateLimitNotice')}
             </div>
 
-            <div className="chat-messages p-3 overflow-auto">
+            <div className="chat-messages p-3 overflow-auto" aria-live="polite" aria-atomic="false">
                 {messages.map((msg, index) => (
                     <div key={msg.id || index} className={`message-bubble-wrapper ${msg.role === 'user' ? 'user' : 'assistant'}`}>
                         <div className={`message-bubble ${msg.role === 'user' ? 'bg-primary text-white' : 'bg-light text-dark'} p-2 px-3 rounded-4 mb-2 shadow-sm`}>
@@ -167,6 +171,7 @@ export default function AiChatPanel({
                                 disabled={isLoading || cooldownRemaining > 0}
                                 maxLength={AI_CHAT_CONFIG.MAX_INPUT_LENGTH}
                                 className="rounded-pill"
+                                ref={inputRef}
                             />
                             <Button 
                                 type="submit" 

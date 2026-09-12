@@ -70,7 +70,7 @@ export default function Skills() {
                 <Row className="g-4">
                     {filteredCategories.map((category) => (
                         <Col md={6} lg={4} key={category.id}>
-                            <div tabIndex={0} className="skill-card card h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative" style={category.customStyle}>
+                            <div className="skill-card card h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative" style={category.customStyle}>
                                 <div className="card-accent-bar" />
                                 <div className="card-body p-4">
                                     <div className="d-flex align-items-center mb-3 gap-3">
@@ -87,7 +87,6 @@ export default function Skills() {
                                         {category.data.map((skill: string) => (
                                             <span
                                                 key={skill}
-                                                tabIndex={0}
                                                 className="skill-pill rounded-pill px-3 py-1 text-dark small fw-medium"
                                             >
                                                 {skill}

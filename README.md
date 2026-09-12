@@ -2,8 +2,8 @@
 
 <img src="./.github/assets/typing-header.svg" width="620" alt="Senior Software Engineer | React &amp; TypeScript Specialist | UI Performance, L10n &amp; Accessibility" />
 
-[![Portfolio](./.github/assets/portfolio-badge.svg)](https://abhijeetjha0.github.io/abhijeetjha0/)
-[![LinkedIn](./.github/assets/linkedin-badge.svg)](https://linkedin.com/in/abhijeetjha0)
+<a href="https://abhijeetjha0.github.io/abhijeetjha0/" target="_blank" rel="noopener noreferrer"><img src="./.github/assets/portfolio-badge.svg" alt="Portfolio" /></a>
+<a href="https://linkedin.com/in/abhijeetjha0" target="_blank" rel="noopener noreferrer"><img src="./.github/assets/linkedin-badge.svg" alt="LinkedIn" /></a>
 [![Email](./.github/assets/email-badge.svg)](mailto:abhijeetjha0@hotmail.com)
 
 ---
