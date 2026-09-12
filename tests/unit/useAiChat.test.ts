@@ -64,16 +64,14 @@ describe('useAiChat hook', () => {
     });
 
     it('handles models fetch error gracefully on landing', async () => {
-        const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
         mockFetch.mockRejectedValueOnce(new Error('Network error'));
 
         const { result } = renderHook(() => useAiChat());
 
         await waitFor(() => {
-            expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to pre-fetch models:', expect.any(Error));
+            expect(console.error).toHaveBeenCalledWith('Failed to pre-fetch models:', expect.any(Error));
         });
         expect(result.current.modelsToTry).toBeUndefined();
-        consoleErrorSpy.mockRestore();
     });
 
     it('handles models fetch non-ok response gracefully on landing', async () => {

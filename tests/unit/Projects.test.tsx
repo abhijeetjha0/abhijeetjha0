@@ -29,12 +29,11 @@ describe('Projects Component', () => {
         expect(screen.getByRole('heading', { level: 2, name: /Projects/i })).toBeDefined();
         expect(screen.getByRole('heading', { level: 3, name: 'Markdown Notes App' })).toBeDefined();
         expect(screen.getByRole('heading', { level: 3, name: 'Leave Planner' })).toBeDefined();
-        expect(screen.getByRole('heading', { level: 3, name: 'AI Agent Skills & Ecosystem' })).toBeDefined();
-        expect(screen.getByRole('heading', { level: 3, name: 'Frontend Project Builder' })).toBeDefined();
+        expect(screen.getByRole('heading', { level: 3, name: 'AI Agent Skills' })).toBeDefined();
         expect(screen.getByRole('heading', { level: 3, name: 'Poke-Dexter' })).toBeDefined();
         expect(screen.getByRole('heading', { level: 3, name: 'Personal Portfolio' })).toBeDefined();
         expect(screen.getByRole('heading', { level: 3, name: 'Vaccination Slots Monitor' })).toBeDefined();
-        expect(screen.getAllByRole('link', { name: /View Project/i }).length).toBe(7);
+        expect(screen.getAllByRole('link', { name: /View Project/i }).length).toBe(6);
     });
 
     test('renders section element with correct projects id', () => {
