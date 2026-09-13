@@ -32,6 +32,6 @@ This document specifies rules and standards for AI Coding Assistants creating or
    - A continuous quota badge in the header always shows remaining queries.
    - A limitation notice banner is always visible below the header.
    - A character counter (`X/200`) displays in the input area.
-   - The send button shows a cooldown countdown (`Xs`) and disables during active cooldown.
+   - The send button disables while an AI response is generating or when input is empty.
    - When quota is exhausted, the input area is replaced with a contact card (Email & LinkedIn).
 

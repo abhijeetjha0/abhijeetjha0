@@ -12,10 +12,13 @@ api/
 ├── constants.ts          # Shared system prompt, Ollama API URL, CORS headers
 ├── models.ts             # GET /api/models — Returns available models from configured providers
 ├── rateLimit.ts          # IP-based rate limiter (Upstash Redis primary, in-memory fallback)
+├── cron/
+│   └── sync-models.ts    # GET /api/cron/sync-models — Vercel Cron endpoint refreshing free models cache
 └── providers/            # Pluggable 100% Free AI Provider Layer
     ├── types.ts          # Provider interfaces, payload types, and result contracts
     ├── client.ts         # Zero-dependency OpenAI-compatible Edge HTTP caller
     ├── registry.ts       # Registry for OpenRouter, Hugging Face, and Ollama
+    ├── sync.ts           # Dynamic sync for free models from Ollama & HF with Upstash Redis cache
     └── index.ts          # Cascading waterfall dispatcher (auto-discovers keys & falls back)
 ```
 
@@ -34,18 +37,19 @@ api/
 
 The backend automatically detects which provider API keys are present in `process.env` and cascades in priority order:
 
-1. **OpenRouter Free Tier (Primary)**:
-   - Uses `OPENROUTER_API_KEY`.
-   - Model: `openrouter/free` (Free Models Router, auto-routes across all active free models; configurable via `OPENROUTER_MODEL`).
-   - Free tier: 200 requests/day, 20 RPM.
-2. **Hugging Face Serverless**:
-   - Uses `HF_TOKEN` (or `HUGGINGFACE_API_KEY`).
-   - Model: `Qwen/Qwen2.5-72B-Instruct`.
-3. **Ollama Cloud**:
+1. **Ollama Cloud (Primary)**:
    - Uses `OLLAMA_API_KEY`.
    - Model: `gemma4:31b`.
+2. **Hugging Face Serverless**:
+   - Uses `HF_TOKEN` (or `HUGGINGFACE_API_KEY`).
+   - Model: `Qwen/Qwen3.8-27B:ovhcloud` (OVHcloud serverless partner routing).
+3. **OpenRouter Free Tier**:
+   - Uses `OPENROUTER_API_KEY`.
+   - Model: `openrouter/free` (Free Models Router, auto-routes across all active free models; strictly locked in `client.ts` to guarantee zero charges).
+   - Free tier: 200 requests/day, 20 RPM.
 
-**Priority Customization**: Setting `DEFAULT_AI_PROVIDER` (`openrouter` | `huggingface` | `ollama`) moves that provider to the front of the line.
+**Priority Customization**: Setting `DEFAULT_AI_PROVIDER` (`ollama` | `huggingface` | `openrouter`) moves that provider to the front of the line.
+**Service-Bound Models (`ProviderModel[]`)**: Models in `modelsToTry` are structured as `{ provider, model }` objects, ensuring models intended for one provider (e.g. Hugging Face) are never attempted on another (e.g. OpenRouter).
 
 ---
 
@@ -60,6 +64,13 @@ The backend automatically detects which provider API keys are present in `proces
    - **Rate Limit Headers**: `chat.ts` exposes `X-RateLimit-Remaining` and `X-RateLimit-Limit` in headers (configured in `CORS_HEADERS`) so the frontend client can synchronize remaining quota.
 5. **Cascading Automatic Fallback**: If the active provider returns an HTTP 429 (quota exhausted) or 5xx, `executeProviderWaterfall` seamlessly cascades to the next configured provider before returning an error to the user.
 6. **Markdown Post-Processing**: `client.ts` strips wrapping ```markdown code blocks if the LLM incorrectly wraps its entire output.
+7. **Zero-Charge Enforcement for OpenRouter**: OpenRouter calls are strictly locked to `openrouter/free` to eliminate any possibility of incurring charges. Any model overrides or custom environment variables attempting to target non-free models are safely intercepted and replaced with `openrouter/free`.
+8. **Strict Free Model Enforcement for Hugging Face**: Hugging Face requests are strictly validated via `isFreeHuggingFaceModel` against verified free serverless models (defaulting to `Qwen/Qwen3.8-27B:ovhcloud`) including any models discovered dynamically via `sync.ts`. Any non-free models or unverified endpoints are intercepted and safely defaulted to `Qwen/Qwen3.8-27B:ovhcloud`.
+9. **Dynamic Free Models Discovery (`api/providers/sync.ts`)**:
+   - **Hugging Face**: Queries `https://router.huggingface.co/v1/models` and filters models where `pricing.input === 0 && pricing.output === 0 && status === 'live'`, ensuring only 100% free serverless endpoints are used and prioritizing Qwen models.
+   - **Ollama Cloud**: Queries `https://ollama.com/api/usage` authenticated via `Authorization: Bearer ${apiKey}` to inspect `limits.monthly.models` (programmatically fetching the "Included usage" free models list from Ollama account settings without requiring manual browser login) and `/v1/models` to discover active models, prioritizing `gemma4:31b`.
+   - **Caching**: Free models are cached in Upstash Redis (`portfolio_free_models_cache`) with a 24-hour TTL and backed by in-memory caching.
+10. **Vercel Cron Automation (`/api/cron/sync-models`)**: A Vercel Cron endpoint scheduled daily at 04:00 UTC (`0 4 * * *` in `vercel.json`) invokes `syncFreeModels(true)` to refresh the Redis cache. Secured via optional `CRON_SECRET` bearer token validation.
 
 ---
 

@@ -72,13 +72,17 @@ export interface ChatMessage {
     timestamp: number;
 }
 
+export interface ProviderModel {
+    provider: string;
+    model: string;
+}
+
 export interface AiChatState {
     messages: ChatMessage[];
     isLoading: boolean;
     isOpen: boolean;
     error: string | null;
-    modelsToTry?: string[];
-    cooldownRemaining: number;
+    modelsToTry?: ProviderModel[];
     remainingQuota: number;
     isQuotaExceeded: boolean;
 }
@@ -90,7 +94,6 @@ export interface AiChatPanelProps {
     error: string | null;
     sendMessage: (msg: string) => Promise<void>;
     toggleChat: () => void;
-    cooldownRemaining?: number;
     remainingQuota?: number;
     isQuotaExceeded?: boolean;
 }

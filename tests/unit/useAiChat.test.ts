@@ -7,6 +7,7 @@ jest.mock('react-i18next', () => ({
         t: (key: string) => {
             if (key === 'aiChat.welcomeMessage') return 'Welcome!';
             if (key === 'aiChat.error') return 'Error occurred';
+            if (key === 'aiChat.quotaReached') return 'Daily rate limit has been applied (25 queries / 24 hours). Your access will reset automatically after 24 hours.';
 
             return key;
         }
@@ -22,6 +23,8 @@ const mockTextDecoder = jest.fn().mockImplementation(() => ({
 }));
 global.TextDecoder = mockTextDecoder as unknown as typeof TextDecoder;
 
+const mockProviderModels = [{ provider: 'openrouter', model: 'mock-model-1' }];
+
 describe('useAiChat hook', () => {
     beforeEach(() => {
         jest.resetAllMocks();
@@ -30,7 +33,7 @@ describe('useAiChat hook', () => {
         mockFetch.mockResolvedValue({
             ok: true,
             status: 200,
-            json: async () => ['mock-model-1'],
+            json: async () => mockProviderModels,
             text: async () => 'mock response text'
         });
     });
@@ -46,20 +49,20 @@ describe('useAiChat hook', () => {
         expect(result.current.messages[0].role).toBe('assistant');
         expect(result.current.remainingQuota).toBe(25);
         expect(result.current.isQuotaExceeded).toBe(false);
-        expect(result.current.cooldownRemaining).toBe(0);
 
         await waitFor(() => {
-            expect(result.current.modelsToTry).toEqual(['mock-model-1']);
+            expect(result.current.modelsToTry).toEqual(mockProviderModels);
         });
         expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('/api/models'));
     });
 
     it('uses cached models from sessionStorage if available', async () => {
-        sessionStorage.setItem('abhijeetjha0_ai_models', JSON.stringify(['cached-model']));
+        const cachedModels = [{ provider: 'openrouter', model: 'cached-model' }];
+        sessionStorage.setItem('abhijeetjha0_ai_models', JSON.stringify(cachedModels));
 
         const { result } = renderHook(() => useAiChat());
 
-        expect(result.current.modelsToTry).toEqual(['cached-model']);
+        expect(result.current.modelsToTry).toEqual(cachedModels);
         expect(mockFetch).not.toHaveBeenCalled();
     });
 
@@ -92,7 +95,7 @@ describe('useAiChat hook', () => {
         const { result } = renderHook(() => useAiChat());
 
         await waitFor(() => {
-            expect(result.current.modelsToTry).toEqual(['mock-model-1']);
+            expect(result.current.modelsToTry).toEqual(mockProviderModels);
         });
     
         act(() => {
@@ -133,26 +136,6 @@ describe('useAiChat hook', () => {
         expect(result.current.messages[2].role).toBe('assistant');
         expect(result.current.messages[2].content).toBe('mock response text');
         expect(result.current.remainingQuota).toBe(24);
-        expect(result.current.cooldownRemaining).toBe(4);
-    });
-
-    it('blocks sending messages during active cooldown', async () => {
-        const { result } = renderHook(() => useAiChat());
-
-        await act(async () => {
-            await result.current.sendMessage('First message');
-        });
-
-        expect(result.current.cooldownRemaining).toBe(4);
-        const callsCount = mockFetch.mock.calls.length;
-
-        // Attempt second message immediately
-        await act(async () => {
-            await result.current.sendMessage('Second message too soon');
-        });
-
-        // Fetch should NOT have been called again
-        expect(mockFetch.mock.calls.length).toBe(callsCount);
     });
 
     it('enforces maximum character limit of 200', async () => {
@@ -169,20 +152,34 @@ describe('useAiChat hook', () => {
         expect(fetchBody.messages[0].content).toHaveLength(200);
     });
 
-    it('blocks sending and sets error when session quota is exhausted', async () => {
-        // Set usage to 25 in sessionStorage
-        sessionStorage.setItem('abhijeetjha0_ai_chat_usage', '25');
+    it('blocks sending and sets error when daily quota is exhausted', async () => {
+        mockFetch.mockImplementation(async (_url, options) => {
+            if (options && options.method === 'POST') {
+                return {
+                    ok: false,
+                    status: 429,
+                    text: async () => 'Daily message quota reached (25/25). Please try again tomorrow.',
+                };
+            }
+
+            return { ok: true, status: 200, json: async () => mockProviderModels, text: async () => '' };
+        });
 
         const { result } = renderHook(() => useAiChat());
+
+        await act(async () => {
+            await result.current.sendMessage('First message that hits daily quota');
+        });
+
         expect(result.current.remainingQuota).toBe(0);
         expect(result.current.isQuotaExceeded).toBe(true);
 
+        const callsBefore = mockFetch.mock.calls.length;
         await act(async () => {
-            await result.current.sendMessage('Should not send');
+            await result.current.sendMessage('Should not send when quota exceeded');
         });
 
-        const chatFetchCall = mockFetch.mock.calls.find(call => call[1] && call[1].method === 'POST');
-        expect(chatFetchCall).toBeUndefined();
+        expect(mockFetch.mock.calls.length).toBe(callsBefore);
         expect(result.current.error).toBeDefined();
     });
 
@@ -192,7 +189,7 @@ describe('useAiChat hook', () => {
                 return { ok: false, status: 429 };
             }
 
-            return { ok: true, status: 200, json: async () => ['mock-model-1'], text: async () => '' };
+            return { ok: true, status: 200, json: async () => mockProviderModels, text: async () => '' };
         });
 
         const { result } = renderHook(() => useAiChat());
@@ -203,10 +200,9 @@ describe('useAiChat hook', () => {
 
         expect(result.current.isLoading).toBe(false);
         expect(result.current.error).toBe('You are sending messages too fast. Please wait a moment.');
-        expect(result.current.cooldownRemaining).toBe(10);
     });
 
-    it('handles daily quota rate limiting (429) and locks chat', async () => {
+    it('handles daily quota rate limiting (429) and locks chat while displaying rate limit notice in chatbox', async () => {
         mockFetch.mockImplementation(async (_url, options) => {
             if (options && options.method === 'POST') {
                 return {
@@ -216,7 +212,7 @@ describe('useAiChat hook', () => {
                 };
             }
 
-            return { ok: true, status: 200, json: async () => ['mock-model-1'], text: async () => '' };
+            return { ok: true, status: 200, json: async () => mockProviderModels, text: async () => '' };
         });
 
         const { result } = renderHook(() => useAiChat());
@@ -229,6 +225,35 @@ describe('useAiChat hook', () => {
         expect(result.current.isQuotaExceeded).toBe(true);
         expect(result.current.remainingQuota).toBe(0);
         expect(result.current.error).toBe('Daily message quota reached. Please try again tomorrow.');
+        expect(result.current.messages[result.current.messages.length - 1].content).toContain('Daily rate limit has been applied');
+    });
+
+    it('handles 429 with X-RateLimit-Remaining: 0 header even if error text is generic', async () => {
+        mockFetch.mockImplementation(async (_url, options) => {
+            if (options && options.method === 'POST') {
+                return {
+                    ok: false,
+                    status: 429,
+                    headers: {
+                        get: (headerName: string) => headerName === 'X-RateLimit-Remaining' ? '0' : null,
+                    },
+                    text: async () => 'Rate limit exceeded',
+                };
+            }
+
+            return { ok: true, status: 200, json: async () => mockProviderModels, text: async () => '' };
+        });
+
+        const { result } = renderHook(() => useAiChat());
+
+        await act(async () => {
+            await result.current.sendMessage('Hello AI');
+        });
+
+        expect(result.current.isLoading).toBe(false);
+        expect(result.current.isQuotaExceeded).toBe(true);
+        expect(result.current.remainingQuota).toBe(0);
+        expect(result.current.messages[result.current.messages.length - 1].content).toContain('Daily rate limit has been applied');
     });
 
     it('syncs remaining quota from X-RateLimit-Remaining response header', async () => {
@@ -244,7 +269,7 @@ describe('useAiChat hook', () => {
                 };
             }
 
-            return { ok: true, status: 200, json: async () => ['mock-model-1'], text: async () => '' };
+            return { ok: true, status: 200, json: async () => mockProviderModels, text: async () => '' };
         });
 
         const { result } = renderHook(() => useAiChat());
@@ -263,7 +288,7 @@ describe('useAiChat hook', () => {
                 return { ok: false, status: 500 };
             }
 
-            return { ok: true, status: 200, json: async () => ['mock-model-1'], text: async () => '' };
+            return { ok: true, status: 200, json: async () => mockProviderModels, text: async () => '' };
         });
 
         const { result } = renderHook(() => useAiChat());

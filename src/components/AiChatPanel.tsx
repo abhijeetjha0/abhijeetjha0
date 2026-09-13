@@ -13,7 +13,6 @@ export default function AiChatPanel({
     error,
     sendMessage,
     toggleChat,
-    cooldownRemaining = 0,
     remainingQuota = AI_CHAT_CONFIG.MAX_MESSAGES_PER_SESSION,
     isQuotaExceeded = false
 }: AiChatPanelProps) {
@@ -39,7 +38,7 @@ export default function AiChatPanel({
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!input.trim() || isLoading || cooldownRemaining > 0 || isQuotaExceeded) {
+        if (!input.trim() || isLoading || isQuotaExceeded) {
             return;
         }
     
@@ -49,7 +48,7 @@ export default function AiChatPanel({
     };
 
     const handleSuggestionClick = async (question: string) => {
-        if (isLoading || cooldownRemaining > 0 || isQuotaExceeded) {
+        if (isLoading || isQuotaExceeded) {
             return;
         }
 
@@ -168,7 +167,7 @@ export default function AiChatPanel({
                                 placeholder={t('aiChat.placeholder')}
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
-                                disabled={isLoading || cooldownRemaining > 0}
+                                disabled={isLoading}
                                 maxLength={AI_CHAT_CONFIG.MAX_INPUT_LENGTH}
                                 className="rounded-pill"
                                 ref={inputRef}
@@ -176,19 +175,15 @@ export default function AiChatPanel({
                             <Button 
                                 type="submit" 
                                 variant="primary" 
-                                disabled={isLoading || !input.trim() || cooldownRemaining > 0}
+                                disabled={isLoading || !input.trim()}
                                 className="rounded-circle d-flex align-items-center justify-content-center p-2 flex-shrink-0"
                                 style={{ width: '40px', height: '40px' }}
-                                aria-label={cooldownRemaining > 0 ? t('aiChat.cooldown', { seconds: cooldownRemaining }) : t('aiChat.send')}
+                                aria-label={t('aiChat.send')}
                             >
-                                {cooldownRemaining > 0 ? (
-                                    <span className="small fw-bold">{cooldownRemaining}s</span>
-                                ) : (
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <line x1="22" y1="2" x2="11" y2="13"></line>
-                                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                                    </svg>
-                                )}
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                                </svg>
                             </Button>
                         </div>
                         <div className="d-flex justify-content-end px-2">

@@ -30,11 +30,13 @@ npm install
 # 4. Set up environment variables
 cp .env.example .env.local
 # Edit .env.local:
-# - Set OPENROUTER_API_KEY (Recommended) for free OpenRouter models (Llama 3.3, Gemma 4, DeepSeek)
+# - (Optional) Set OLLAMA_API_KEY for Ollama Cloud (Primary)
 # - (Optional) Set HF_TOKEN for free Hugging Face serverless inference
-# - (Optional) Set OLLAMA_API_KEY for Ollama Cloud
-# - (Optional) Set DEFAULT_AI_PROVIDER to force a primary provider (openrouter | huggingface | ollama)
-# - (Optional) Set KV_REST_API_URL and KV_REST_API_TOKEN for Upstash Redis rate limiting locally
+# - (Optional) Set OPENROUTER_API_KEY for free OpenRouter models (openrouter/free)
+# - (Optional) Set DEFAULT_AI_PROVIDER to force a primary provider (ollama | huggingface | openrouter)
+# - (Optional) Set KV_REST_API_URL and KV_REST_API_TOKEN for Upstash Redis rate limiting and free models cache
+# - (Optional) Set CRON_SECRET to secure the Vercel Cron cache synchronization endpoint (/api/cron/sync-models)
+
 
 # 5. Start local development server
 npm run dev
@@ -53,9 +55,11 @@ The backend features an automated **Cascading Fallback Waterfall** across multip
 
 | Provider | Free Quota | Setup & Key Link | Default Model |
 | :--- | :--- | :--- | :--- |
-| **OpenRouter Free Tier (Primary)** | 200 req/day | [OpenRouter Keys](https://openrouter.ai/settings/keys) (`OPENROUTER_API_KEY`) | `openrouter/free` (Auto-routed) |
-| **Hugging Face Serverless** | Generous | [Hugging Face Tokens](https://huggingface.co/settings/tokens) (`HF_TOKEN`) | `Qwen/Qwen2.5-72B-Instruct` |
-| **Ollama Cloud** | Free tier | [Ollama Cloud](https://ollama.com) (`OLLAMA_API_KEY`) | `gemma4:31b` |
+| **Ollama Cloud (Primary)** | Free tier | [Ollama Cloud](https://ollama.com) (`OLLAMA_API_KEY`) | `gemma4:31b` |
+| **Hugging Face Serverless** | Generous | [Hugging Face Tokens](https://huggingface.co/settings/tokens) (`HF_TOKEN`) | `Qwen/Qwen3.8-27B:ovhcloud` |
+| **OpenRouter Free Tier** | 200 req/day | [OpenRouter Keys](https://openrouter.ai/settings/keys) (`OPENROUTER_API_KEY`) | `openrouter/free` (Auto-routed) |
+
+> **Zero-Cost Safeguard**: OpenRouter is strictly locked to `openrouter/free`, and Hugging Face is strictly validated against verified free serverless models (defaulting to `Qwen/Qwen3.8-27B:ovhcloud` with OVHcloud partner routing) across the backend to ensure zero commercial charges. Models are service-bound (`{ provider, model }`) to guarantee that free models from one service are never executed on another. To add an extra account-level safety net, you can set the **Credit Limit** of your OpenRouter API key to `$0.00` in the [OpenRouter Keys Dashboard](https://openrouter.ai/settings/keys).
 
 If a provider reaches its daily rate limit (HTTP 429) or is temporarily unavailable, the engine automatically cascades to the next configured provider in the waterfall.
 
@@ -101,7 +105,8 @@ Automated via GitHub Actions ([`.github/workflows/deploy.yml`](.github/workflows
 
 > **Note on Backend API & Rate Limiting Deployment**:
 > - Frontend is automatically deployed to GitHub Pages via GitHub Actions.
-> - Backend Edge functions (`/api/chat.ts` and `/api/models.ts`) are deployed via **Vercel**.
-> - Rate Limiting uses **Vercel KV (Upstash Redis)**. To activate in production, create a KV database under the **Storage** tab in your Vercel Dashboard and link it to the project.
-> - Verify active rate limit keys in the Vercel Storage **REPL** tab using `KEYS *`.
+> - Backend Edge functions (`/api/chat.ts`, `/api/models.ts`, and `/api/cron/sync-models.ts`) are deployed via **Vercel**.
+> - Rate Limiting & Dynamic Model Caching uses **Vercel KV (Upstash Redis)**. To activate in production, create a KV database under the **Storage** tab in your Vercel Dashboard and link it to the project.
+> - **Daily Free Model Sync Cron**: Configured in `vercel.json` (`0 4 * * *`) to automatically trigger `/api/cron/sync-models` once every 24 hours, discovering included Ollama Cloud models and free Hugging Face models and updating the Upstash Redis cache.
+> - Verify active rate limit and model cache keys in the Vercel Storage **REPL** tab using `KEYS *`.
 > - Edge performance timing logs are available in the Vercel Dashboard under **Logs**.

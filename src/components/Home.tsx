@@ -18,7 +18,6 @@ export default function Home() {
         error, 
         sendMessage, 
         toggleChat,
-        cooldownRemaining,
         remainingQuota,
         isQuotaExceeded
     } = useAiChat();
@@ -39,7 +38,6 @@ export default function Home() {
                 error={error} 
                 sendMessage={sendMessage} 
                 toggleChat={toggleChat}
-                cooldownRemaining={cooldownRemaining}
                 remainingQuota={remainingQuota}
                 isQuotaExceeded={isQuotaExceeded}
             />

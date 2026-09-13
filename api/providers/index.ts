@@ -1,6 +1,6 @@
 import { FREE_PROVIDERS, getProviderApiKey } from './registry.js';
 import { callOpenAICompatibleProvider } from './client.js';
-import { ChatMessagePayload, ProviderResponse } from './types.js';
+import { ChatMessagePayload, ProviderResponse, ProviderModel } from './types.js';
 
 export interface WaterfallResult {
     success: boolean;
@@ -22,7 +22,8 @@ export function getConfiguredProviders() {
 export async function executeProviderWaterfall(
     messages: ChatMessagePayload[],
     systemPrompt: string,
-    preferredProvider?: string
+    preferredProvider?: string,
+    modelsToTry?: ProviderModel[]
 ): Promise<WaterfallResult> {
     const configured = getConfiguredProviders();
 
@@ -53,17 +54,21 @@ export async function executeProviderWaterfall(
             continue;
         }
 
+        // Find if a specific model was assigned to this provider in modelsToTry
+        const assignedModel = modelsToTry?.find(m => m.provider === provider.name)?.model;
+
         console.info(`[api/providers] Attempting provider: ${provider.displayName}...`);
         const result = await callOpenAICompatibleProvider(
             provider,
             apiKey,
             messages,
-            systemPrompt
+            systemPrompt,
+            assignedModel
         );
 
         attempts.push({
             provider: provider.name,
-            model: provider.defaultModel,
+            model: result.response?.model || assignedModel || provider.defaultModel,
             success: result.success,
             error: result.error,
             rateLimited: result.rateLimited,
@@ -96,3 +101,4 @@ export async function executeProviderWaterfall(
 export * from './types.js';
 export * from './registry.js';
 export * from './client.js';
+export * from './sync.js';

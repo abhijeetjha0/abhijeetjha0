@@ -58,7 +58,7 @@ export default async function handler(req: Request) {
         }
 
         const body = await req.json().catch(() => ({}));
-        const { messages, preferredProvider } = body;
+        const { messages, preferredProvider, modelsToTry } = body;
 
         if (!messages || !Array.isArray(messages)) {
             return new Response('Invalid request body: "messages" array is required', {
@@ -71,7 +71,8 @@ export default async function handler(req: Request) {
         const result = await executeProviderWaterfall(
             messages,
             SYSTEM_PROMPT,
-            preferredProvider
+            preferredProvider,
+            Array.isArray(modelsToTry) ? modelsToTry : undefined
         );
 
         if (result.success && result.response) {

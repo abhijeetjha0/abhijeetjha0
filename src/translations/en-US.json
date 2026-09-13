@@ -200,9 +200,8 @@
       "What projects has he built?"
     ],
     "queriesRemaining": "{{count}} queries left",
-    "cooldown": "Wait {{seconds}}s...",
-    "quotaReached": "Session query limit reached for this chat. Please reach out to Abhijit directly via Email or LinkedIn!",
-    "rateLimitNotice": "ℹ️ Note: We have API limitations with this chat per session, with a 4-second cooldown between requests.",
+    "quotaReached": "Daily rate limit has been applied (25 queries / 24 hours). Your access will reset automatically after 24 hours. Please reach out to Abhijit directly via Email or LinkedIn!",
+    "rateLimitNotice": "ℹ️ Note: Fair-use limit of 25 messages per 24 hours per IP address.",
     "contactEmail": "Send Email",
     "contactLinkedIn": "LinkedIn Profile"
   }

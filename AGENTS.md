@@ -60,8 +60,8 @@ Subdirectory-specific guidelines are maintained in modular `AGENTS.md` files thr
 4. **Vercel Edge Functions Architecture**: All backend AI integrations (like `/api/chat.ts` and `/api/models.ts`) are deployed as Vercel Edge Functions. Do not use Node-specific modules (like `fs` or `path`). All shared configuration and system prompts MUST be maintained in `/api/constants.ts` to adhere to Edge Runtime constraints. All relative imports within `api/` must specify explicit `.js` extensions (e.g. `import ... from './constants.js'`) for compatibility with Node16/NodeNext ESM module resolution on Vercel. See `api/AGENTS.md` for detailed guidelines.
 5. **AI Chat & Multi-Provider Architecture**: 
     - **Context Management**: Conversation context is managed strictly by passing the entire chat history array in each request. Edge functions remain stateless.
-    - **Pluggable Free Provider Layer** (`api/providers/`): Manages an automatic cascading fallback across 100% free providers (OpenRouter Free Tier, Hugging Face Inference, and Ollama Cloud) using a zero-dependency OpenAI-compatible HTTP client.
-    - **Priority Override**: `DEFAULT_AI_PROVIDER` (`openrouter` | `huggingface` | `ollama`) prioritizes a specific provider.
+    - **Pluggable Free Provider Layer** (`api/providers/`): Manages an automatic cascading fallback across 100% free providers in default priority order: 1. Ollama Cloud, 2. Hugging Face Inference, and 3. OpenRouter Free Tier (strictly locked to `openrouter/free`) using a zero-dependency OpenAI-compatible HTTP client. Models are service-bound (`ProviderModel[]`) to eliminate cross-provider model mismatch.
+    - **Priority Override**: `DEFAULT_AI_PROVIDER` (`ollama` | `huggingface` | `openrouter`) prioritizes a specific provider.
     - **Exposed Response Headers**: Responses include `X-AI-Provider` and `X-AI-Model` headers, exposed to browsers via `Access-Control-Expose-Headers` in `CORS_HEADERS`.
     - **Markdown Rendering**: The UI utilizes `react-markdown` with the `remark-gfm` plugin to support GitHub Flavored Markdown (including tables). The backend proactively strips wrapping markdown code blocks (` ```markdown `) if the LLM incorrectly formats its output.
     - **Link Security**: All markdown links in chat responses must open in a new tab (`target="_blank"`, `rel="noopener noreferrer"`). This is enforced via a custom `a` component in `ReactMarkdown`. URLs without a protocol are auto-prefixed with `https://`.
@@ -72,10 +72,9 @@ Subdirectory-specific guidelines are maintained in modular `AGENTS.md` files thr
     - Rate limiters fail gracefully (bypass or use in-memory token-bucket `InMemoryRateLimiter`) if KV/Redis credentials are absent from the environment.
     - `/api/chat` attaches `X-RateLimit-Remaining` and `X-RateLimit-Limit: 25` to successful responses and returns HTTP 429 with `X-RateLimit-Remaining: 0` when the daily quota is reached.
 8. **Client-Side Rate Limiting & Quota**: The `useAiChat` hook enforces rate limiting and quota synchronization:
-    - **Session & Daily Quota**: Defaults to 25 messages per session (`MAX_MESSAGES_PER_SESSION`) and syncs in real-time with the backend's `X-RateLimit-Remaining` header.
+    - **Server IP Authority & Quota Sync**: Quota is enforced purely at the server level per IP address (25 requests / 24h). Tab-wise storage is eliminated. The UI displays attempts left (defaulting to 25) and synchronizes in real time with the backend's `X-RateLimit-Remaining` header.
     - **Input Length Limit**: 200 characters per message (`MAX_INPUT_LENGTH`).
-    - **Cooldown**: 4-second cooldown between messages (`COOLDOWN_SECONDS`), extended to 10s on HTTP 429 burst errors.
-    - **Daily Quota 429 Locking**: When the backend returns HTTP 429 for daily quota exhaustion, the client locks chat (`isQuotaExceeded = true`, `remainingQuota = 0`).
+    - **Daily Quota 429 & Chatbox Notice**: When the 24-hour daily quota is exhausted (HTTP 429 or `remainingQuota <= 0`), the client locks chat (`isQuotaExceeded = true`, `remainingQuota = 0`) and directly inserts a clear rate limit notification into the chatbox, letting the user know their 25 requests will reset automatically after 24 hours.
     - **Model Caching**: Available models are cached in `sessionStorage` to avoid redundant `/api/models` calls.
     - All config constants are centralized in `src/constants/index.ts` under `AI_CHAT_CONFIG`.
 9. **Vite Code Splitting & Vendor Chunking**: Maintain explicit `manualChunks` object mapping in `vite.config.ts` (`vendor-react`, `vendor-bootstrap`, `vendor-markdown`, `vendor-i18n`) to ensure chunk sizes remain strictly below 500 kB and prevent monolithic bundles.
@@ -83,6 +82,11 @@ Subdirectory-specific guidelines are maintained in modular `AGENTS.md` files thr
     - Standard 4-space indentation enforced via `@stylistic/eslint-plugin`.
     - Mandatory blank lines before `return` statements (`padding-line-between-statements`).
     - Unused variables/arguments must be prefixed with `_` (`argsIgnorePattern: '^_'`).
+11. **Dynamic Free Models Synchronization & Cron Automation**:
+    - **Automated Free Model Discovery**: Hugging Face models are dynamically fetched from `https://router.huggingface.co/v1/models` and filtered for `pricing.input === 0 && pricing.output === 0 && status === 'live'`. Ollama Cloud models are fetched using `OLLAMA_API_KEY` from `https://ollama.com/api/usage` (`limits.monthly.models` representing the account's "Included usage" free models list) and `/v1/models`.
+    - **Upstash Redis Caching**: Synced models are cached in Upstash Redis (`portfolio_free_models_cache`) with a 24-hour TTL and backed by in-memory caching.
+    - **Vercel Cron**: Scheduled daily at 04:00 UTC (`0 4 * * *` in `vercel.json`) via `/api/cron/sync-models.ts` with optional `CRON_SECRET` authentication.
+
 
 > **Note**: Subdirectory-specific guidelines (Edge Functions, React component interfaces, constant declarations, i18n parity, shell script standards, and Jest testing patterns) are maintained directly within their respective modular `AGENTS.md` files:
 > - [api/AGENTS.md](file:///api/AGENTS.md)

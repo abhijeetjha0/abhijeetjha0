@@ -12,7 +12,6 @@ jest.mock('react-i18next', () => ({
                 'aiChat.send': 'Send',
                 'aiChat.suggestedQuestions': ['Question 1', 'Question 2'],
                 'aiChat.queriesRemaining': `${options?.count ?? 25} queries left`,
-                'aiChat.cooldown': `Wait ${options?.seconds ?? 0}s...`,
                 'aiChat.quotaReached': 'Session query limit reached',
                 'aiChat.rateLimitNotice': 'Demo notice',
                 'aiChat.contactEmail': 'Send Email',
@@ -44,7 +43,6 @@ describe('AiChatPanel Component', () => {
         error: null,
         sendMessage: jest.fn(),
         toggleChat: jest.fn(),
-        cooldownRemaining: 0,
         remainingQuota: 25,
         isQuotaExceeded: false,
     };
@@ -107,15 +105,11 @@ describe('AiChatPanel Component', () => {
         expect(screen.getByText('...')).toHaveClass('typing-indicator');
     });
 
-    it('disables input and displays cooldown countdown on button when cooldownRemaining > 0', () => {
-        render(<AiChatPanel {...defaultProps} cooldownRemaining={3} />);
+    it('disables send button when input is empty', () => {
+        render(<AiChatPanel {...defaultProps} />);
 
-        const input = screen.getByPlaceholderText('Ask me anything...');
-        expect(input).toBeDisabled();
-
-        const submitBtn = screen.getByLabelText('Wait 3s...');
+        const submitBtn = screen.getByLabelText('Send');
         expect(submitBtn).toBeDisabled();
-        expect(screen.getByText('3s')).toBeInTheDocument();
     });
 
     it('renders quota exhausted state when isQuotaExceeded is true', () => {

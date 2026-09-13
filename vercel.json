@@ -5,6 +5,12 @@
     "github": {
         "silent": true
     },
+    "crons": [
+        {
+            "path": "/api/cron/sync-models",
+            "schedule": "0 4 * * *"
+        }
+    ],
     "redirects": [
         {
             "source": "/((?!api(?:/|$)).*)",

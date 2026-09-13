@@ -1,6 +1,9 @@
-import { CORS_HEADERS, OLLAMA_API } from './constants.js';
+import { CORS_HEADERS } from './constants.js';
 import { chatRateLimit } from './rateLimit.js';
 import { getConfiguredProviders } from './providers/index.js';
+import { isFreeHuggingFaceModel } from './providers/registry.js';
+import { syncFreeModels } from './providers/sync.js';
+import { ProviderModel } from './providers/types.js';
 
 export const config = {
     runtime: 'edge',
@@ -37,53 +40,70 @@ export default async function handler(req: Request) {
     }
 
     try {
+        const { models: dynamicModels, ollamaModels } = await syncFreeModels();
         const configured = getConfiguredProviders();
 
         // If no providers are configured at all
         if (configured.length === 0) {
-            console.warn('[api/models] No AI providers are configured in environment variables');
+            console.warn('[api/models] No AI providers are configured in environment variables, using synced free models');
 
-            return new Response(JSON.stringify([process.env.OPENROUTER_MODEL || 'openrouter/free']), {
+            return new Response(JSON.stringify(dynamicModels), {
                 headers: {
                     ...CORS_HEADERS,
                     'Content-Type': 'application/json',
+                    'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=600',
                 },
             });
         }
 
         // Collect the default models for all configured providers
-        const models: string[] = [];
+        const models: ProviderModel[] = [];
         for (const p of configured) {
             let envModel: string | undefined;
             if (p.name === 'openrouter') {
-                envModel = process.env.OPENROUTER_MODEL;
+                // OpenRouter is strictly locked to openrouter/free to eliminate charges
+                envModel = 'openrouter/free';
             } else if (p.name === 'huggingface') {
                 envModel = process.env.HF_MODEL;
+                if (envModel && !isFreeHuggingFaceModel(envModel)) {
+                    console.warn(`[api/models] Ignoring non-free HF_MODEL "${envModel}". Defaulting to verified free model.`);
+                    envModel = undefined;
+                }
+                if (!envModel) {
+                    const dynamicHf = dynamicModels.find(m => m.provider === 'huggingface')?.model;
+                    envModel = dynamicHf || p.defaultModel;
+                }
             } else if (p.name === 'ollama') {
                 envModel = process.env.OLLAMA_MODEL;
-            }
-            models.push(envModel || p.defaultModel);
-        }
-
-        // If Ollama is configured and is the only provider, optionally fetch extra models
-        if (configured.length === 1 && configured[0].name === 'ollama') {
-            const apiKey = process.env.OLLAMA_API_KEY;
-            if (apiKey) {
-                try {
-                    const res = await fetch(`${OLLAMA_API}/models`, {
-                        headers: { Authorization: `Bearer ${apiKey}` },
-                    });
-                    if (res.ok) {
-                        const data = await res.json();
-                        const ollamaModels = data?.data?.map((m: { id: string }) => m.id) || [];
-                        if (ollamaModels.length > 0) {
-                            models.push(...ollamaModels.filter((m: string) => !models.includes(m)));
-                        }
-                    }
-                } catch {
-                    // Ignore Ollama fetch errors and use default
+                if (!envModel) {
+                    const dynamicOllama = dynamicModels.find(m => m.provider === 'ollama')?.model;
+                    envModel = dynamicOllama || p.defaultModel;
                 }
             }
+            models.push({
+                provider: p.name,
+                model: envModel || p.defaultModel,
+            });
+        }
+
+        // If Ollama is configured and is the only provider, include extra discovered models
+        if (configured.length === 1 && configured[0].name === 'ollama' && Array.isArray(ollamaModels)) {
+            for (const extraModel of ollamaModels) {
+                if (!models.some(existing => existing.provider === 'ollama' && existing.model === extraModel)) {
+                    models.push({ provider: 'ollama', model: extraModel });
+                }
+            }
+        }
+
+        // Prioritize DEFAULT_AI_PROVIDER if set
+        const preferred = process.env.DEFAULT_AI_PROVIDER;
+        if (preferred) {
+            models.sort((a, b) => {
+                if (a.provider === preferred) return -1;
+                if (b.provider === preferred) return 1;
+
+                return 0;
+            });
         }
 
         return new Response(JSON.stringify(models), {

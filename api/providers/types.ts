@@ -1,5 +1,10 @@
 export type FreeProviderName = 'openrouter' | 'huggingface' | 'ollama';
 
+export interface ProviderModel {
+    provider: FreeProviderName | string;
+    model: string;
+}
+
 export interface ProviderConfig {
     name: FreeProviderName;
     displayName: string;

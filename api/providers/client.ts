@@ -1,4 +1,5 @@
 import { ProviderConfig, ChatMessagePayload, ProviderCallResult } from './types.js';
+import { isFreeHuggingFaceModel } from './registry.js';
 
 export async function callOpenAICompatibleProvider(
     config: ProviderConfig,
@@ -16,7 +17,29 @@ export async function callOpenAICompatibleProvider(
         envModel = process.env.OLLAMA_MODEL;
     }
 
-    const model = modelOverride || envModel || config.defaultModel;
+    let model = modelOverride || envModel || config.defaultModel;
+
+    // OpenRouter is strictly locked to 'openrouter/free' to eliminate any chance of charges
+    if (config.name === 'openrouter') {
+        if (model !== 'openrouter/free') {
+            console.warn(
+                `[api/providers] OpenRouter is strictly locked to "openrouter/free" to prevent charges. Ignoring requested model: "${model}".`
+            );
+            model = 'openrouter/free';
+        }
+    }
+
+    // Hugging Face is strictly restricted to verified free models to eliminate any chance of charges
+    if (config.name === 'huggingface') {
+        if (model === 'Qwen/Qwen3.8-27B') {
+            model = 'Qwen/Qwen3.8-27B:ovhcloud';
+        } else if (!isFreeHuggingFaceModel(model)) {
+            console.warn(
+                `[api/providers] Hugging Face is strictly restricted to free models to prevent charges. Ignoring requested model: "${model}". Defaulting to "${config.defaultModel}".`
+            );
+            model = config.defaultModel;
+        }
+    }
 
     const payload: Record<string, unknown> = {
         model,
@@ -26,11 +49,6 @@ export async function callOpenAICompatibleProvider(
         ],
         stream: false,
     };
-
-    // For OpenRouter, provide fallback to openrouter/free if a specific model was requested
-    if (config.name === 'openrouter' && model !== 'openrouter/free') {
-        payload.models = [model, 'openrouter/free'];
-    }
 
     const headers: Record<string, string> = {
         'Content-Type': 'application/json',

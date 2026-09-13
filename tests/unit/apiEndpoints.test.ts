@@ -9,6 +9,7 @@ jest.mock('../../api/rateLimit', () => ({
 
 import chatHandler from '../../api/chat';
 import modelsHandler from '../../api/models';
+import cronHandler from '../../api/cron/sync-models';
 import { chatRateLimit, chatDailyRateLimit } from '../../api/rateLimit';
 
 const originalEnv = process.env;
@@ -169,12 +170,17 @@ describe('api endpoints (chat and models)', () => {
             const res = await modelsHandler(req);
             expect(res.status).toBe(200);
             const models = await res.json();
-            expect(models).toContain('openrouter/free');
+            expect(models).toEqual([
+                { provider: 'ollama', model: 'gemma4:31b' },
+                { provider: 'huggingface', model: 'Qwen/Qwen3.8-27B:ovhcloud' },
+                { provider: 'openrouter', model: 'openrouter/free' },
+            ]);
         });
 
-        it('returns models corresponding to configured providers', async () => {
+        it('returns models corresponding to configured providers in priority order (Ollama, HF, OpenRouter)', async () => {
             process.env.OPENROUTER_API_KEY = 'sk-or-token';
             process.env.HF_TOKEN = 'hf_token';
+            process.env.OLLAMA_API_KEY = 'ollama_token';
 
             const req = new Request('http://localhost:3000/api/models', {
                 method: 'GET',
@@ -183,8 +189,87 @@ describe('api endpoints (chat and models)', () => {
             const res = await modelsHandler(req);
             expect(res.status).toBe(200);
             const models = await res.json();
-            expect(models).toContain('openrouter/free');
-            expect(models).toContain('Qwen/Qwen2.5-72B-Instruct');
+            expect(models).toEqual([
+                { provider: 'ollama', model: 'gemma4:31b' },
+                { provider: 'huggingface', model: 'Qwen/Qwen3.8-27B:ovhcloud' },
+                { provider: 'openrouter', model: 'openrouter/free' },
+            ]);
+        });
+
+        it('strictly returns openrouter/free for OpenRouter even if OPENROUTER_MODEL is set to a paid model', async () => {
+            process.env.OPENROUTER_API_KEY = 'sk-or-token';
+            process.env.OPENROUTER_MODEL = 'openai/gpt-4o';
+
+            const req = new Request('http://localhost:3000/api/models', {
+                method: 'GET',
+            });
+
+            const res = await modelsHandler(req);
+            expect(res.status).toBe(200);
+            const models = await res.json();
+            expect(models).toContainEqual({ provider: 'openrouter', model: 'openrouter/free' });
+            expect(models).not.toContainEqual({ provider: 'openrouter', model: 'openai/gpt-4o' });
+        });
+
+        it('strictly defaults to Qwen/Qwen3.8-27B:ovhcloud for Hugging Face even if HF_MODEL is set to a non-free model', async () => {
+            process.env.HF_TOKEN = 'hf_token';
+            process.env.HF_MODEL = 'custom/paid-endpoint';
+
+            const req = new Request('http://localhost:3000/api/models', {
+                method: 'GET',
+            });
+
+            const res = await modelsHandler(req);
+            expect(res.status).toBe(200);
+            const models = await res.json();
+            expect(models).toContainEqual({ provider: 'huggingface', model: 'Qwen/Qwen3.8-27B:ovhcloud' });
+            expect(models).not.toContainEqual({ provider: 'huggingface', model: 'custom/paid-endpoint' });
+        });
+    });
+
+    describe('/api/cron/sync-models endpoint', () => {
+        it('rejects non-GET HTTP methods with 405', async () => {
+            const req = new Request('http://localhost:3000/api/cron/sync-models', {
+                method: 'POST',
+            });
+
+            const res = await cronHandler(req);
+            expect(res.status).toBe(405);
+        });
+
+        it('rejects request with 401 when CRON_SECRET is set and auth header is missing or invalid', async () => {
+            process.env.CRON_SECRET = 'super-secret-cron-token';
+
+            const req = new Request('http://localhost:3000/api/cron/sync-models', {
+                method: 'GET',
+                headers: {
+                    Authorization: 'Bearer invalid-token',
+                },
+            });
+
+            const res = await cronHandler(req);
+            expect(res.status).toBe(401);
+            const text = await res.text();
+            expect(text).toBe('Unauthorized');
+        });
+
+        it('executes scheduled cache refresh successfully with 200 when authorized', async () => {
+            process.env.CRON_SECRET = 'super-secret-cron-token';
+
+            const req = new Request('http://localhost:3000/api/cron/sync-models', {
+                method: 'GET',
+                headers: {
+                    Authorization: 'Bearer super-secret-cron-token',
+                },
+            });
+
+            const res = await cronHandler(req);
+            expect(res.status).toBe(200);
+            const json = await res.json();
+            expect(json.success).toBe(true);
+            expect(json.message).toBe('Free models cache refreshed successfully');
+            expect(Array.isArray(json.models)).toBe(true);
         });
     });
 });
+
