@@ -173,5 +173,15 @@ describe('AiChatPanel Component', () => {
         expect(linkedinLink).toHaveAttribute('target', '_blank');
         expect(linkedinLink).toHaveAttribute('rel', 'noopener noreferrer');
     });
+
+    it('calls toggleChat when close button is clicked', () => {
+        const toggleChatMock = jest.fn();
+        render(<AiChatPanel {...defaultProps} toggleChat={toggleChatMock} />);
+
+        const closeBtn = screen.getByLabelText('Close chat');
+        fireEvent.click(closeBtn);
+
+        expect(toggleChatMock).toHaveBeenCalledTimes(1);
+    });
 });
 

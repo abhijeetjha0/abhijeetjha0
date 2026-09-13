@@ -60,7 +60,7 @@ export default function AiChatPanel({
     }
 
     return (
-        <div id="ai-chat-panel" role="region" aria-label={t('aiChat.title')} className="ai-chat-panel shadow-lg rounded-top-4 rounded-start-4">
+        <div id="ai-chat-panel" role="region" aria-label={t('aiChat.title')} className="ai-chat-panel shadow-lg rounded-4 overflow-hidden">
             <div className="chat-header p-3 bg-primary text-white d-flex justify-content-between align-items-center rounded-top-4">
                 <div className="d-flex align-items-center gap-2">
                     <h3 className="h6 mb-0 d-flex align-items-center gap-2">

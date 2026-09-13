@@ -70,6 +70,7 @@
     "frameworks": [
       "React",
       "React Router",
+      "Next.js",
       "Jest",
       "Vitest",
       "Ember.js",
@@ -102,13 +103,18 @@
       "Google Gemini",
       "Google Jules",
       "Google Opal",
-      "Ollama"
+      "Ollama",
+      "OpenRouter",
+      "OpenCode",
+      "OpenClaw",
+      "Hugging Face"
     ],
     "buildTools": [
       "Vite",
       "Webpack",
       "Babel",
-      "Rollup"
+      "Rollup",
+      "Next.js build"
     ],
     "linting": [
       "ESLint",

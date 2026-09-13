@@ -23,6 +23,7 @@ Senior Software Engineer with **6+ years of experience** leading UI development 
 ### ⚛️ Libraries & Frameworks
 ![React](https://img.shields.io/badge/React-C7F9CC?style=flat&logo=react&logoColor=black)
 ![React Router](https://img.shields.io/badge/React_Router-FECDCA?style=flat&logo=react-router&logoColor=black)
+![Next.js](https://img.shields.io/badge/Next.js-E2E8F0?style=flat&logo=nextdotjs&logoColor=black)
 ![Jest](https://img.shields.io/badge/Jest-FECDCA?style=flat&logo=jest&logoColor=black)
 ![Vitest](https://img.shields.io/badge/Vitest-FCC72C?style=flat&logo=vitest&logoColor=black)
 ![Ember.js](https://img.shields.io/badge/Ember.js-FFD6A5?style=flat&logo=ember.js&logoColor=black)
@@ -56,12 +57,17 @@ Senior Software Engineer with **6+ years of experience** leading UI development 
 ![Google Jules](https://img.shields.io/badge/Google_Jules-E0E7FF?style=flat&logo=google&logoColor=black)
 ![Google Opal](https://img.shields.io/badge/Google_Opal-E0F2FE?style=flat&logo=google&logoColor=black)
 ![Ollama](https://img.shields.io/badge/Ollama-FFFFFF?style=flat&logo=ollama&logoColor=black)
+![OpenRouter](https://img.shields.io/badge/OpenRouter-E0E7FF?style=flat&logo=openrouter&logoColor=black)
+![OpenCode](https://img.shields.io/badge/OpenCode-E0F2FE?style=flat&logo=opencode&logoColor=black)
+![OpenClaw](https://img.shields.io/badge/OpenClaw-F3E8FF?style=flat&logo=probot&logoColor=black)
+![Hugging Face](https://img.shields.io/badge/Hugging_Face-FFD21E?style=flat&logo=huggingface&logoColor=black)
 
 ### ⚡ Build Tools
 ![Vite](https://img.shields.io/badge/Vite-EDE9FE?style=flat&logo=vite&logoColor=black)
 ![Webpack](https://img.shields.io/badge/Webpack-E0F2FE?style=flat&logo=webpack&logoColor=black)
 ![Babel](https://img.shields.io/badge/Babel-FEF08A?style=flat&logo=babel&logoColor=black)
 ![Rollup](https://img.shields.io/badge/Rollup-FECDCA?style=flat&logo=rollup.js&logoColor=black)
+![Next.js build](https://img.shields.io/badge/Next.js_Build-E2E8F0?style=flat&logo=nextdotjs&logoColor=black)
 
 ### 🛡️ Quality & Linting
 ![ESLint](https://img.shields.io/badge/ESLint-EDE9FE?style=flat&logo=eslint&logoColor=black)

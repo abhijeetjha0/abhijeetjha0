@@ -27,14 +27,11 @@ describe('AiChatFab Component', () => {
         expect(screen.getByText('✨')).toBeInTheDocument();
     });
 
-    it('renders correctly when open', () => {
+    it('does not render when open', () => {
         const toggleChat = jest.fn();
         render(<AiChatFab isOpen={true} toggleChat={toggleChat} />);
 
-        const button = screen.getByRole('button', { name: "Ask Abhijit's AI" });
-        expect(button).toHaveClass('is-open');
-    
-        // Sparkle should be hidden when open
+        expect(screen.queryByRole('button')).not.toBeInTheDocument();
         expect(screen.queryByText('✨')).not.toBeInTheDocument();
     });
 
