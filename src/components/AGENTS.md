@@ -29,9 +29,10 @@ This document specifies rules and standards for AI Coding Assistants creating or
    - Tables are wrapped in `.table-responsive` divs for horizontal scroll on narrow screens.
 
 6. **AiChatPanel Rate Limiting UI**:
-   - A continuous quota badge in the header always shows remaining queries.
+   - The quota badge in the header is hidden on initial load / page refresh (`remainingQuota: null`) and progressively reveals itself with the authoritative count once the first AI response arrives with the `X-RateLimit-Remaining` header.
    - A limitation notice banner is always visible below the header.
    - A character counter (`X/200`) displays in the input area.
    - The send button disables while an AI response is generating or when input is empty.
    - When quota is exhausted, the input area is replaced with a contact card (Email & LinkedIn).
+
 

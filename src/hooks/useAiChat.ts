@@ -37,7 +37,7 @@ export function useAiChat() {
         isOpen: false,
         error: null,
         modelsToTry: getCachedModels(),
-        remainingQuota: AI_CHAT_CONFIG.MAX_MESSAGES_PER_SESSION,
+        remainingQuota: null,
         isQuotaExceeded: false,
     });
 
@@ -95,7 +95,7 @@ export function useAiChat() {
         }
 
         // Block if quota is exceeded
-        if (state.remainingQuota <= 0) {
+        if (state.remainingQuota !== null && state.remainingQuota <= 0) {
             setState(prev => ({
                 ...prev,
                 isQuotaExceeded: true,
@@ -124,7 +124,7 @@ export function useAiChat() {
         };
 
         setState(prev => {
-            const nextRemaining = Math.max(0, prev.remainingQuota - 1);
+            const nextRemaining = prev.remainingQuota !== null ? Math.max(0, prev.remainingQuota - 1) : null;
 
             return {
                 ...prev,
@@ -132,7 +132,7 @@ export function useAiChat() {
                 isLoading: true,
                 error: null,
                 remainingQuota: nextRemaining,
-                isQuotaExceeded: nextRemaining <= 0,
+                isQuotaExceeded: nextRemaining !== null ? nextRemaining <= 0 : prev.isQuotaExceeded,
             };
         });
 

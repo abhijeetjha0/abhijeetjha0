@@ -83,7 +83,7 @@ export interface AiChatState {
     isOpen: boolean;
     error: string | null;
     modelsToTry?: ProviderModel[];
-    remainingQuota: number;
+    remainingQuota: number | null;
     isQuotaExceeded: boolean;
 }
 
@@ -94,6 +94,6 @@ export interface AiChatPanelProps {
     error: string | null;
     sendMessage: (msg: string) => Promise<void>;
     toggleChat: () => void;
-    remainingQuota?: number;
+    remainingQuota?: number | null;
     isQuotaExceeded?: boolean;
 }

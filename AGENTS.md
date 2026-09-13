@@ -72,7 +72,7 @@ Subdirectory-specific guidelines are maintained in modular `AGENTS.md` files thr
     - Rate limiters fail gracefully (bypass or use in-memory token-bucket `InMemoryRateLimiter`) if KV/Redis credentials are absent from the environment.
     - `/api/chat` attaches `X-RateLimit-Remaining` and `X-RateLimit-Limit: 25` to successful responses and returns HTTP 429 with `X-RateLimit-Remaining: 0` when the daily quota is reached.
 8. **Client-Side Rate Limiting & Quota**: The `useAiChat` hook enforces rate limiting and quota synchronization:
-    - **Server IP Authority & Quota Sync**: Quota is enforced purely at the server level per IP address (25 requests / 24h). Tab-wise storage is eliminated. The UI displays attempts left (defaulting to 25) and synchronizes in real time with the backend's `X-RateLimit-Remaining` header.
+    - **Server IP Authority & Progressive Quota Disclosure**: Quota is enforced purely at the server level per IP address (25 requests / 24h). On initial page load / refresh, `remainingQuota` starts as `null` so no unverified count is displayed. The UI progressively reveals the quota badge with the authoritative count once the backend responds with the `X-RateLimit-Remaining` header.
     - **Input Length Limit**: 200 characters per message (`MAX_INPUT_LENGTH`).
     - **Daily Quota 429 & Chatbox Notice**: When the 24-hour daily quota is exhausted (HTTP 429 or `remainingQuota <= 0`), the client locks chat (`isQuotaExceeded = true`, `remainingQuota = 0`) and directly inserts a clear rate limit notification into the chatbox, letting the user know their 25 requests will reset automatically after 24 hours.
     - **Model Caching**: Available models are cached in `sessionStorage` to avoid redundant `/api/models` calls.

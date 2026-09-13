@@ -13,7 +13,7 @@ export default function AiChatPanel({
     error,
     sendMessage,
     toggleChat,
-    remainingQuota = AI_CHAT_CONFIG.MAX_MESSAGES_PER_SESSION,
+    remainingQuota = null,
     isQuotaExceeded = false
 }: AiChatPanelProps) {
     const { t } = useTranslation();
@@ -67,9 +67,11 @@ export default function AiChatPanel({
                         <span className="ai-sparkle">✨</span>
                         {t('aiChat.title')}
                     </h3>
-                    <span className="badge quota-badge" title={t('aiChat.queriesRemaining', { count: remainingQuota })}>
-                        {t('aiChat.queriesRemaining', { count: remainingQuota })}
-                    </span>
+                    {typeof remainingQuota === 'number' && (
+                        <span className="badge quota-badge" title={t('aiChat.queriesRemaining', { count: remainingQuota })}>
+                            {t('aiChat.queriesRemaining', { count: remainingQuota })}
+                        </span>
+                    )}
                 </div>
                 <button className="btn-close btn-close-white" onClick={toggleChat} aria-label="Close chat" />
             </div>

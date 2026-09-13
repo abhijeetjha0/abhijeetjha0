@@ -1,6 +1,6 @@
 import { Redis } from '@upstash/redis';
 import { ProviderModel } from './types.js';
-import { FREE_HUGGINGFACE_MODELS, setDynamicFreeHuggingFaceModels } from './registry.js';
+import { setDynamicFreeHuggingFaceModels, getDynamicFreeHuggingFaceModels } from './registry.js';
 
 interface CachedData {
     timestamp: number;
@@ -29,11 +29,16 @@ export function resetSyncCacheForTesting(): void {
 }
 
 export function getCachedFreeHuggingFaceModels(): string[] {
-    if (inMemoryCache && Array.isArray(inMemoryCache.hfFreeModels)) {
+    if (inMemoryCache && Array.isArray(inMemoryCache.hfFreeModels) && inMemoryCache.hfFreeModels.length > 0) {
         return inMemoryCache.hfFreeModels;
     }
 
-    return [...FREE_HUGGINGFACE_MODELS];
+    const dynamic = getDynamicFreeHuggingFaceModels();
+    if (dynamic.length > 0) {
+        return dynamic;
+    }
+
+    return ['Qwen/Qwen3.8-27B:ovhcloud'];
 }
 
 export async function fetchFreeHuggingFaceModels(): Promise<string[]> {
@@ -42,7 +47,7 @@ export async function fetchFreeHuggingFaceModels(): Promise<string[]> {
         if (!res.ok) {
             console.warn(`[api/providers/sync] Failed to fetch HF router models: HTTP ${res.status}`);
 
-            return [...FREE_HUGGINGFACE_MODELS];
+            return getCachedFreeHuggingFaceModels();
         }
 
         const data = await res.json();
@@ -79,7 +84,7 @@ export async function fetchFreeHuggingFaceModels(): Promise<string[]> {
         console.warn('[api/providers/sync] Error fetching HF free models:', err);
     }
 
-    return [...FREE_HUGGINGFACE_MODELS];
+    return getCachedFreeHuggingFaceModels();
 }
 
 export async function fetchOllamaModels(apiKey?: string): Promise<string[]> {

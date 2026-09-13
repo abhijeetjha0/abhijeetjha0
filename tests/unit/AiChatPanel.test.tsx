@@ -52,7 +52,7 @@ describe('AiChatPanel Component', () => {
         expect(container).toBeEmptyDOMElement();
     });
 
-    it('renders messages correctly and displays continuous quota badge', () => {
+    it('renders messages correctly and displays continuous quota badge when quota is known', () => {
         render(<AiChatPanel {...defaultProps} />);
     
         expect(screen.getByText('Hello')).toBeInTheDocument();
@@ -60,6 +60,12 @@ describe('AiChatPanel Component', () => {
         expect(screen.getByText("Ask Abhijit's AI")).toBeInTheDocument();
         expect(screen.getByText('25 queries left')).toBeInTheDocument();
         expect(screen.getByText('Demo notice')).toBeInTheDocument();
+    });
+
+    it('hides the quota badge initially when remainingQuota is null or undefined', () => {
+        render(<AiChatPanel {...defaultProps} remainingQuota={null} />);
+
+        expect(screen.queryByText(/queries left/)).not.toBeInTheDocument();
     });
 
     it('displays character counter as input changes', () => {

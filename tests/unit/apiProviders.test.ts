@@ -398,10 +398,11 @@ describe('api/providers', () => {
         it('validates free Hugging Face models using isFreeHuggingFaceModel', () => {
             expect(isFreeHuggingFaceModel('Qwen/Qwen3.8-27B:ovhcloud')).toBe(true);
             expect(isFreeHuggingFaceModel('Qwen/Qwen3.8-27B')).toBe(true);
+            expect(isFreeHuggingFaceModel('inclusionAI/Ling-3.0-flash-Fin:novita')).toBe(false);
+
+            setDynamicFreeHuggingFaceModels(['inclusionAI/Ling-3.0-flash-Fin:novita', 'prism-ml/Ternary-Bonsai-27B-AWQ-4bit:together']);
             expect(isFreeHuggingFaceModel('inclusionAI/Ling-3.0-flash-Fin:novita')).toBe(true);
-            expect(isFreeHuggingFaceModel('inclusionAI/Ling-3.0-flash-VL:novita')).toBe(true);
             expect(isFreeHuggingFaceModel('prism-ml/Ternary-Bonsai-27B-AWQ-4bit:together')).toBe(true);
-            expect(isFreeHuggingFaceModel('prism-ml/Ternary-Bonsai-27B-gguf:together')).toBe(true);
             expect(isFreeHuggingFaceModel('Qwen/Qwen2.5-72B-Instruct')).toBe(false);
             expect(isFreeHuggingFaceModel('meta-llama/Llama-3.3-70B-Instruct:ovhcloud')).toBe(false);
             expect(isFreeHuggingFaceModel('openai/gpt-4')).toBe(false);
@@ -479,15 +480,14 @@ describe('api/providers', () => {
             expect(models[0]).toBe('Qwen/Qwen3.8-27B:ovhcloud');
         });
 
-        it('falls back to static FREE_HUGGINGFACE_MODELS on router fetch error', async () => {
+        it('falls back to default Qwen/Qwen3.8-27B:ovhcloud on router fetch error when no dynamic cache exists', async () => {
             mockFetch.mockResolvedValueOnce({
                 ok: false,
                 status: 500,
             });
 
             const models = await fetchFreeHuggingFaceModels();
-            expect(models).toContain('Qwen/Qwen3.8-27B:ovhcloud');
-            expect(models.length).toBeGreaterThan(0);
+            expect(models).toEqual(['Qwen/Qwen3.8-27B:ovhcloud']);
         });
 
         it('discovers included Ollama models from /api/usage and available models from /v1/models', async () => {

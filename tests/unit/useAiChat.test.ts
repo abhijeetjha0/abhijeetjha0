@@ -33,6 +33,9 @@ describe('useAiChat hook', () => {
         mockFetch.mockResolvedValue({
             ok: true,
             status: 200,
+            headers: {
+                get: (headerName: string) => headerName === 'X-RateLimit-Remaining' ? '24' : null,
+            },
             json: async () => mockProviderModels,
             text: async () => 'mock response text'
         });
@@ -47,7 +50,7 @@ describe('useAiChat hook', () => {
         expect(result.current.messages).toHaveLength(1);
         expect(result.current.messages[0].content).toBe('Welcome!');
         expect(result.current.messages[0].role).toBe('assistant');
-        expect(result.current.remainingQuota).toBe(25);
+        expect(result.current.remainingQuota).toBeNull();
         expect(result.current.isQuotaExceeded).toBe(false);
 
         await waitFor(() => {

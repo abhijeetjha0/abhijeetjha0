@@ -50,14 +50,6 @@ export function getProviderApiKey(config: ProviderConfig): string | undefined {
     return undefined;
 }
 
-export const FREE_HUGGINGFACE_MODELS: readonly string[] = [
-    'Qwen/Qwen3.8-27B:ovhcloud',
-    'inclusionAI/Ling-3.0-flash-Fin:novita',
-    'inclusionAI/Ling-3.0-flash-VL:novita',
-    'prism-ml/Ternary-Bonsai-27B-AWQ-4bit:together',
-    'prism-ml/Ternary-Bonsai-27B-gguf:together',
-];
-
 let dynamicHfFreeModels: string[] = [];
 
 export function setDynamicFreeHuggingFaceModels(models: string[]): void {
@@ -77,8 +69,9 @@ export function isFreeHuggingFaceModel(model: string): boolean {
 
     const trimmed = model.trim();
 
-    return FREE_HUGGINGFACE_MODELS.includes(trimmed) ||
-        dynamicHfFreeModels.includes(trimmed) ||
+    return dynamicHfFreeModels.includes(trimmed) ||
+        trimmed === 'Qwen/Qwen3.8-27B:ovhcloud' ||
         trimmed === 'Qwen/Qwen3.8-27B';
 }
+
 
