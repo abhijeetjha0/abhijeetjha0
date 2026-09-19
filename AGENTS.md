@@ -86,6 +86,7 @@ Subdirectory-specific guidelines are maintained in modular `AGENTS.md` files thr
     - **Automated Free Model Discovery**: Hugging Face models are dynamically fetched from `https://router.huggingface.co/v1/models` and filtered for `pricing.input === 0 && pricing.output === 0 && status === 'live'`. Ollama Cloud models are fetched using `OLLAMA_API_KEY` from `https://ollama.com/api/usage` (`limits.monthly.models` representing the account's "Included usage" free models list) and `/v1/models`.
     - **Upstash Redis Caching**: Synced models are cached in Upstash Redis (`portfolio_free_models_cache`) with a 24-hour TTL and backed by in-memory caching.
     - **Vercel Cron**: Scheduled daily at 04:00 UTC (`0 4 * * *` in `vercel.json`) via `/api/cron/sync-models.ts` with optional `CRON_SECRET` authentication.
+12. **Badge Placement (Portfolio Scope)**: Never add project status badges (e.g., CI/CD, Test Coverage, License) to the main `README.md` file, as this repository serves as a personal portfolio presentation. All technical status and generic repository badges must be strictly placed in `SETUP.md`.
 
 
 > **Note**: Subdirectory-specific guidelines (Edge Functions, React component interfaces, constant declarations, i18n parity, shell script standards, and Jest testing patterns) are maintained directly within their respective modular `AGENTS.md` files:
