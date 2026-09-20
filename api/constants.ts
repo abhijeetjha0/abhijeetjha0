@@ -72,6 +72,8 @@ PROJECTS
 4. Poke-Dexter: A Pokédex application showcasing modern web development techniques and Pokémon data integration. (Link: https://github.com/abhijeetjha0/poke-dexter)
 5. Personal Portfolio: My personal portfolio website built with React, TypeScript, and Vite, featuring an AI chat assistant with Edge rate limiting. (Link: https://github.com/abhijeetjha0/abhijeetjha0)
 6. Vaccination Slots Monitor: A monitoring tool designed to track and notify users about available vaccination slots. (Link: https://github.com/abhijeetjha0/VaccinationSlotsMonitor)
+7. Spin Your AI: A Manifest V3 Chrome Extension that lets you spin up AI models directly from your browser. Connect to local models, cloud APIs, developer platforms, and MCP servers — all while keeping your credentials entirely secure on your device. (Link: https://github.com/abhijeetjha0/spin-your-ai)
+8. Node Project Builder: A comprehensive CLI tool to quickly generate and scaffold production-ready Node.js project templates. (Link: https://github.com/abhijeetjha0/node-project-builder)
 ---`;
 
 export const OLLAMA_API = 'https://ollama.com/v1';

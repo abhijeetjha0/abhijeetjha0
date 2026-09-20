@@ -182,6 +182,16 @@
       "name": "Vaccination Slots Monitor",
       "description": "A monitoring tool designed to track and notify users about available vaccination slots.",
       "link": "https://github.com/abhijeetjha0/VaccinationSlotsMonitor"
+    },
+    {
+      "name": "Spin Your AI",
+      "description": "A Manifest V3 Chrome Extension that lets you spin up AI models directly from your browser. Connect to local models, cloud APIs, developer platforms, and MCP servers — all while keeping your credentials entirely secure on your device.",
+      "link": "https://github.com/abhijeetjha0/spin-your-ai"
+    },
+    {
+      "name": "Node Project Builder",
+      "description": "A comprehensive CLI tool to quickly generate and scaffold production-ready Node.js project templates.",
+      "link": "https://github.com/abhijeetjha0/node-project-builder"
     }
   ],
   "footer": {
