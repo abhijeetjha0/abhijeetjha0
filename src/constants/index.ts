@@ -164,8 +164,48 @@ export const AI_CHAT_CONFIG = {
     // We use process.env to remain compatible with Jest, and use Vite's define to inject it during build
     BACKEND_URL: process.env.VITE_AI_BACKEND_URL || 'http://localhost:3000/api/chat',
     MODELS_URL: (process.env.VITE_AI_BACKEND_URL || 'http://localhost:3000/api/chat').replace('/api/chat', '/api/models'),
+    PROJECTS_URL: (process.env.VITE_AI_BACKEND_URL || 'http://localhost:3000/api/chat').replace('/api/chat', '/api/projects'),
     MAX_MESSAGES_PER_SESSION: 25,
     MAX_INPUT_LENGTH: 200,
     STORAGE_KEY: 'abhijeetjha0_ai_chat_usage',
     MODELS_STORAGE_KEY: 'abhijeetjha0_ai_models',
+} as const;
+
+export const PROJECTS_CONFIG = {
+    GITHUB_USERNAME: 'abhijeetjha0',
+    GITHUB_API_URL: 'https://api.github.com/users/abhijeetjha0/repos?sort=pushed&per_page=100',
+    STORAGE_KEY: 'abhijeetjha0_github_projects',
+    CACHE_TTL_MS: 30 * 60 * 1000,
+    BACKEND_URL: (process.env.VITE_AI_BACKEND_URL || 'http://localhost:3000/api/chat').replace('/api/chat', '/api/projects'),
+    LANGUAGE_COLORS: {
+        TypeScript: '#3178c6',
+        JavaScript: '#f7df1e',
+        HTML: '#e34c26',
+        CSS: '#563d7c',
+        SCSS: '#c6538c',
+        Python: '#3572A5',
+        Shell: '#89e051',
+        Go: '#00add8',
+        Rust: '#dea584',
+    } as Record<string, string>,
+    KNOWN_REPO_NAMES: {
+        'markdown-notes-app': 'Markdown Notes App',
+        'leave-planner': 'Leave Planner',
+        'ai': 'AI Agent Skills',
+        'poke-dexter': 'Poke-Dexter',
+        'abhijeetjha0': 'Personal Portfolio',
+        'VaccinationSlotsMonitor': 'Vaccination Slots Monitor',
+        'spin-your-ai': 'Spin Your AI',
+        'spin-your-ai-vscode-extension': 'Spin Your AI (VS Code Extension)',
+        'node-project-builder': 'Node Project Builder',
+        'ai-vs-ai-pokemon-showdown': 'AI vs AI Pokémon Showdown',
+        'ai-vs-ai-chess': 'AI vs AI Chess',
+        'ollama-router': 'Ollama Router',
+        'lint-rules': 'Lint Rules',
+    } as Record<string, string>,
+    CURATED_DESCRIPTIONS: {
+        'node-project-builder': 'A comprehensive CLI tool to quickly generate and scaffold production-ready Node.js project templates.',
+        'VaccinationSlotsMonitor': 'A monitoring tool designed to track and notify users about available vaccination slots.',
+        'lint-rules': 'Custom, industry-level ESLint and code style configurations for modern TypeScript and JavaScript development.',
+    } as Record<string, string>,
 } as const;

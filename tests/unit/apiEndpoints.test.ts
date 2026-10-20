@@ -13,7 +13,7 @@ import cronHandler from '../../api/cron/sync-models';
 import { chatRateLimit, chatDailyRateLimit } from '../../api/rateLimit';
 
 const originalEnv = process.env;
-
+const originalFetch = global.fetch;
 
 describe('api endpoints (chat and models)', () => {
     let mockFetch: jest.Mock;
@@ -37,7 +37,9 @@ describe('api endpoints (chat and models)', () => {
 
     afterAll(() => {
         process.env = originalEnv;
+        global.fetch = originalFetch;
     });
+
 
     describe('/api/chat endpoint', () => {
         it('handles CORS OPTIONS preflight request', async () => {

@@ -11,6 +11,7 @@ api/
 ├── chat.ts               # POST /api/chat — Multi-provider AI chat completions endpoint
 ├── constants.ts          # Shared system prompt, Ollama API URL, CORS headers
 ├── models.ts             # GET /api/models — Returns available models from configured providers
+├── projects.ts           # GET /api/projects — GitHub repository synchronization Edge endpoint
 ├── rateLimit.ts          # IP-based rate limiter (Upstash Redis primary, in-memory fallback)
 ├── cron/
 │   └── sync-models.ts    # GET /api/cron/sync-models — Vercel Cron endpoint refreshing free models cache
@@ -71,6 +72,11 @@ The backend automatically detects which provider API keys are present in `proces
    - **Ollama Cloud**: Queries `https://ollama.com/api/usage` authenticated via `Authorization: Bearer ${apiKey}` to inspect `limits.monthly.models` (programmatically fetching the "Included usage" free models list from Ollama account settings without requiring manual browser login) and `/v1/models` to discover active models, prioritizing `gemma4:31b`.
    - **Caching**: Free models are cached in Upstash Redis (`portfolio_free_models_cache`) with a 24-hour TTL and backed by in-memory caching.
 10. **Vercel Cron Automation (`/api/cron/sync-models`)**: A Vercel Cron endpoint scheduled daily at 04:00 UTC (`0 4 * * *` in `vercel.json`) invokes `syncFreeModels(true)` to refresh the Redis cache. Secured via optional `CRON_SECRET` bearer token validation.
+11. **GitHub Projects Synchronization (`/api/projects.ts`)**:
+   - **Endpoint Contract**: Handles `GET /api/projects`. Returns normalized JSON array of public non-fork GitHub repositories.
+   - **Authentication & Rate Limits**: Uses optional `GITHUB_TOKEN` from environment if present to boost GitHub API rate limits from 60 to 5,000 req/hr.
+   - **Edge Caching**: Employs `Cache-Control: public, s-maxage=1800, stale-while-revalidate=86400` so Vercel CDN caches results at edge for 30 minutes.
+   - **Burst Rate Limiting**: Applies `chatRateLimit` (5 requests / 10s) to mitigate abusive traffic.
 
 ---
 

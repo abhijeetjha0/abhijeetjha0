@@ -2,19 +2,26 @@ import { renderHook, act, waitFor } from '@testing-library/react';
 import { useAiChat } from '../../src/hooks/useAiChat';
 
 // Mock translation
-jest.mock('react-i18next', () => ({
-    useTranslation: () => ({
-        t: (key: string) => {
-            if (key === 'aiChat.welcomeMessage') return 'Welcome!';
-            if (key === 'aiChat.error') return 'Error occurred';
-            if (key === 'aiChat.quotaReached') return 'Daily rate limit has been applied (25 queries / 24 hours). Your access will reset automatically after 24 hours.';
+jest.mock('react-i18next', () => {
+    const original = jest.requireActual('react-i18next');
 
-            return key;
-        }
-    })
-}));
+    return {
+        ...original,
+        useTranslation: () => ({
+            t: (key: string) => {
+                if (key === 'aiChat.welcomeMessage') return 'Welcome!';
+                if (key === 'aiChat.error') return 'Error occurred';
+                if (key === 'aiChat.quotaReached') return 'Daily rate limit has been applied (25 queries / 24 hours). Your access will reset automatically after 24 hours.';
+
+                return key;
+            },
+        }),
+    };
+});
+
 
 // Mock fetch and TextDecoder for streaming
+const originalFetch = global.fetch;
 const mockFetch = jest.fn();
 global.fetch = mockFetch;
 
@@ -314,5 +321,9 @@ describe('useAiChat hook', () => {
         const chatFetchCall = mockFetch.mock.calls.find(call => call[1] && call[1].method === 'POST');
         expect(chatFetchCall).toBeUndefined();
         expect(result.current.messages).toHaveLength(1); // Only welcome msg
+    });
+
+    afterAll(() => {
+        global.fetch = originalFetch;
     });
 });

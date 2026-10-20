@@ -87,6 +87,11 @@ Subdirectory-specific guidelines are maintained in modular `AGENTS.md` files thr
     - **Upstash Redis Caching**: Synced models are cached in Upstash Redis (`portfolio_free_models_cache`) with a 24-hour TTL and backed by in-memory caching.
     - **Vercel Cron**: Scheduled daily at 04:00 UTC (`0 4 * * *` in `vercel.json`) via `/api/cron/sync-models.ts` with optional `CRON_SECRET` authentication.
 12. **Badge Placement (Portfolio Scope)**: Never add project status badges (e.g., CI/CD, Test Coverage, License) to the main `README.md` file, as this repository serves as a personal portfolio presentation. All technical status and generic repository badges must be strictly placed in `SETUP.md`.
+13. **Dynamic GitHub Projects Synchronization**:
+    - **Architecture**: Dynamic repository synchronization (`abhijeetjha0`) via `/api/projects` (Vercel Edge Function with `s-maxage=1800, stale-while-revalidate=86400`) and the `useGitHubProjects` hook.
+    - **Client Fallback & Caching**: 30-minute `localStorage` cache (`portfolio_github_projects_cache_v1`). If the backend Edge Function is unreachable, the client cascades directly to GitHub REST API (`api.github.com/users/abhijeetjha0/repos`), falling back to curated static i18n projects if offline.
+    - **Repository Filtering**: Original repositories only (`fork === false`).
+    - **UI Features**: Primary programming language badge with language accent color dot and responsive "Live Demo" action button alongside "View Project" when repository `homepage` is present.
 
 
 > **Note**: Subdirectory-specific guidelines (Edge Functions, React component interfaces, constant declarations, i18n parity, shell script standards, and Jest testing patterns) are maintained directly within their respective modular `AGENTS.md` files:

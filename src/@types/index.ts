@@ -19,7 +19,32 @@ export interface ProjectInfo {
     name: string;
     description: string;
     link: string;
+    homepage?: string;
+    language?: string;
+    updatedAt?: string;
+    isDynamic?: boolean;
 }
+
+export interface GitHubRepo {
+    id: number;
+    name: string;
+    description: string | null;
+    html_url: string;
+    homepage: string | null;
+    language: string | null;
+    fork: boolean;
+    archived?: boolean;
+    pushed_at?: string;
+    updated_at?: string;
+}
+
+export interface UseGitHubProjectsResult {
+    projects: ProjectInfo[];
+    isLoading: boolean;
+    isError: boolean;
+    refresh: () => Promise<void>;
+}
+
 
 export interface PersonalInfo {
     name: string;

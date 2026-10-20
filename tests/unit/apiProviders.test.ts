@@ -16,6 +16,7 @@ import {
 } from '../../api/providers/registry';
 
 const originalEnv = process.env;
+const originalFetch = global.fetch;
 
 describe('api/providers', () => {
     let mockFetch: jest.Mock;
@@ -38,7 +39,9 @@ describe('api/providers', () => {
 
     afterAll(() => {
         process.env = originalEnv;
+        global.fetch = originalFetch;
     });
+
 
     describe('callOpenAICompatibleProvider', () => {
         const testConfig = FREE_PROVIDERS.find(p => p.name === 'openrouter')!;

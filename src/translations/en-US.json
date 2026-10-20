@@ -194,6 +194,10 @@
       "link": "https://github.com/abhijeetjha0/node-project-builder"
     }
   ],
+  "projectsSection": {
+    "viewProject": "View Project",
+    "liveDemo": "Live Demo"
+  },
   "footer": {
     "developedBy": "Developed by"
   },

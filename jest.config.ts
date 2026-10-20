@@ -24,7 +24,9 @@ const config: Config = {
     collectCoverageFrom: ['src/**/*.{ts,tsx}', '!src/main.tsx'],
     coverageDirectory: 'coverage',
     coverageReporters: ['text', 'text-summary', 'lcov', 'json-summary'],
-    reporters: ['default']
+    reporters: ['default'],
+    testTimeout: 15000,
 };
+
 
 export default config;

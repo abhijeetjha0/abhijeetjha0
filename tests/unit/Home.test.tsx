@@ -1,12 +1,30 @@
 import { render, screen, act } from '@testing-library/react';
 import Home from '../../src/components/Home';
-import { I18nextProvider } from 'react-i18next';
+import { I18nextProvider, useTranslation } from 'react-i18next';
 import i18n from '../../src/i18n';
 
 describe('Home Component', () => {
+    const actualUseTranslation = jest.requireActual('react-i18next').useTranslation;
+
     beforeEach(() => {
-        fetchMock.mockResponse(JSON.stringify(['mock-model-1']));
+        if (jest.isMockFunction(useTranslation)) {
+            (useTranslation as jest.Mock).mockImplementation(actualUseTranslation);
+        }
+        localStorage.clear();
+        sessionStorage.clear();
+        fetchMock.resetMocks();
+        fetchMock.mockImplementation(async req => {
+            const url = typeof req === 'string' ? req : (req && 'url' in req ? (req as Request).url : '');
+            if (url.includes('/api/models')) {
+                return new Response(JSON.stringify(['mock-model-1']), { status: 200 });
+            }
+
+            return new Response(JSON.stringify([]), { status: 200 });
+        });
     });
+
+
+
 
     test('renders all child components and footer with copyright notice', async () => {
         let container: HTMLElement = document.createElement('div');
