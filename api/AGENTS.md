@@ -93,6 +93,7 @@ The backend automatically detects which provider API keys are present in `proces
    - `OLLAMA_API_KEY` (Ollama Cloud)
    - `DEFAULT_AI_PROVIDER` (Optional primary provider override)
    - `KV_REST_API_URL` / `KV_REST_API_TOKEN` (Optional Upstash Redis for distributed rate limiting)
+   - `GITHUB_TOKEN` / `GITHUB_PAT` / `GH_TOKEN` (Optional GitHub Personal Access Token to increase GitHub REST API rate limits to 5,000 req/hr)
 2. **CORS Headers**: Always include `CORS_HEADERS` from `constants.ts` in every response.
 3. **Response Headers**: `chat.ts` returns `X-AI-Provider` and `X-AI-Model` so clients and logs can trace which provider serviced the query, as well as `X-RateLimit-Remaining` and `X-RateLimit-Limit` for quota tracking.
 4. **Explicit `.js` Extensions for Relative Imports**: Because `package.json` specifies `"type": "module"`, Vercel compiles serverless/edge functions using Node16/NodeNext ESM resolution. All relative imports within `api/` MUST include explicit `.js` extensions (e.g., `import ... from './constants.js';`). Jest's `moduleNameMapper` handles mapping `.js` to `.ts` for local testing.

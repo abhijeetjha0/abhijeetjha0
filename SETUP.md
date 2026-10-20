@@ -37,6 +37,7 @@ cp .env.example .env.local
 # - (Optional) Set DEFAULT_AI_PROVIDER to force a primary provider (ollama | huggingface | openrouter)
 # - (Optional) Set KV_REST_API_URL and KV_REST_API_TOKEN for Upstash Redis rate limiting and free models cache
 # - (Optional) Set CRON_SECRET to secure the Vercel Cron cache synchronization endpoint (/api/cron/sync-models)
+# - (Optional) Set GITHUB_TOKEN to boost GitHub repository sync rate limits from 60 to 5,000 req/hr
 
 
 # 5. Start local development server

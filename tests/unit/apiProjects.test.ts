@@ -19,6 +19,8 @@ describe('/api/projects endpoint', () => {
 
         process.env = { ...originalEnv };
         delete process.env.GITHUB_TOKEN;
+        delete process.env.GITHUB_PAT;
+        delete process.env.GH_TOKEN;
 
         mockFetch = jest.fn();
         global.fetch = mockFetch;
@@ -145,6 +147,31 @@ describe('/api/projects endpoint', () => {
             expect.objectContaining({
                 headers: expect.objectContaining({
                     Authorization: 'Bearer test-token-123',
+                }),
+            })
+        );
+    });
+
+    it('includes Authorization header when GITHUB_PAT or GH_TOKEN is configured', async () => {
+        process.env.GITHUB_PAT = 'pat-token-456';
+
+        mockFetch.mockResolvedValueOnce({
+            ok: true,
+            status: 200,
+            json: async () => [],
+        });
+
+        const req = new Request('http://localhost:3000/api/projects', {
+            method: 'GET',
+        });
+
+        await projectsHandler(req);
+
+        expect(mockFetch).toHaveBeenCalledWith(
+            expect.stringContaining('api.github.com/users/abhijeetjha0/repos'),
+            expect.objectContaining({
+                headers: expect.objectContaining({
+                    Authorization: 'Bearer pat-token-456',
                 }),
             })
         );

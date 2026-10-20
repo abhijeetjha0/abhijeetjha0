@@ -48,7 +48,7 @@ export async function fetchGitHubProjects(forceRefresh: boolean = false): Promis
         'User-Agent': 'abhijeetjha0-portfolio',
     };
 
-    const token = process.env.GITHUB_TOKEN;
+    const token = process.env.GITHUB_TOKEN || process.env.GITHUB_PAT || process.env.GH_TOKEN;
     if (token) {
         githubHeaders['Authorization'] = `Bearer ${token}`;
     }
