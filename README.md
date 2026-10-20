@@ -6,6 +6,10 @@
 <a href="https://github.com/abhijeetjha0?tab=repositories&q=&type=source" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/View_Projects-GitHub-181717?style=flat&logo=github&logoColor=white" alt="View Projects" /></a>
 <a href="https://calendar.app.google/BFfU1CSpF3XL9ja69" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Book_Appointment-Google_Calendar-0B8043?style=flat&logo=googlecalendar&logoColor=white" alt="Book Appointment" /></a>
 <a href="https://linkedin.com/in/abhijeetjha0" target="_blank" rel="noopener noreferrer"><img src="./.github/assets/linkedin-badge.svg" alt="LinkedIn" /></a>
+<a href="https://www.npmjs.com/~abhijeetjha0" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/npm-abhijeetjha0-CB3837?style=flat&logo=npm&logoColor=white" alt="npm" /></a>
+<a href="https://g.dev/abhijeetjha0" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Google_Developer-abhijeetjha0-4285F4?style=flat&logo=google&logoColor=white" alt="Google Developer" /></a>
+<a href="https://ollama.com/abhijeetjha0" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Ollama-abhijeetjha0-000000?style=flat&logo=ollama&logoColor=white" alt="Ollama" /></a>
+<a href="https://huggingface.co/abhijeetjha0" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Hugging_Face-abhijeetjha0-FFD21E?style=flat&logo=huggingface&logoColor=black" alt="Hugging Face" /></a>
 [![Email](./.github/assets/email-badge.svg)](mailto:abhijeetjha0@hotmail.com)
 
 
@@ -17,6 +21,10 @@ Senior Software Engineer with **6+ years of experience** leading UI development 
 
 - 📍 **Location**: Jaipur, India
 - 💼 **Current Role**: Senior Software Engineer @ Metacube Software
+- 📦 **npm**: [npmjs.com/~abhijeetjha0](https://www.npmjs.com/~abhijeetjha0)
+- 🌐 **Google Developer**: [g.dev/abhijeetjha0](https://g.dev/abhijeetjha0)
+- 🦙 **Ollama**: [ollama.com/abhijeetjha0](https://ollama.com/abhijeetjha0)
+- 🤗 **Hugging Face**: [huggingface.co/abhijeetjha0](https://huggingface.co/abhijeetjha0)
 - 🎓 **Education**: B.Tech in IT @ Swami Keshwanand Institute of Technology (SKIT), Jaipur
 
 ---

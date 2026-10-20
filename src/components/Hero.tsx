@@ -10,7 +10,7 @@ export default function Hero() {
         <div id={SECTION_IDS.HOME} className="hero-section bg-light py-5">
             <Container>
                 <Row className="align-items-center g-4">
-                    <Col xs={12} sm={4} md={3} className="text-center text-sm-start">
+                    <Col xs={12} sm="auto" className="text-center text-sm-start d-flex justify-content-center justify-content-sm-start">
                         <div className="profile-photo-wrapper">
                             <img
                                 src={profilePhoto}
@@ -22,15 +22,15 @@ export default function Hero() {
                             />
                         </div>
                     </Col>
-                    <Col xs={12} sm={8} md={5} lg={6}>
+                    <Col xs={12} sm lg>
                         <h1 className="display-4 fw-bold">{t('personalInfo.name')}</h1>
                         <h2 className="text-secondary h4 mb-3">{t('personalInfo.title')}</h2>
                         <p className="lead mb-0">{t('about.description')}</p>
                     </Col>
-                    <Col xs={12} md={4} lg={3} className="mt-4 mt-md-0">
+                    <Col xs={12} lg={3} className="mt-4 mt-lg-0 ms-lg-auto">
                         <div className="contact-info d-flex flex-column gap-2">
                             {/* Email */}
-                            <div className="contact-item d-flex align-items-center justify-content-start justify-content-md-end gap-2">
+                            <div className="contact-item d-flex align-items-center justify-content-start justify-content-lg-end gap-2">
                                 <span
                                     className="contact-icon email-icon"
                                     aria-label={t('contactLabels.email')}
@@ -50,7 +50,7 @@ export default function Hero() {
                             </div>
 
                             {/* Location */}
-                            <div className="contact-item d-flex align-items-center justify-content-start justify-content-md-end gap-2">
+                            <div className="contact-item d-flex align-items-center justify-content-start justify-content-lg-end gap-2">
                                 <span
                                     className="contact-icon location-icon"
                                     aria-label={t('contactLabels.location')}
@@ -68,7 +68,7 @@ export default function Hero() {
                             </div>
 
                             {/* GitHub */}
-                            <div className="contact-item d-flex align-items-center justify-content-start justify-content-md-end gap-2">
+                            <div className="contact-item d-flex align-items-center justify-content-start justify-content-lg-end gap-2">
                                 <span
                                     className="contact-icon github-icon"
                                     aria-label={t('contactLabels.github')}
@@ -91,7 +91,7 @@ export default function Hero() {
                             </div>
 
                             {/* LinkedIn */}
-                            <div className="contact-item d-flex align-items-center justify-content-start justify-content-md-end gap-2">
+                            <div className="contact-item d-flex align-items-center justify-content-start justify-content-lg-end gap-2">
                                 <span
                                     className="contact-icon linkedin-icon"
                                     aria-label={t('contactLabels.linkedin')}
@@ -114,8 +114,103 @@ export default function Hero() {
                                 </a>
                             </div>
 
+                            {/* npm */}
+                            <div className="contact-item d-flex align-items-center justify-content-start justify-content-lg-end gap-2">
+                                <span
+                                    className="contact-icon npm-icon"
+                                    aria-label={t('contactLabels.npm')}
+                                    title={t('contactLabels.npm')}
+                                >
+                                    <span
+                                        className="material-symbols-outlined"
+                                        style={{ color: '#cb3837' }}
+                                        aria-hidden="true"
+                                    >
+                                        package_2
+                                    </span>
+                                </span>
+                                <a
+                                    href={PERSONAL_INFO.NPM_URL}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {t('personalInfo.npm')}
+                                </a>
+                            </div>
+
+                            {/* Google Developer */}
+                            <div className="contact-item d-flex align-items-center justify-content-start justify-content-lg-end gap-2">
+                                <span
+                                    className="contact-icon google-dev-icon"
+                                    aria-label={t('contactLabels.googleDev')}
+                                    title={t('contactLabels.googleDev')}
+                                >
+                                    <span
+                                        className="material-symbols-outlined"
+                                        style={{ color: '#4285F4' }}
+                                        aria-hidden="true"
+                                    >
+                                        developer_mode
+                                    </span>
+                                </span>
+                                <a
+                                    href={PERSONAL_INFO.GOOGLE_DEV_URL}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {t('personalInfo.googleDev')}
+                                </a>
+                            </div>
+
+                            {/* Ollama */}
+                            <div className="contact-item d-flex align-items-center justify-content-start justify-content-lg-end gap-2">
+                                <span
+                                    className="contact-icon ollama-icon"
+                                    aria-label={t('contactLabels.ollama')}
+                                    title={t('contactLabels.ollama')}
+                                >
+                                    <span
+                                        className="material-symbols-outlined ollama-contact-icon"
+                                        aria-hidden="true"
+                                    >
+                                        smart_toy
+                                    </span>
+                                </span>
+                                <a
+                                    href={PERSONAL_INFO.OLLAMA_URL}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {t('personalInfo.ollama')}
+                                </a>
+                            </div>
+
+                            {/* Hugging Face */}
+                            <div className="contact-item d-flex align-items-center justify-content-start justify-content-lg-end gap-2">
+                                <span
+                                    className="contact-icon huggingface-icon"
+                                    aria-label={t('contactLabels.huggingface')}
+                                    title={t('contactLabels.huggingface')}
+                                >
+                                    <span
+                                        className="material-symbols-outlined"
+                                        style={{ color: '#ff9d00' }}
+                                        aria-hidden="true"
+                                    >
+                                        sentiment_satisfied
+                                    </span>
+                                </span>
+                                <a
+                                    href={PERSONAL_INFO.HUGGINGFACE_URL}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {t('personalInfo.huggingface')}
+                                </a>
+                            </div>
+
                             {/* Book Appointment Button */}
-                            <div className="mt-2 d-flex justify-content-start justify-content-md-end">
+                            <div className="mt-2 d-flex justify-content-start justify-content-lg-end">
                                 <a
                                     href={PERSONAL_INFO.APPOINTMENT_URL}
                                     target="_blank"

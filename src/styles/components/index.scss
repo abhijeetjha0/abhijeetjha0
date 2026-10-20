@@ -22,6 +22,7 @@
             display: inline-block;
             position: relative;
             padding: 4px;
+            max-width: 100%;
             border-radius: 50%;
             background: linear-gradient(135deg, #cbd5e1 0%, #94a3b8 100%);
             box-shadow:
@@ -41,14 +42,21 @@
             .profile-photo {
                 width: 170px;
                 height: 170px;
+                max-width: 100%;
+                aspect-ratio: 1 / 1;
                 object-fit: cover;
                 border-radius: 50%;
                 border: 4px solid var(--bs-body-bg, #ffffff);
                 display: block;
 
+                @media (width <= 991px) {
+                    width: 150px;
+                    height: 150px;
+                }
+
                 @media (width <= 576px) {
-                    width: 140px;
-                    height: 140px;
+                    width: 130px;
+                    height: 130px;
                 }
             }
         }
@@ -69,7 +77,8 @@
                     line-height: 1;
                 }
 
-                .github-contact-icon {
+                .github-contact-icon,
+                .ollama-contact-icon {
                     color: #24292f;
                 }
             }

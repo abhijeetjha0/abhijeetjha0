@@ -5,6 +5,10 @@
     "email": "abhijeetjha0@hotmail.com",
     "github": "github.com/abhijeetjha0",
     "linkedin": "linkedin.com/in/abhijeetjha0",
+    "npm": "npmjs.com/~abhijeetjha0",
+    "googleDev": "g.dev/abhijeetjha0",
+    "ollama": "ollama.com/abhijeetjha0",
+    "huggingface": "huggingface.co/abhijeetjha0",
     "location": "Jaipur, India"
   },
   "sections": {
@@ -28,6 +32,10 @@
     "location": "Location:",
     "github": "GitHub:",
     "linkedin": "LinkedIn:",
+    "npm": "npm:",
+    "googleDev": "Google Developer:",
+    "ollama": "Ollama:",
+    "huggingface": "Hugging Face:",
     "bookAppointment": "Book Appointment"
   },
 

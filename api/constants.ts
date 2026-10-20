@@ -25,6 +25,10 @@ Location: Jaipur, India
 Email: abhijeetjha0@hotmail.com
 GitHub: https://github.com/abhijeetjha0
 LinkedIn: https://linkedin.com/in/abhijeetjha0
+NPM: https://www.npmjs.com/~abhijeetjha0
+Google Developer: https://g.dev/abhijeetjha0
+Ollama: https://ollama.com/abhijeetjha0
+Hugging Face: https://huggingface.co/abhijeetjha0
 
 ABOUT
 Leading UI development and crafting responsive web designs with expertise in React, Ember.js, and TypeScript. Focused on building efficient, high-performance web applications that are localized, accessible, and cross-browser compatible.
