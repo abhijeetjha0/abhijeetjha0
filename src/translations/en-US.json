@@ -11,7 +11,6 @@
     "experience": "Professional Experience",
     "skills": "Skills",
     "education": "Education",
-    "about": "About Me",
     "projects": "Projects"
   },
   "errorBoundary": "This is not expected!",
@@ -152,48 +151,6 @@
       "period": "Jun 2013 - Mar 2015"
     }
   ],
-  "projects": [
-    {
-      "name": "Markdown Notes App",
-      "description": "Google Keep inspired note-taking web app featuring rich WYSIWYG Markdown editing, real-time sync with Firebase Firestore, and Google Authentication.",
-      "link": "https://github.com/abhijeetjha0/markdown-notes-app"
-    },
-    {
-      "name": "Leave Planner",
-      "description": "Conversational vacation and leave optimization dashboard built with React 19 and Vite to discover bridge-day holidays and export customized schedules.",
-      "link": "https://github.com/abhijeetjha0/leave-planner"
-    },
-    {
-      "name": "AI Agent Skills",
-      "description": "A repository of modular AI coding agent skills and instructions for enhancing AI-assisted development workflows.",
-      "link": "https://github.com/abhijeetjha0/ai"
-    },
-    {
-      "name": "Poke-Dexter",
-      "description": "A Pokédex application showcasing modern web development techniques and Pokémon data integration.",
-      "link": "https://github.com/abhijeetjha0/poke-dexter"
-    },
-    {
-      "name": "Personal Portfolio",
-      "description": "My personal portfolio website built with React, TypeScript, and Vite, featuring an AI chat assistant with Edge rate limiting.",
-      "link": "https://github.com/abhijeetjha0/abhijeetjha0"
-    },
-    {
-      "name": "Vaccination Slots Monitor",
-      "description": "A monitoring tool designed to track and notify users about available vaccination slots.",
-      "link": "https://github.com/abhijeetjha0/VaccinationSlotsMonitor"
-    },
-    {
-      "name": "Spin Your AI",
-      "description": "A Manifest V3 Chrome Extension that lets you spin up AI models directly from your browser. Connect to local models, cloud APIs, developer platforms, and MCP servers — all while keeping your credentials entirely secure on your device.",
-      "link": "https://github.com/abhijeetjha0/spin-your-ai"
-    },
-    {
-      "name": "Node Project Builder",
-      "description": "A comprehensive CLI tool to quickly generate and scaffold production-ready Node.js project templates.",
-      "link": "https://github.com/abhijeetjha0/node-project-builder"
-    }
-  ],
   "projectsSection": {
     "viewProject": "View Project",
     "liveDemo": "Live Demo"
@@ -210,8 +167,6 @@
     "title": "Ask Abhijit's AI",
     "placeholder": "Ask me anything about Abhijit...",
     "send": "Send",
-    "loading": "Connecting to AI...",
-    "ready": "AI is ready!",
     "error": "Something went wrong. Please try again.",
     "welcomeMessage": "👋 Hi! I'm Abhijit's AI assistant. Ask me about his skills, experience, or projects!",
     "suggestedQuestions": [

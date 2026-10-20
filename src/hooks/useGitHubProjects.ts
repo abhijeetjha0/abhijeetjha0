@@ -1,5 +1,4 @@
-import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { GitHubRepo, ProjectInfo, UseGitHubProjectsResult } from '../@types';
 import { PROJECTS_CONFIG } from '../constants';
 import { logger } from '../utilities/logger';
@@ -17,7 +16,7 @@ export function formatProjectTitle(repoName: string): string {
 export function formatProjectDescription(
     repoName: string,
     desc: string | null | undefined,
-    staticProjects: ProjectInfo[]
+    staticProjects: ProjectInfo[] = []
 ): string {
     if (desc && desc.trim().length > 0) {
         return desc.trim();
@@ -39,8 +38,7 @@ export function formatProjectDescription(
     return formatProjectTitle(repoName);
 }
 
-async function performProjectFetch(
-    staticProjects: ProjectInfo[],
+export async function performProjectFetch(
     forceRefresh: boolean = false
 ): Promise<ProjectInfo[] | null> {
     let fetchedList: (ProjectInfo | GitHubRepo)[] | null = null;
@@ -84,7 +82,7 @@ async function performProjectFetch(
         }
     }
 
-    // Step 3: Process fetched repositories or return null for static fallback
+    // Step 3: Process fetched repositories
     if (Array.isArray(fetchedList) && fetchedList.length > 0) {
         const validItems = fetchedList.filter(
             (item): item is ProjectInfo | GitHubRepo =>
@@ -98,7 +96,7 @@ async function performProjectFetch(
                 const rawName = item.name;
                 const displayName = formatProjectTitle(rawName);
                 const link = 'link' in item && item.link ? item.link : ('html_url' in item ? item.html_url : '');
-                const description = formatProjectDescription(rawName, item.description, staticProjects);
+                const description = formatProjectDescription(rawName, item.description);
                 const homepage = item.homepage && item.homepage.trim().length > 0 ? item.homepage.trim() : undefined;
                 const language = item.language || undefined;
                 const updatedAt = 'updatedAt' in item && item.updatedAt
@@ -122,14 +120,7 @@ async function performProjectFetch(
 }
 
 export function useGitHubProjects(): UseGitHubProjectsResult {
-    const { t } = useTranslation();
-    const staticProjects = useMemo<ProjectInfo[]>(() => {
-        const rawProjects = t('projects', { returnObjects: true });
-
-        return Array.isArray(rawProjects) ? (rawProjects as ProjectInfo[]) : [];
-    }, [t]);
-
-    const [projects, setProjects] = useState<ProjectInfo[]>(() => staticProjects);
+    const [projects, setProjects] = useState<ProjectInfo[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isError, setIsError] = useState<boolean>(false);
     const hasFetchedRef = useRef(false);
@@ -142,7 +133,7 @@ export function useGitHubProjects(): UseGitHubProjectsResult {
         hasFetchedRef.current = true;
         let isMounted = true;
 
-        performProjectFetch(staticProjects)
+        performProjectFetch()
             .then(normalized => {
                 if (!isMounted) return;
 
@@ -153,9 +144,6 @@ export function useGitHubProjects(): UseGitHubProjectsResult {
                 } else {
                     setIsError(true);
                     setIsLoading(false);
-                    if (staticProjects.length > 0) {
-                        setProjects(staticProjects);
-                    }
                 }
             })
             .catch(() => {
@@ -163,22 +151,19 @@ export function useGitHubProjects(): UseGitHubProjectsResult {
 
                 setIsError(true);
                 setIsLoading(false);
-                if (staticProjects.length > 0) {
-                    setProjects(staticProjects);
-                }
             });
 
         return () => {
             isMounted = false;
         };
-    }, [staticProjects]);
+    }, []);
 
     const refresh = useCallback(async () => {
         setIsLoading(true);
         setIsError(false);
 
         try {
-            const normalized = await performProjectFetch(staticProjects, true);
+            const normalized = await performProjectFetch(true);
             if (normalized) {
                 setProjects(normalized);
                 setIsLoading(false);
@@ -186,18 +171,12 @@ export function useGitHubProjects(): UseGitHubProjectsResult {
             } else {
                 setIsError(true);
                 setIsLoading(false);
-                if (staticProjects.length > 0) {
-                    setProjects(staticProjects);
-                }
             }
         } catch {
             setIsError(true);
             setIsLoading(false);
-            if (staticProjects.length > 0) {
-                setProjects(staticProjects);
-            }
         }
-    }, [staticProjects]);
+    }, []);
 
     return {
         projects,

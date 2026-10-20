@@ -36,7 +36,8 @@ This document specifies rules and standards for AI Coding Assistants creating or
    - When quota is exhausted, the input area is replaced with a contact card (Email & LinkedIn).
 
 7. **Dynamic Projects Section & Badge Aesthetics (`Projects.tsx`)**:
-   - Projects are loaded dynamically via `useGitHubProjects()`, backed by Edge CDN HTTP caching (`s-maxage=3600`) and automatic fallback to direct GitHub REST API or static i18n projects.
+   - Projects are loaded 100% dynamically via `useGitHubProjects()`, backed by Edge CDN HTTP caching (`s-maxage=3600`) and automatic fallback to direct GitHub REST API.
+   - Renders Bootstrap 5 `.placeholder-glow` skeleton loading cards while project data is fetching to prevent layout shifts.
    - Primary programming language badges are rendered with `.project-lang-badge` and dynamic CSS variables (`--lang-color: ${badgeColor}`) using curated language color tokens in `PROJECTS_CONFIG.LANGUAGE_COLORS`.
    - When repository `homepage` is present and valid, render both a primary "Live Demo" action button (`target="_blank"`, `rel="noopener noreferrer"`) and an outline "View Project" GitHub repository button.
    - Project cards use stable data-driven keys: `key={project.link || project.name}`.

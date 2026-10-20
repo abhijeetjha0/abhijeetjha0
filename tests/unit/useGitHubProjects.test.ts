@@ -5,37 +5,6 @@ import {
     formatProjectDescription,
 } from '../../src/hooks/useGitHubProjects';
 import { PROJECTS_CONFIG } from '../../src/constants';
-import { ProjectInfo } from '../../src/@types';
-
-const mockStaticProjects: ProjectInfo[] = [
-    {
-        name: 'Static Project One',
-        description: 'Curated description for project one',
-        link: 'https://github.com/abhijeetjha0/project-one',
-    },
-    {
-        name: 'Node Project Builder',
-        description: 'A comprehensive CLI tool to quickly generate and scaffold production-ready Node.js project templates.',
-        link: 'https://github.com/abhijeetjha0/node-project-builder',
-    },
-];
-
-jest.mock('react-i18next', () => {
-    const original = jest.requireActual('react-i18next');
-
-    return {
-        ...original,
-        useTranslation: () => ({
-            t: (key: string, options?: { returnObjects?: boolean }) => {
-                if (key === 'projects' && options?.returnObjects) {
-                    return mockStaticProjects;
-                }
-
-                return key;
-            },
-        }),
-    };
-});
 
 
 describe('useGitHubProjects hook and utilities', () => {
@@ -73,21 +42,27 @@ describe('useGitHubProjects hook and utilities', () => {
 
     describe('formatProjectDescription', () => {
         it('returns trimmed repository description if present', () => {
-            expect(formatProjectDescription('my-repo', '  A great repository  ', [])).toBe('A great repository');
+            expect(formatProjectDescription('my-repo', '  A great repository  ')).toBe('A great repository');
         });
 
         it('falls back to curated description when description is null or empty', () => {
-            expect(formatProjectDescription('node-project-builder', null, [])).toContain('CLI tool');
-            expect(formatProjectDescription('VaccinationSlotsMonitor', '', [])).toContain('vaccination slots');
+            expect(formatProjectDescription('node-project-builder', null)).toContain('CLI tool');
+            expect(formatProjectDescription('VaccinationSlotsMonitor', '')).toContain('vaccination slots');
         });
 
-        it('falls back to matched static project description if available', () => {
-            const desc = formatProjectDescription('project-one', null, mockStaticProjects);
+        it('falls back to matched static project description if available in optional list', () => {
+            const desc = formatProjectDescription('project-one', null, [
+                {
+                    name: 'project-one',
+                    description: 'Curated description for project one',
+                    link: 'https://github.com/abhijeetjha0/project-one',
+                },
+            ]);
             expect(desc).toBe('Curated description for project one');
         });
 
         it('falls back to formatted title if no description is available', () => {
-            expect(formatProjectDescription('brand-new-project', null, [])).toBe('Brand New Project');
+            expect(formatProjectDescription('brand-new-project', null)).toBe('Brand New Project');
         });
     });
 
@@ -175,7 +150,7 @@ describe('useGitHubProjects hook and utilities', () => {
             expect(result.current.isError).toBe(false);
         });
 
-        it('falls back safely to static projects if both backend and GitHub API fail', async () => {
+        it('handles failure gracefully when both backend and GitHub API fail', async () => {
             mockFetch.mockRejectedValue(new Error('Network offline'));
 
             const { result } = renderHook(() => useGitHubProjects());
@@ -185,7 +160,7 @@ describe('useGitHubProjects hook and utilities', () => {
             });
 
             expect(result.current.isError).toBe(true);
-            expect(result.current.projects).toEqual(mockStaticProjects);
+            expect(result.current.projects).toEqual([]);
         });
 
         it('refresh() triggers a fresh fetch with cache: reload', async () => {
@@ -234,7 +209,7 @@ describe('useGitHubProjects hook and utilities', () => {
             );
         });
 
-        it('refresh() handles API failure and preserves static projects on error', async () => {
+        it('refresh() handles API failure and marks error state on error', async () => {
             const { result } = renderHook(() => useGitHubProjects());
 
             await waitFor(() => {
@@ -256,7 +231,6 @@ describe('useGitHubProjects hook and utilities', () => {
 
             expect(result.current.isError).toBe(true);
             expect(result.current.isLoading).toBe(false);
-            expect(result.current.projects).toEqual(mockStaticProjects);
         });
 
         it('refresh() handles unexpected network exceptions gracefully', async () => {

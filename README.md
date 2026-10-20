@@ -3,6 +3,7 @@
 <img src="./.github/assets/typing-header.svg" width="620" alt="Senior Software Engineer | React &amp; TypeScript Specialist | UI Performance, L10n &amp; Accessibility" />
 
 <a href="https://abhijeetjha0.github.io/abhijeetjha0/" target="_blank" rel="noopener noreferrer"><img src="./.github/assets/portfolio-badge.svg" alt="Portfolio" /></a>
+<a href="https://github.com/abhijeetjha0?tab=repositories&q=&type=source" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/View_Projects-GitHub-181717?style=flat&logo=github&logoColor=white" alt="View Projects" /></a>
 <a href="https://linkedin.com/in/abhijeetjha0" target="_blank" rel="noopener noreferrer"><img src="./.github/assets/linkedin-badge.svg" alt="LinkedIn" /></a>
 [![Email](./.github/assets/email-badge.svg)](mailto:abhijeetjha0@hotmail.com)
 
@@ -113,19 +114,6 @@ Senior Software Engineer with **6+ years of experience** leading UI development 
 - Developed SSO based Browser extensions that was cross platform (Supported Safari, Chromium and Firefox).
 - Guided Native mobile team in designing Web View based pages for client side interaction.
 - Initiated and developed responsive design guidelines that drastically improved user experience across different devices.
-
----
-
-## 🏗️ Projects
-
-- **[Markdown Notes App](https://github.com/abhijeetjha0/markdown-notes-app)**: Google Keep inspired note-taking web app featuring rich WYSIWYG Markdown editing, real-time sync with Firebase Firestore, and Google Authentication.
-- **[Leave Planner](https://github.com/abhijeetjha0/leave-planner)**: Conversational vacation and leave optimization dashboard built with React 19 and Vite to discover bridge-day holidays and export customized schedules.
-- **[AI Agent Skills](https://github.com/abhijeetjha0/ai)**: A repository of modular AI coding agent skills and instructions for enhancing AI-assisted development workflows.
-- **[Poke-Dexter](https://github.com/abhijeetjha0/poke-dexter)**: A Pokédex application showcasing modern web development techniques and Pokémon data integration.
-- **[Personal Portfolio](https://github.com/abhijeetjha0/abhijeetjha0)**: My personal portfolio website built with React, TypeScript, and Vite, featuring an AI chat assistant with Edge rate limiting.
-- **[Vaccination Slots Monitor](https://github.com/abhijeetjha0/VaccinationSlotsMonitor)**: A monitoring tool designed to track and notify users about available vaccination slots.
-- **[Spin Your AI](https://github.com/abhijeetjha0/spin-your-ai)**: A Manifest V3 Chrome Extension that lets you spin up AI models directly from your browser. Connect to local models, cloud APIs, developer platforms, and MCP servers — all while keeping your credentials entirely secure on your device.
-- **[Node Project Builder](https://github.com/abhijeetjha0/node-project-builder)**: A comprehensive CLI tool to quickly generate and scaffold production-ready Node.js project templates.
 
 ---
 
