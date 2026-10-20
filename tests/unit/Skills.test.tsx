@@ -13,6 +13,9 @@ describe('Skills Component', () => {
 
         expect(screen.getAllByText(/Programming Languages/i).length).toBeGreaterThan(0);
         expect(screen.getAllByText(/Libraries & Frameworks/i).length).toBeGreaterThan(0);
+        expect(screen.getByText('PWA')).toBeInTheDocument();
+        expect(screen.getByText('Pendo')).toBeInTheDocument();
+        expect(screen.getByText('ChurnZero')).toBeInTheDocument();
     });
 
     test('filters categories when filter buttons are clicked', () => {

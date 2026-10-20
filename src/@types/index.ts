@@ -52,6 +52,11 @@ export interface PersonalInfo {
     email: string;
     github: string;
     linkedin: string;
+    npm?: string;
+    googleDev?: string;
+    ollama?: string;
+    huggingface?: string;
+    lovable?: string;
     location: string;
 }
 

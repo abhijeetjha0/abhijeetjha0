@@ -19,6 +19,7 @@ describe('Hero Component', () => {
         expect(screen.getByText(/g\.dev\/abhijeetjha0/i)).toBeDefined();
         expect(screen.getByText(/ollama\.com\/abhijeetjha0/i)).toBeDefined();
         expect(screen.getByText(/huggingface\.co\/abhijeetjha0/i)).toBeDefined();
+        expect(screen.getByText(/lovable\.dev\/@abhijeetjha0/i)).toBeDefined();
 
         expect(screen.getByLabelText(/Email:/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/Location:/i)).toBeInTheDocument();
@@ -28,6 +29,7 @@ describe('Hero Component', () => {
         expect(screen.getByLabelText(/Google Developer:/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/Ollama:/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/Hugging Face:/i)).toBeInTheDocument();
+        expect(screen.getByLabelText(/Lovable:/i)).toBeInTheDocument();
 
         const profileImg = screen.getByRole('img', { name: /Abhijit Kumar Jha/i });
         expect(profileImg).toBeDefined();
@@ -56,6 +58,12 @@ describe('Hero Component', () => {
         expect(huggingfaceLink.getAttribute('href')).toBe(PERSONAL_INFO.HUGGINGFACE_URL);
         expect(huggingfaceLink.getAttribute('target')).toBe('_blank');
         expect(huggingfaceLink.getAttribute('rel')).toContain('noopener');
+
+        const lovableLink = screen.getByRole('link', { name: /lovable\.dev\/@abhijeetjha0/i });
+        expect(lovableLink).toBeInTheDocument();
+        expect(lovableLink.getAttribute('href')).toBe(PERSONAL_INFO.LOVABLE_URL);
+        expect(lovableLink.getAttribute('target')).toBe('_blank');
+        expect(lovableLink.getAttribute('rel')).toContain('noopener');
 
         const bookingBtn = screen.getByRole('link', { name: /book appointment/i });
         expect(bookingBtn).toBeInTheDocument();

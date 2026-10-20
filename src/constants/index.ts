@@ -32,6 +32,8 @@ export const PERSONAL_INFO = {
     OLLAMA_URL: 'https://ollama.com/abhijeetjha0',
     HUGGINGFACE: 'huggingface.co/abhijeetjha0',
     HUGGINGFACE_URL: 'https://huggingface.co/abhijeetjha0',
+    LOVABLE: 'lovable.dev/@abhijeetjha0',
+    LOVABLE_URL: 'https://lovable.dev/@abhijeetjha0',
     PORTFOLIO_URL: 'https://abhijeetjha0.github.io/abhijeetjha0/',
     LOCATION: 'Jaipur, India',
     APPOINTMENT_URL: 'https://calendar.app.google/BFfU1CSpF3XL9ja69',

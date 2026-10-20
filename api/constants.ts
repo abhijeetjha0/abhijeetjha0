@@ -29,6 +29,7 @@ NPM: https://www.npmjs.com/~abhijeetjha0
 Google Developer: https://g.dev/abhijeetjha0
 Ollama: https://ollama.com/abhijeetjha0
 Hugging Face: https://huggingface.co/abhijeetjha0
+Lovable: https://lovable.dev/@abhijeetjha0
 
 ABOUT
 Leading UI development and crafting responsive web designs with expertise in React, Ember.js, and TypeScript. Focused on building efficient, high-performance web applications that are localized, accessible, and cross-browser compatible.
@@ -57,12 +58,12 @@ EXPERIENCE
 SKILLS
 - Frameworks: React, React Router, Next.js, Jest, Vitest, Ember.js, jQuery, Bootstrap, Material UI
 - Languages: JavaScript, TypeScript, HTML5, CSS3, Sass
-- Web Tech: Cross-Browser Development, Internationalization (i18n), WCAG Accessibility (a11y), REST API, JSON API
+- Web Tech: Cross-Browser Development, Internationalization (i18n), WCAG Accessibility (a11y), REST API, JSON API, PWA
 - AI Skills: AI Integration, AI Based Workflow, Open AI, AI-Assisted Development, AI Skill Generation, Prompt Engineering, AI-Assisted Documentation, AI-Assisted Code Review
 - AI Tools: Claude Code, Google Antigravity, Google Gemini, Google Jules, Hermes Agent, Ollama, OpenRouter, OpenCode, OpenClaw, Hugging Face
 - Build Tools: Vite, Webpack, Babel, Rollup, Next.js build
 - Linting: ESLint, Stylelint, SonarQube
-- Tools & Workflows: Git, GitHub, GitHub Pages, GitHub packages, NPM packages, GitLab, GitLab Deployment, Vercel Deployment, AWS Console, Firebase Console, Google Cloud Console, Jira, Confluence, Snyk
+- Tools & Workflows: Git, GitHub, GitHub Pages, GitHub Packages, NPM packages, GitLab, GitLab Deployment, Vercel Deployment, AWS Console, Firebase Console, Google Cloud Console, Jira, Confluence, Snyk, Pendo, ChurnZero
 - Leadership: Agile Methodologies, Team Leadership, Mentorship
 
 EDUCATION

@@ -209,6 +209,30 @@ export default function Hero() {
                                 </a>
                             </div>
 
+                            {/* Lovable */}
+                            <div className="contact-item d-flex align-items-center justify-content-start justify-content-lg-end gap-2">
+                                <span
+                                    className="contact-icon lovable-icon"
+                                    aria-label={t('contactLabels.lovable')}
+                                    title={t('contactLabels.lovable')}
+                                >
+                                    <span
+                                        className="material-symbols-outlined"
+                                        style={{ color: '#ff3366' }}
+                                        aria-hidden="true"
+                                    >
+                                        favorite
+                                    </span>
+                                </span>
+                                <a
+                                    href={PERSONAL_INFO.LOVABLE_URL}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {t('personalInfo.lovable')}
+                                </a>
+                            </div>
+
                             {/* Book Appointment Button */}
                             <div className="mt-2 d-flex justify-content-start justify-content-lg-end">
                                 <a

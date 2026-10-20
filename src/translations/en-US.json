@@ -9,6 +9,7 @@
     "googleDev": "g.dev/abhijeetjha0",
     "ollama": "ollama.com/abhijeetjha0",
     "huggingface": "huggingface.co/abhijeetjha0",
+    "lovable": "lovable.dev/@abhijeetjha0",
     "location": "Jaipur, India"
   },
   "sections": {
@@ -36,6 +37,7 @@
     "googleDev": "Google Developer:",
     "ollama": "Ollama:",
     "huggingface": "Hugging Face:",
+    "lovable": "Lovable:",
     "bookAppointment": "Book Appointment"
   },
 
@@ -99,7 +101,8 @@
       "Internationalization (i18n)",
       "WCAG Accessibility (a11y)",
       "REST API",
-      "JSON API"
+      "JSON API",
+      "PWA"
     ],
     "aiSkills": [
       "AI Integration",
@@ -140,7 +143,7 @@
       "Git",
       "GitHub",
       "GitHub Pages",
-      "GitHub packages",
+      "GitHub Packages",
       "NPM packages",
       "GitLab",
       "GitLab Deployment",
@@ -150,7 +153,9 @@
       "Google Cloud Console",
       "Jira",
       "Confluence",
-      "Snyk"
+      "Snyk",
+      "Pendo",
+      "ChurnZero"
     ],
     "leadership": [
       "Agile Methodologies",

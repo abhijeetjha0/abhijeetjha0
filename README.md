@@ -55,6 +55,7 @@ Senior Software Engineer with **6+ years of experience** leading UI development 
 ![WCAG Accessibility](https://img.shields.io/badge/WCAG_Accessibility-D1FAE5?style=flat&logo=w3c&logoColor=black)
 ![REST API](https://img.shields.io/badge/REST_API-E0F2FE?style=flat&logo=postman&logoColor=black)
 ![JSON API](https://img.shields.io/badge/JSON_API-FEF08A?style=flat&logo=json&logoColor=black)
+![PWA](https://img.shields.io/badge/PWA-EDE9FE?style=flat&logo=pwa&logoColor=black)
 
 ### 🧠 AI Skills & Practices
 ![AI Integration](https://img.shields.io/badge/AI_Integration-DBEAFE?style=flat&logo=probot&logoColor=black)
@@ -105,6 +106,8 @@ Senior Software Engineer with **6+ years of experience** leading UI development 
 ![Jira](https://img.shields.io/badge/Jira-DBEAFE?style=flat&logo=jira&logoColor=black)
 ![Confluence](https://img.shields.io/badge/Confluence-E0F2FE?style=flat&logo=confluence&logoColor=black)
 ![Snyk](https://img.shields.io/badge/Snyk-E0E7FF?style=flat&logo=snyk&logoColor=black)
+![Pendo](https://img.shields.io/badge/Pendo-FCE7F3?style=flat)
+![ChurnZero](https://img.shields.io/badge/ChurnZero-E0F2FE?style=flat)
 
 ### 👥 Leadership & Management
 ![Agile Methodologies](https://img.shields.io/badge/Agile_Methodologies-DBEAFE?style=flat&logo=scrumalliance&logoColor=black)
