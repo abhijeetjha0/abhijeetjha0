@@ -17,14 +17,14 @@ export default function Projects({ projects: propProjects, isLoading: propIsLoad
     const isLoading = propIsLoading ?? hookResult.isLoading;
 
     return (
-        <section id="projects" className="py-5 mb-5">
+        <section id="projects" className="py-5">
             <Container>
-                <h2 className="display-6 fw-bold text-dark text-center mb-5">{t('sections.projects')}</h2>
+                <h2 className="display-6 fw-bold text-center mb-5">{t('sections.projects')}</h2>
                 <Row className="g-4">
                     {isLoading && projects.length === 0 ? (
                         Array.from({ length: 6 }).map((_, idx) => (
                             <Col key={`project-skeleton-${idx}`} xs={12} md={6} lg={4}>
-                                <Card className="shadow-sm border-0 h-100 project-card placeholder-glow" aria-hidden="true">
+                                <Card className="shadow-sm h-100 project-card placeholder-glow" aria-hidden="true">
                                     <Card.Body className="p-4 d-flex flex-column">
                                         <div className="mb-3">
                                             <span className="placeholder col-4 rounded-pill" style={{ height: '22px' }} />
@@ -45,7 +45,7 @@ export default function Projects({ projects: propProjects, isLoading: propIsLoad
                     ) : (
                         projects.map(project => (
                             <Col key={project.link || project.name} xs={12} md={6} lg={4}>
-                                <Card className="shadow-sm border-0 h-100 project-card">
+                                <Card className="shadow-sm h-100 project-card">
                                     <Card.Body className="p-4 d-flex flex-column">
                                         {project.language && (
                                             <div className="mb-2">
@@ -62,7 +62,8 @@ export default function Projects({ projects: propProjects, isLoading: propIsLoad
                                             </div>
                                         )}
                                         <h3 className="h5 fw-bold mb-3">{project.name}</h3>
-                                        <p className="text-muted flex-grow-1">{project.description}</p>
+                                        <p className="text-secondary flex-grow-1">{project.description}</p>
+
                                         {project.homepage ? (
                                             <div className="d-flex gap-2 mt-3">
                                                 <a

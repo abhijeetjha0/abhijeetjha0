@@ -27,8 +27,10 @@
     "email": "Email:",
     "location": "Location:",
     "github": "GitHub:",
-    "linkedin": "LinkedIn:"
+    "linkedin": "LinkedIn:",
+    "bookAppointment": "Book Appointment"
   },
+
   "experience": [
     {
       "id": "exp-senior-software-engineer",
@@ -87,9 +89,14 @@
     "webTech": [
       "Cross-Browser Development",
       "Internationalization (i18n)",
-      "WCAG Accessibility (a11y)"
+      "WCAG Accessibility (a11y)",
+      "REST API",
+      "JSON API"
     ],
     "aiSkills": [
+      "AI Integration",
+      "AI Based Workflow",
+      "Open AI",
       "AI-Assisted Development",
       "AI Skill Generation",
       "Prompt Engineering",
@@ -101,13 +108,14 @@
       "Google Antigravity",
       "Google Gemini",
       "Google Jules",
-      "Google Opal",
+      "Hermes Agent",
       "Ollama",
       "OpenRouter",
       "OpenCode",
       "OpenClaw",
       "Hugging Face"
     ],
+
     "buildTools": [
       "Vite",
       "Webpack",
@@ -124,6 +132,8 @@
       "Git",
       "GitHub",
       "GitHub Pages",
+      "GitHub packages",
+      "NPM packages",
       "GitLab",
       "GitLab Deployment",
       "Vercel Deployment",
@@ -131,7 +141,8 @@
       "Firebase Console",
       "Google Cloud Console",
       "Jira",
-      "Confluence"
+      "Confluence",
+      "Snyk"
     ],
     "leadership": [
       "Agile Methodologies",
@@ -179,5 +190,18 @@
     "rateLimitNotice": "ℹ️ Note: Fair-use limit of 25 messages per 24 hours per IP address.",
     "contactEmail": "Send Email",
     "contactLinkedIn": "LinkedIn Profile"
+  },
+  "settings": {
+    "title": "Settings",
+    "openSettings": "Open Settings",
+    "closeSettings": "Close Settings",
+    "appearance": "Appearance",
+    "theme": "Theme",
+    "themeDescription": "Select your preferred appearance mode for the portfolio.",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "systemDescription": "Follows your device's system appearance settings.",
+    "currentlyActive": "Currently active: {{mode}}"
   }
 }

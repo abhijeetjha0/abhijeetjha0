@@ -182,10 +182,13 @@ export default function AiChatPanel({
                                 style={{ width: '40px', height: '40px' }}
                                 aria-label={t('aiChat.send')}
                             >
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <line x1="22" y1="2" x2="11" y2="13"></line>
-                                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                                </svg>
+                                <span
+                                    className="material-symbols-outlined"
+                                    style={{ fontSize: '18px' }}
+                                    aria-hidden="true"
+                                >
+                                    send
+                                </span>
                             </Button>
                         </div>
                         <div className="d-flex justify-content-end px-2">

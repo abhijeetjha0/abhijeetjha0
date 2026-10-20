@@ -11,6 +11,7 @@ const config: Config = {
     },
     moduleNameMapper: {
         '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+        '\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/tests/__mocks__/fileMock.ts',
         '^react-markdown$': '<rootDir>/tests/__mocks__/react-markdown.tsx',
         '^remark-gfm$': '<rootDir>/tests/__mocks__/remark-gfm.ts',
         '^@upstash/redis$': '<rootDir>/tests/__mocks__/upstash-redis.ts',

@@ -42,4 +42,9 @@ This document specifies rules and standards for AI Coding Assistants creating or
    - When repository `homepage` is present and valid, render both a primary "Live Demo" action button (`target="_blank"`, `rel="noopener noreferrer"`) and an outline "View Project" GitHub repository button.
    - Project cards use stable data-driven keys: `key={project.link || project.name}`.
 
-
+8. **Settings Sidebar & Theme Management (`SettingsSidebar.tsx`, `useTheme.ts`)**:
+   - The settings drawer is accessible via a top-right gear icon button in `NavigationBar.tsx`.
+   - Uses `react-bootstrap`'s `Offcanvas` drawer sliding in from the right (`placement="end"`).
+   - Supports 3 theme modes: `Light`, `Dark`, and `System` with automatic OS preference listening via `(prefers-color-scheme: dark)`.
+   - Persists user selection in `localStorage` (`abhijeetjha0_theme`).
+   - The active theme is applied directly via `data-bs-theme="light"` / `data-bs-theme="dark"` on `document.documentElement` for native Bootstrap 5.3 theme switching.

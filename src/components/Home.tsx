@@ -44,11 +44,12 @@ export default function Home() {
                 isQuotaExceeded={isQuotaExceeded}
             />
 
-            <footer className="bg-dark text-white py-4 mt-5">
+            <footer className="bg-dark text-white py-4 mt-0 border-top border-secondary border-opacity-25">
                 <Container className="text-center">
                     <p className="mb-0">{t('footer.developedBy')} {t('personalInfo.name')}</p>
                 </Container>
             </footer>
+
         </div>
     );
 }

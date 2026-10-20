@@ -4,8 +4,10 @@
 
 <a href="https://abhijeetjha0.github.io/abhijeetjha0/" target="_blank" rel="noopener noreferrer"><img src="./.github/assets/portfolio-badge.svg" alt="Portfolio" /></a>
 <a href="https://github.com/abhijeetjha0?tab=repositories&q=&type=source" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/View_Projects-GitHub-181717?style=flat&logo=github&logoColor=white" alt="View Projects" /></a>
+<a href="https://calendar.app.google/BFfU1CSpF3XL9ja69" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Book_Appointment-Google_Calendar-0B8043?style=flat&logo=googlecalendar&logoColor=white" alt="Book Appointment" /></a>
 <a href="https://linkedin.com/in/abhijeetjha0" target="_blank" rel="noopener noreferrer"><img src="./.github/assets/linkedin-badge.svg" alt="LinkedIn" /></a>
 [![Email](./.github/assets/email-badge.svg)](mailto:abhijeetjha0@hotmail.com)
+
 
 ---
 
@@ -43,8 +45,13 @@ Senior Software Engineer with **6+ years of experience** leading UI development 
 ![Cross-Browser Extensions](https://img.shields.io/badge/Cross--Browser_Extensions-E2E8F0?style=flat&logo=googlechrome&logoColor=black)
 ![Internationalization](https://img.shields.io/badge/Internationalization-E0E7FF?style=flat&logo=i18next&logoColor=black)
 ![WCAG Accessibility](https://img.shields.io/badge/WCAG_Accessibility-D1FAE5?style=flat&logo=w3c&logoColor=black)
+![REST API](https://img.shields.io/badge/REST_API-E0F2FE?style=flat&logo=postman&logoColor=black)
+![JSON API](https://img.shields.io/badge/JSON_API-FEF08A?style=flat&logo=json&logoColor=black)
 
 ### 🧠 AI Skills & Practices
+![AI Integration](https://img.shields.io/badge/AI_Integration-DBEAFE?style=flat&logo=probot&logoColor=black)
+![AI Based Workflow](https://img.shields.io/badge/AI_Based_Workflow-F3E8FF?style=flat&logo=githubactions&logoColor=black)
+![Open AI](https://img.shields.io/badge/Open_AI-D1FAE5?style=flat&logo=openai&logoColor=black)
 ![AI-Assisted Development](https://img.shields.io/badge/AI--Assisted_Development-E0F2FE?style=flat&logo=probot&logoColor=black)
 ![AI Skill Generation](https://img.shields.io/badge/AI_Skill_Generation-F3E8FF?style=flat&logo=sparkles&logoColor=black)
 ![Prompt Engineering](https://img.shields.io/badge/Prompt_Engineering-D1FAE5?style=flat&logo=lightning&logoColor=black)
@@ -56,7 +63,7 @@ Senior Software Engineer with **6+ years of experience** leading UI development 
 ![Google Antigravity](https://img.shields.io/badge/Google_Antigravity-DBEAFE?style=flat&logo=google&logoColor=black)
 ![Google Gemini](https://img.shields.io/badge/Google_Gemini-EDE9FE?style=flat&logo=googlegemini&logoColor=black)
 ![Google Jules](https://img.shields.io/badge/Google_Jules-E0E7FF?style=flat&logo=google&logoColor=black)
-![Google Opal](https://img.shields.io/badge/Google_Opal-E0F2FE?style=flat&logo=google&logoColor=black)
+![Hermes Agent](https://img.shields.io/badge/Hermes_Agent-E0F2FE?style=flat&logo=probot&logoColor=black)
 ![Ollama](https://img.shields.io/badge/Ollama-FFFFFF?style=flat&logo=ollama&logoColor=black)
 ![OpenRouter](https://img.shields.io/badge/OpenRouter-E0E7FF?style=flat&logo=openrouter&logoColor=black)
 ![OpenCode](https://img.shields.io/badge/OpenCode-E0F2FE?style=flat&logo=opencode&logoColor=black)
@@ -79,6 +86,8 @@ Senior Software Engineer with **6+ years of experience** leading UI development 
 ![Git](https://img.shields.io/badge/Git-FFD6A5?style=flat&logo=git&logoColor=black)
 ![GitHub](https://img.shields.io/badge/GitHub-E5E7EB?style=flat&logo=github&logoColor=black)
 ![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-E5E7EB?style=flat&logo=github&logoColor=black)
+![GitHub Packages](https://img.shields.io/badge/GitHub_Packages-E5E7EB?style=flat&logo=github&logoColor=black)
+![NPM Packages](https://img.shields.io/badge/NPM_Packages-FECDCA?style=flat&logo=npm&logoColor=black)
 ![GitLab](https://img.shields.io/badge/GitLab-FFD6A5?style=flat&logo=gitlab&logoColor=black)
 ![GitLab Deployment](https://img.shields.io/badge/GitLab_Deployment-FFD6A5?style=flat&logo=gitlab&logoColor=black)
 ![Vercel Deployment](https://img.shields.io/badge/Vercel_Deployment-E5E7EB?style=flat&logo=vercel&logoColor=black)
@@ -87,6 +96,7 @@ Senior Software Engineer with **6+ years of experience** leading UI development 
 ![Google Cloud Console](https://img.shields.io/badge/Google_Cloud_Console-E0F2FE?style=flat&logo=googlecloud&logoColor=black)
 ![Jira](https://img.shields.io/badge/Jira-DBEAFE?style=flat&logo=jira&logoColor=black)
 ![Confluence](https://img.shields.io/badge/Confluence-E0F2FE?style=flat&logo=confluence&logoColor=black)
+![Snyk](https://img.shields.io/badge/Snyk-E0E7FF?style=flat&logo=snyk&logoColor=black)
 
 ### 👥 Leadership & Management
 ![Agile Methodologies](https://img.shields.io/badge/Agile_Methodologies-DBEAFE?style=flat&logo=scrumalliance&logoColor=black)

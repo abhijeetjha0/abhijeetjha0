@@ -53,12 +53,12 @@ EXPERIENCE
 SKILLS
 - Frameworks: React, React Router, Next.js, Jest, Vitest, Ember.js, jQuery, Bootstrap, Material UI
 - Languages: JavaScript, TypeScript, HTML5, CSS3, Sass
-- Web Tech: Cross-Browser Development, Internationalization (i18n), WCAG Accessibility (a11y)
-- AI Skills: AI-Assisted Development, AI Skill Generation, Prompt Engineering, AI-Assisted Documentation, AI-Assisted Code Review
-- AI Tools: Claude Code, Google Antigravity, Google Gemini, Google Jules, Google Opal, Ollama, OpenRouter, OpenCode, OpenClaw, Hugging Face
+- Web Tech: Cross-Browser Development, Internationalization (i18n), WCAG Accessibility (a11y), REST API, JSON API
+- AI Skills: AI Integration, AI Based Workflow, Open AI, AI-Assisted Development, AI Skill Generation, Prompt Engineering, AI-Assisted Documentation, AI-Assisted Code Review
+- AI Tools: Claude Code, Google Antigravity, Google Gemini, Google Jules, Hermes Agent, Ollama, OpenRouter, OpenCode, OpenClaw, Hugging Face
 - Build Tools: Vite, Webpack, Babel, Rollup, Next.js build
 - Linting: ESLint, Stylelint, SonarQube
-- Tools & Workflows: Git, GitHub, GitHub Pages, GitLab, GitLab Deployment, Vercel Deployment, AWS Console, Firebase Console, Google Cloud Console, Jira, Confluence
+- Tools & Workflows: Git, GitHub, GitHub Pages, GitHub packages, NPM packages, GitLab, GitLab Deployment, Vercel Deployment, AWS Console, Firebase Console, Google Cloud Console, Jira, Confluence, Snyk
 - Leadership: Agile Methodologies, Team Leadership, Mentorship
 
 EDUCATION

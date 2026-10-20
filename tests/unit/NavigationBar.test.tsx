@@ -82,4 +82,33 @@ describe('NavigationBar Component', () => {
         expect(screen.getByText('Expertise')).toBeDefined();
         expect(screen.getByText('Qualifications')).toBeDefined();
     });
+
+
+    test('renders settings toggle button and opens/closes settings sidebar', () => {
+        render(
+            <I18nextProvider i18n={i18n}>
+                <NavigationBar />
+            </I18nextProvider>
+        );
+
+        const settingsBtn = screen.getByRole('button', { name: /open settings/i });
+        expect(settingsBtn).toBeInTheDocument();
+
+        // Initially sidebar is closed
+        expect(screen.queryByRole('dialog')).toBeNull();
+
+        // Click to open settings sidebar
+        fireEvent.click(settingsBtn);
+
+        // Sidebar is now visible
+        expect(screen.getByRole('dialog')).toBeInTheDocument();
+        expect(screen.getByText('Settings')).toBeInTheDocument();
+        expect(screen.getByText('Theme')).toBeInTheDocument();
+
+        // Click close button
+        const closeBtn = screen.getByRole('button', { name: /close/i });
+        fireEvent.click(closeBtn);
+    });
+
 });
+

@@ -10,23 +10,24 @@ export default function Experience() {
     return (
         <section id="experience" className="py-5">
             <Container>
-                <h2 className="display-6 fw-bold text-dark text-center mb-5">{t('sections.experience')}</h2>
+                <h2 className="display-6 fw-bold text-center mb-5">{t('sections.experience')}</h2>
                 {experiences.map((exp) => {
                     const itemKey = exp.id || `${exp.company}-${exp.role}-${exp.period}`;
 
                     return (
-                        <Card key={itemKey} className="mb-4 shadow-sm border-0">
-                            <Card.Body>
+                        <Card key={itemKey} className="mb-4 shadow-sm experience-card">
+                            <Card.Body className="p-4">
                                 <Row>
                                     <Col md={8}>
                                         <Card.Title className="h4 fw-bold">{exp.role}</Card.Title>
                                         <Card.Subtitle className="mb-3 text-primary h5">{exp.company}</Card.Subtitle>
                                     </Col>
-                                    <Col md={4} className="text-md-end text-muted">
+                                    <Col md={4} className="text-md-end text-secondary">
                                         <p className="mb-0">{exp.period}</p>
                                         <p>{exp.location}</p>
                                     </Col>
                                 </Row>
+
                                 {exp.highlights && exp.highlights.length > 0 && (
                                     <ul className="mt-3">
                                         {exp.highlights.map((highlight: string) => (

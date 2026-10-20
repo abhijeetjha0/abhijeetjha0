@@ -8,19 +8,20 @@ export default function Education() {
     const education = (Array.isArray(rawEducation) ? rawEducation : []) as EducationInfo[];
 
     return (
-        <section id="education" className="py-5 mb-5">
+        <section id="education" className="py-5">
             <Container>
-                <h2 className="display-6 fw-bold text-dark text-center mb-5">{t('sections.education')}</h2>
+                <h2 className="display-6 fw-bold text-center mb-5">{t('sections.education')}</h2>
                 {education.map((edu, index) => (
-                    <Card key={index} className="shadow-sm border-0 mb-4">
+                    <Card key={edu.degree || index} className="shadow-sm mb-4 education-card">
                         <Card.Body className="p-4">
                             <h3 className="h4 fw-bold">{edu.degree}</h3>
                             <h4 className="h5 text-primary mb-3">{edu.institution}</h4>
-                            <p className="text-muted mb-0">{edu.period}</p>
+                            <p className="text-secondary mb-0">{edu.period}</p>
                         </Card.Body>
                     </Card>
                 ))}
             </Container>
         </section>
+
     );
 }

@@ -26,7 +26,10 @@ export const PERSONAL_INFO = {
     LINKEDIN_URL: 'https://linkedin.com/in/abhijeetjha0',
     PORTFOLIO_URL: 'https://abhijeetjha0.github.io/abhijeetjha0/',
     LOCATION: 'Jaipur, India',
+    APPOINTMENT_URL: 'https://calendar.app.google/BFfU1CSpF3XL9ja69',
 } as const;
+
+
 
 export const APP_CONFIG = {
     DEFAULT_LOCALE: 'en-US',
@@ -35,6 +38,17 @@ export const APP_CONFIG = {
     DEFAULT_BASENAME: '/abhijeetjha0/',
 } as const;
 
+const createCategoryIcon = (iconName: string) =>
+    createElement(
+        'span',
+        {
+            className: 'material-symbols-outlined',
+            'aria-hidden': 'true',
+            style: { fontSize: '24px' },
+        },
+        iconName
+    );
+
 export const SKILL_CATEGORY_METADATA: CategoryMeta[] = [
     {
         id: 'frameworks',
@@ -42,13 +56,7 @@ export const SKILL_CATEGORY_METADATA: CategoryMeta[] = [
         translationKey: 'frameworks',
         color: '#6366f1',
         bgLight: '#eef2ff',
-        icon: createElement(
-            'svg',
-            { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' },
-            createElement('polygon', { points: '12 2 2 7 12 12 22 7 12 2' }),
-            createElement('polyline', { points: '2 17 12 22 22 17' }),
-            createElement('polyline', { points: '2 12 12 17 22 12' })
-        ),
+        icon: createCategoryIcon('layers'),
     },
     {
         id: 'languages',
@@ -56,12 +64,7 @@ export const SKILL_CATEGORY_METADATA: CategoryMeta[] = [
         translationKey: 'languages',
         color: '#2563eb',
         bgLight: '#eff6ff',
-        icon: createElement(
-            'svg',
-            { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' },
-            createElement('polyline', { points: '16 18 22 12 16 6' }),
-            createElement('polyline', { points: '8 6 2 12 8 18' })
-        ),
+        icon: createCategoryIcon('code'),
     },
     {
         id: 'webTech',
@@ -69,13 +72,7 @@ export const SKILL_CATEGORY_METADATA: CategoryMeta[] = [
         translationKey: 'webTech',
         color: '#059669',
         bgLight: '#ecfdf5',
-        icon: createElement(
-            'svg',
-            { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' },
-            createElement('circle', { cx: 12, cy: 12, r: 10 }),
-            createElement('line', { x1: 2, y1: 12, x2: 22, y2: 12 }),
-            createElement('path', { d: 'M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z' })
-        ),
+        icon: createCategoryIcon('language'),
     },
     {
         id: 'aiSkills',
@@ -83,11 +80,7 @@ export const SKILL_CATEGORY_METADATA: CategoryMeta[] = [
         translationKey: 'aiSkills',
         color: '#7c3aed',
         bgLight: '#f5f3ff',
-        icon: createElement(
-            'svg',
-            { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' },
-            createElement('path', { d: 'm12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3z' })
-        ),
+        icon: createCategoryIcon('auto_awesome'),
     },
     {
         id: 'aiTools',
@@ -95,15 +88,7 @@ export const SKILL_CATEGORY_METADATA: CategoryMeta[] = [
         translationKey: 'aiTools',
         color: '#8b5cf6',
         bgLight: '#f3e8ff',
-        icon: createElement(
-            'svg',
-            { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' },
-            createElement('rect', { x: 3, y: 11, width: 18, height: 10, rx: 2 }),
-            createElement('circle', { cx: 12, cy: 5, r: 2 }),
-            createElement('path', { d: 'M12 7v4' }),
-            createElement('line', { x1: 8, y1: 16, x2: 8, y2: 16.01 }),
-            createElement('line', { x1: 16, y1: 16, x2: 16, y2: 16.01 })
-        ),
+        icon: createCategoryIcon('smart_toy'),
     },
     {
         id: 'buildTools',
@@ -111,11 +96,7 @@ export const SKILL_CATEGORY_METADATA: CategoryMeta[] = [
         translationKey: 'buildTools',
         color: '#d97706',
         bgLight: '#fffbeb',
-        icon: createElement(
-            'svg',
-            { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' },
-            createElement('path', { d: 'M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z' })
-        ),
+        icon: createCategoryIcon('build'),
     },
     {
         id: 'linting',
@@ -123,12 +104,7 @@ export const SKILL_CATEGORY_METADATA: CategoryMeta[] = [
         translationKey: 'linting',
         color: '#9333ea',
         bgLight: '#faf5ff',
-        icon: createElement(
-            'svg',
-            { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' },
-            createElement('path', { d: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z' }),
-            createElement('path', { d: 'm9 12 2 2 4-4' })
-        ),
+        icon: createCategoryIcon('verified_user'),
     },
     {
         id: 'others',
@@ -136,12 +112,7 @@ export const SKILL_CATEGORY_METADATA: CategoryMeta[] = [
         translationKey: 'others',
         color: '#0891b2',
         bgLight: '#ecfeff',
-        icon: createElement(
-            'svg',
-            { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' },
-            createElement('rect', { x: 2, y: 7, width: 20, height: 14, rx: 2, ry: 2 }),
-            createElement('path', { d: 'M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16' })
-        ),
+        icon: createCategoryIcon('terminal'),
     },
     {
         id: 'leadership',
@@ -149,14 +120,7 @@ export const SKILL_CATEGORY_METADATA: CategoryMeta[] = [
         translationKey: 'leadership',
         color: '#ea580c',
         bgLight: '#fff7ed',
-        icon: createElement(
-            'svg',
-            { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' },
-            createElement('path', { d: 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2' }),
-            createElement('circle', { cx: 9, cy: 7, r: 4 }),
-            createElement('path', { d: 'M22 21v-2a4 4 0 0 0-3-3.87' }),
-            createElement('path', { d: 'M16 3.13a4 4 0 0 1 0 7.75' })
-        ),
+        icon: createCategoryIcon('groups'),
     },
 ];
 
@@ -206,4 +170,14 @@ export const PROJECTS_CONFIG = {
         'VaccinationSlotsMonitor': 'A monitoring tool designed to track and notify users about available vaccination slots.',
         'lint-rules': 'Custom, industry-level ESLint and code style configurations for modern TypeScript and JavaScript development.',
     } as Record<string, string>,
+} as const;
+
+export const THEME_CONFIG = {
+    STORAGE_KEY: 'abhijeetjha0_theme',
+    DEFAULT_THEME: 'system' as const,
+    THEMES: {
+        LIGHT: 'light',
+        DARK: 'dark',
+        SYSTEM: 'system',
+    } as const,
 } as const;

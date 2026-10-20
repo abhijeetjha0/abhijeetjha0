@@ -122,3 +122,20 @@ export interface AiChatPanelProps {
     remainingQuota?: number | null;
     isQuotaExceeded?: boolean;
 }
+
+export type ThemeMode = 'light' | 'dark' | 'system';
+export type ResolvedTheme = 'light' | 'dark';
+
+export interface UseThemeResult {
+    theme: ThemeMode;
+    resolvedTheme: ResolvedTheme;
+    setTheme: (theme: ThemeMode) => void;
+}
+
+export interface SettingsSidebarProps {
+    isOpen: boolean;
+    onClose: () => void;
+    theme: ThemeMode;
+    resolvedTheme: ResolvedTheme;
+    setTheme: (theme: ThemeMode) => void;
+}

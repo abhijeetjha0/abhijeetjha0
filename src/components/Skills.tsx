@@ -35,8 +35,8 @@ export default function Skills() {
         <section id={SECTION_IDS.SKILLS} className="py-5 skills-section">
             <Container>
                 <div className="text-center mb-5">
-                    <h2 className="display-6 fw-bold text-dark mb-2">{t('sections.skills')}</h2>
-                    <p className="text-muted mx-auto max-width-600">
+                    <h2 className="display-6 fw-bold mb-2">{t('sections.skills')}</h2>
+                    <p className="text-secondary mx-auto max-width-600">
                         {t('skillsSection.description')}
                     </p>
 
@@ -44,9 +44,9 @@ export default function Skills() {
                     <div className="d-flex flex-wrap justify-content-center gap-2 mt-4">
                         <button
                             onClick={() => setActiveFilter('all')}
-                            className={`btn btn-sm rounded-pill px-3 py-2 ${activeFilter === 'all'
-                                ? 'btn-primary shadow-sm'
-                                : 'btn-outline-secondary border-0 bg-white shadow-sm'
+                            className={`btn btn-sm rounded-pill px-3 py-2 skill-filter-btn ${activeFilter === 'all'
+                                ? 'btn-primary active shadow-sm'
+                                : 'btn-outline-secondary shadow-sm'
                             }`}
                         >
                             {t('skillsSection.filterAll')} ({totalSkillsCount})
@@ -55,9 +55,9 @@ export default function Skills() {
                             <button
                                 key={cat.id}
                                 onClick={() => setActiveFilter(cat.id)}
-                                className={`btn btn-sm rounded-pill px-3 py-2 ${activeFilter === cat.id
-                                    ? 'btn-primary shadow-sm'
-                                    : 'btn-outline-secondary border-0 bg-white shadow-sm'
+                                className={`btn btn-sm rounded-pill px-3 py-2 skill-filter-btn ${activeFilter === cat.id
+                                    ? 'btn-primary active shadow-sm'
+                                    : 'btn-outline-secondary shadow-sm'
                                 }`}
                             >
                                 {cat.label} ({cat.data.length})
@@ -70,7 +70,7 @@ export default function Skills() {
                 <Row className="g-4">
                     {filteredCategories.map((category) => (
                         <Col md={6} lg={4} key={category.id}>
-                            <div className="skill-card card h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative" style={category.customStyle}>
+                            <div className="skill-card card h-100 shadow-sm rounded-4 overflow-hidden position-relative" style={category.customStyle}>
                                 <div className="card-accent-bar" />
                                 <div className="card-body p-4">
                                     <div className="d-flex align-items-center mb-3 gap-3">
@@ -78,8 +78,8 @@ export default function Skills() {
                                             {category.icon}
                                         </div>
                                         <div>
-                                            <h3 className="h6 fw-bold mb-0 text-dark">{category.label}</h3>
-                                            <span className="text-muted small">{category.data.length} {t('skillsSection.skillsCount')}</span>
+                                            <h3 className="h6 fw-bold mb-0">{category.label}</h3>
+                                            <span className="text-secondary small">{category.data.length} {t('skillsSection.skillsCount')}</span>
                                         </div>
                                     </div>
 
@@ -87,7 +87,7 @@ export default function Skills() {
                                         {category.data.map((skill: string) => (
                                             <span
                                                 key={skill}
-                                                className="skill-pill rounded-pill px-3 py-1 text-dark small fw-medium"
+                                                className="skill-pill rounded-pill px-3 py-1 small fw-medium"
                                             >
                                                 {skill}
                                             </span>
@@ -98,6 +98,7 @@ export default function Skills() {
                         </Col>
                     ))}
                 </Row>
+
             </Container>
         </section>
     );

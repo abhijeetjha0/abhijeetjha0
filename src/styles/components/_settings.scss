@@ -1,0 +1,290 @@
+@use "../variables" as *;
+
+.settings-toggle-btn {
+    width: 38px;
+    height: 38px;
+    border-color: rgba(255, 255, 255, 0.25);
+    background-color: rgba(255, 255, 255, 0.08);
+    transition:
+        transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+        background-color 0.2s ease,
+        border-color 0.2s ease;
+
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.5);
+        transform: rotate(45deg);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--bs-primary);
+        outline-offset: 2px;
+        box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.25);
+    }
+}
+
+.settings-offcanvas {
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+
+    .offcanvas-header {
+        border-bottom-color: var(--bs-border-color) !important;
+    }
+
+    .theme-toggle-group {
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid var(--bs-border-color);
+
+        .btn {
+            border: none;
+            border-right: 1px solid var(--bs-border-color);
+            border-radius: 0;
+            transition: all 0.2s ease-in-out;
+
+            &:last-child {
+                border-right: none;
+            }
+
+            &:not(.active) {
+                background-color: var(--bs-tertiary-bg);
+                color: var(--bs-body-color);
+
+                &:hover {
+                    background-color: var(--bs-secondary-bg);
+                    color: var(--bs-emphasis-color);
+                }
+            }
+
+            &.active {
+                background-color: var(--bs-primary);
+                color: #ffffff;
+            }
+
+            &:focus-visible {
+                outline: 2px solid var(--bs-primary);
+                outline-offset: -2px;
+                z-index: 1;
+            }
+        }
+    }
+}
+
+// Dark theme specific overrides - industry standard Slate palette
+[data-bs-theme="dark"] {
+    --bs-body-bg: #0f172a;
+    --bs-body-color: #e2e8f0;
+    --bs-secondary-color: #94a3b8;
+    --bs-tertiary-bg: #1e293b;
+    --bs-card-bg: #1e293b;
+    --bs-border-color: rgba(255, 255, 255, 0.1);
+
+    background-color: #0f172a;
+    color: #e2e8f0;
+
+    .navbar {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    .display-4,
+    .display-6,
+    .h1,
+    .h2,
+    .h3,
+    .h4,
+    .h5,
+    .h6 {
+        color: #f8fafc;
+    }
+
+    .text-secondary,
+    .text-muted {
+        color: #94a3b8 !important;
+    }
+
+    .hero-section {
+        background-color: #1e293b !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+        .lead {
+            color: #cbd5e1;
+        }
+
+        .contact-info {
+            strong {
+                color: #e2e8f0;
+            }
+
+            .github-contact-icon {
+                color: #f0f6fc !important;
+            }
+
+            a {
+                color: #60a5fa;
+
+                &:hover {
+                    color: #93c5fd;
+                }
+            }
+        }
+
+
+        .profile-photo-wrapper {
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%) !important;
+            box-shadow:
+                0 10px 25px -5px rgba(0, 0, 0, 0.4),
+                0 8px 10px -6px rgba(0, 0, 0, 0.3) !important;
+
+            .profile-photo {
+                border-color: #1e293b !important;
+            }
+        }
+    }
+
+    .card,
+    .experience-card,
+    .education-card,
+    .project-card,
+    .skill-card {
+        background-color: #1e293b !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.25) !important;
+
+        .card-title,
+        h3,
+        h4,
+        h5 {
+            color: #f8fafc;
+        }
+
+        .card-subtitle {
+            color: #60a5fa !important;
+        }
+
+        p,
+        li {
+            color: #cbd5e1;
+        }
+    }
+
+    .skills-section {
+        background: linear-gradient(
+            180deg,
+            rgba(30, 41, 59, 0.4) 0%,
+            rgba(15, 23, 42, 0.6) 100%
+        ) !important;
+
+        .category-icon-box {
+            background-color: rgba(255, 255, 255, 0.08) !important;
+            color: var(--accent-color) !important;
+        }
+
+        .skill-pill {
+            background-color: rgba(255, 255, 255, 0.06) !important;
+            color: #f1f5f9 !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+
+            &:hover,
+            &:focus-visible {
+                background-color: rgba(255, 255, 255, 0.15) !important;
+                border-color: var(--accent-color) !important;
+                color: #ffffff !important;
+            }
+        }
+
+        .skill-filter-btn {
+            &:not(.active) {
+                background-color: #1e293b !important;
+                border-color: rgba(255, 255, 255, 0.15) !important;
+                color: #cbd5e1 !important;
+
+                &:hover {
+                    background-color: #334155 !important;
+                    color: #ffffff !important;
+                }
+            }
+
+            &.active {
+                background-color: var(--bs-primary) !important;
+                color: #ffffff !important;
+            }
+        }
+    }
+
+    .project-card {
+        .btn-outline-secondary {
+            border-color: rgba(255, 255, 255, 0.2) !important;
+            color: #e2e8f0 !important;
+
+            &:hover {
+                background-color: rgba(255, 255, 255, 0.1) !important;
+                color: #ffffff !important;
+            }
+        }
+    }
+
+    .project-lang-badge {
+        background-color: rgba(255, 255, 255, 0.08);
+        color: var(--bs-secondary-color);
+        border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .ai-chat-panel {
+        background: #1e293b;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+
+        .chat-limitation-notice {
+            background-color: #0f172a;
+            color: #94a3b8;
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-messages {
+            background: #0f172a;
+
+            .message-bubble-wrapper.assistant .message-bubble {
+                background: #1e293b !important;
+                border-color: rgba(255, 255, 255, 0.12);
+                color: #f1f5f9;
+            }
+        }
+
+        .chat-input-area {
+            background: #1e293b;
+            border-top-color: rgba(255, 255, 255, 0.1);
+
+            textarea {
+                background: #0f172a;
+                color: #f1f5f9;
+                border-color: rgba(255, 255, 255, 0.15);
+
+                &::placeholder {
+                    color: #64748b;
+                }
+            }
+        }
+
+        .chat-suggested-btn {
+            background: #1e293b;
+            color: #cbd5e1;
+            border-color: rgba(255, 255, 255, 0.15);
+
+            &:hover {
+                background: #334155;
+                color: #ffffff;
+            }
+        }
+
+        .contact-card {
+            background: #0f172a;
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+    }
+}
