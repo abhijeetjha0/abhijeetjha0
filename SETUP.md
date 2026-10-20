@@ -31,10 +31,11 @@ npm install
 # 4. Set up environment variables
 cp .env.example .env.local
 # Edit .env.local:
-# - (Optional) Set OLLAMA_API_KEY for Ollama Cloud (Primary)
+# - (Optional) Set OPENROUTER_API_KEY for free OpenRouter models (openrouter/free) (Primary)
+# - (Optional) Set OPENCODE_ZEN_API_KEY for OpenCode Zen API (or OPENCODE_API_KEY)
+# - (Optional) Set OLLAMA_API_KEY for Ollama Cloud
 # - (Optional) Set HF_TOKEN for free Hugging Face serverless inference
-# - (Optional) Set OPENROUTER_API_KEY for free OpenRouter models (openrouter/free)
-# - (Optional) Set DEFAULT_AI_PROVIDER to force a primary provider (ollama | huggingface | openrouter)
+# - (Optional) Set DEFAULT_AI_PROVIDER to force a primary provider (openrouter | opencode_zen | ollama | huggingface)
 # - (Optional) Set KV_REST_API_URL and KV_REST_API_TOKEN for Upstash Redis rate limiting and free models cache
 # - (Optional) Set CRON_SECRET to secure the Vercel Cron cache synchronization endpoint (/api/cron/sync-models)
 # - (Optional) Set GITHUB_TOKEN to boost GitHub repository sync rate limits from 60 to 5,000 req/hr
@@ -57,11 +58,12 @@ The backend features an automated **Cascading Fallback Waterfall** across multip
 
 | Provider | Free Quota | Setup & Key Link | Default Model |
 | :--- | :--- | :--- | :--- |
-| **Ollama Cloud (Primary)** | Free tier | [Ollama Cloud](https://ollama.com) (`OLLAMA_API_KEY`) | `gemma4:31b` |
+| **OpenRouter Free Tier (Primary)** | 200 req/day | [OpenRouter Keys](https://openrouter.ai/settings/keys) (`OPENROUTER_API_KEY`) | `openrouter/free` (Auto-routed) |
+| **OpenCode Zen** | Free tier / PayG | [OpenCode Zen](https://opencode.ai/zen) (`OPENCODE_ZEN_API_KEY`) | `glm-5.3-flash-free` |
+| **Ollama Cloud** | Free tier | [Ollama Cloud](https://ollama.com) (`OLLAMA_API_KEY`) | `gemma4:31b` |
 | **Hugging Face Serverless** | Generous | [Hugging Face Tokens](https://huggingface.co/settings/tokens) (`HF_TOKEN`) | `Qwen/Qwen3.8-27B:ovhcloud` |
-| **OpenRouter Free Tier** | 200 req/day | [OpenRouter Keys](https://openrouter.ai/settings/keys) (`OPENROUTER_API_KEY`) | `openrouter/free` (Auto-routed) |
 
-> **Zero-Cost Safeguard**: OpenRouter is strictly locked to `openrouter/free`, and Hugging Face is strictly validated against verified free serverless models (defaulting to `Qwen/Qwen3.8-27B:ovhcloud` with OVHcloud partner routing) across the backend to ensure zero commercial charges. Models are service-bound (`{ provider, model }`) to guarantee that free models from one service are never executed on another. To add an extra account-level safety net, you can set the **Credit Limit** of your OpenRouter API key to `$0.00` in the [OpenRouter Keys Dashboard](https://openrouter.ai/settings/keys).
+> **Zero-Cost Safeguard**: OpenRouter is strictly locked to `openrouter/free`, OpenCode Zen is strictly filtered for free-tier models ending in `-free` (defaulting to `glm-5.3-flash-free`), and Hugging Face is strictly validated against verified free serverless models (defaulting to `Qwen/Qwen3.8-27B:ovhcloud` with OVHcloud partner routing) across the backend to ensure zero commercial charges. Models are service-bound (`{ provider, model }`) to guarantee that free models from one service are never executed on another. To add an extra account-level safety net, you can set the **Credit Limit** of your OpenRouter API key to `$0.00` in the [OpenRouter Keys Dashboard](https://openrouter.ai/settings/keys).
 
 If a provider reaches its daily rate limit (HTTP 429) or is temporarily unavailable, the engine automatically cascades to the next configured provider in the waterfall.
 

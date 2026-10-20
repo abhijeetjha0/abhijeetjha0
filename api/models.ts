@@ -1,7 +1,7 @@
 import { CORS_HEADERS } from './constants.js';
 import { chatRateLimit } from './rateLimit.js';
 import { getConfiguredProviders } from './providers/index.js';
-import { isFreeHuggingFaceModel } from './providers/registry.js';
+import { isFreeHuggingFaceModel, isOpenCodeFreeModel } from './providers/registry.js';
 import { syncFreeModels } from './providers/sync.js';
 import { ProviderModel } from './providers/types.js';
 
@@ -40,7 +40,7 @@ export default async function handler(req: Request) {
     }
 
     try {
-        const { models: dynamicModels, ollamaModels } = await syncFreeModels();
+        const { models: dynamicModels, ollamaModels, opencodeZenModels } = await syncFreeModels();
         const configured = getConfiguredProviders();
 
         // If no providers are configured at all
@@ -79,6 +79,18 @@ export default async function handler(req: Request) {
                     const dynamicOllama = dynamicModels.find(m => m.provider === 'ollama')?.model;
                     envModel = dynamicOllama || p.defaultModel;
                 }
+            } else if (p.name === 'opencode_zen') {
+                envModel = process.env.OPENCODE_ZEN_MODEL || process.env.OPENCODE_MODEL;
+                if (envModel && !isOpenCodeFreeModel(envModel)) {
+                    console.warn(
+                        `[api/models] Ignoring non-free OPENCODE_ZEN_MODEL "${envModel}". Model must end with "-free". Defaulting to verified free model.`
+                    );
+                    envModel = undefined;
+                }
+                if (!envModel) {
+                    const dynamicZen = dynamicModels.find(m => m.provider === 'opencode_zen')?.model;
+                    envModel = dynamicZen || p.defaultModel;
+                }
             }
             models.push({
                 provider: p.name,
@@ -95,12 +107,25 @@ export default async function handler(req: Request) {
             }
         }
 
+        // If OpenCode Zen is configured and is the only provider, include extra discovered models ending with -free
+        if (configured.length === 1 && configured[0].name === 'opencode_zen' && Array.isArray(opencodeZenModels)) {
+            for (const extraModel of opencodeZenModels) {
+                if (isOpenCodeFreeModel(extraModel) && !models.some(existing => existing.provider === 'opencode_zen' && existing.model === extraModel)) {
+                    models.push({ provider: 'opencode_zen', model: extraModel });
+                }
+            }
+        }
+
         // Prioritize DEFAULT_AI_PROVIDER if set
         const preferred = process.env.DEFAULT_AI_PROVIDER;
         if (preferred) {
             models.sort((a, b) => {
-                if (a.provider === preferred) return -1;
-                if (b.provider === preferred) return 1;
+                if (a.provider === preferred) {
+                    return -1;
+                }
+                if (b.provider === preferred) {
+                    return 1;
+                }
 
                 return 0;
             });

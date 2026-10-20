@@ -30,6 +30,11 @@ describe('api endpoints (chat and models)', () => {
         delete process.env.HF_TOKEN;
         delete process.env.HUGGINGFACE_API_KEY;
         delete process.env.OLLAMA_API_KEY;
+        delete process.env.OPENCODE_ZEN_API_KEY;
+        delete process.env.OPENCODE_API_KEY;
+        delete process.env.OPENCODE_ZEN_MODEL;
+        delete process.env.OPENCODE_MODEL;
+        delete process.env.DEFAULT_AI_PROVIDER;
 
         mockFetch = jest.fn();
         global.fetch = mockFetch;
@@ -238,6 +243,44 @@ describe('api endpoints (chat and models)', () => {
             const text = await res.text();
             expect(text).toContain('Daily message quota reached');
         });
+
+        it('executes chat successfully with opencode_zen and returns provider header', async () => {
+            process.env.OPENCODE_ZEN_API_KEY = 'zen-secret-key';
+
+            mockFetch.mockImplementation(async (url: string) => {
+                if (url.includes('api.github.com')) {
+                    return { ok: true, status: 200, json: async () => [] };
+                }
+
+                if (url.includes('opencode.ai/zen')) {
+                    return {
+                        ok: true,
+                        status: 200,
+                        json: async () => ({
+                            choices: [{ message: { content: 'Response from OpenCode Zen' } }],
+                            model: 'glm-5.3-flash-free',
+                        }),
+                    };
+                }
+
+                return { ok: true, status: 200, json: async () => ({}) };
+            });
+
+            const req = new Request('http://localhost:3000/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    messages: [{ role: 'user', content: 'Tell me about Abhijit' }],
+                }),
+            });
+
+            const res = await chatHandler(req);
+            expect(res.status).toBe(200);
+            expect(res.headers.get('X-AI-Provider')).toBe('opencode_zen');
+            expect(res.headers.get('X-AI-Model')).toBe('glm-5.3-flash-free');
+            const text = await res.text();
+            expect(text).toBe('Response from OpenCode Zen');
+        });
     });
 
     describe('/api/models endpoint', () => {
@@ -268,13 +311,14 @@ describe('api endpoints (chat and models)', () => {
             expect(res.status).toBe(200);
             const models = await res.json();
             expect(models).toEqual([
+                { provider: 'openrouter', model: 'openrouter/free' },
+                { provider: 'opencode_zen', model: 'glm-5.3-flash-free' },
                 { provider: 'ollama', model: 'gemma4:31b' },
                 { provider: 'huggingface', model: 'Qwen/Qwen3.8-27B:ovhcloud' },
-                { provider: 'openrouter', model: 'openrouter/free' },
             ]);
         });
 
-        it('returns models corresponding to configured providers in priority order (Ollama, HF, OpenRouter)', async () => {
+        it('returns models corresponding to configured providers in priority order (OpenRouter, Ollama, HF)', async () => {
             process.env.OPENROUTER_API_KEY = 'sk-or-token';
             process.env.HF_TOKEN = 'hf_token';
             process.env.OLLAMA_API_KEY = 'ollama_token';
@@ -287,9 +331,30 @@ describe('api endpoints (chat and models)', () => {
             expect(res.status).toBe(200);
             const models = await res.json();
             expect(models).toEqual([
+                { provider: 'openrouter', model: 'openrouter/free' },
                 { provider: 'ollama', model: 'gemma4:31b' },
                 { provider: 'huggingface', model: 'Qwen/Qwen3.8-27B:ovhcloud' },
+            ]);
+        });
+
+        it('returns all 4 providers in priority order when all keys are configured', async () => {
+            process.env.OPENROUTER_API_KEY = 'sk-or-token';
+            process.env.HF_TOKEN = 'hf_token';
+            process.env.OLLAMA_API_KEY = 'ollama_token';
+            process.env.OPENCODE_ZEN_API_KEY = 'zen_token';
+
+            const req = new Request('http://localhost:3000/api/models', {
+                method: 'GET',
+            });
+
+            const res = await modelsHandler(req);
+            expect(res.status).toBe(200);
+            const models = await res.json();
+            expect(models).toEqual([
                 { provider: 'openrouter', model: 'openrouter/free' },
+                { provider: 'opencode_zen', model: 'glm-5.3-flash-free' },
+                { provider: 'ollama', model: 'gemma4:31b' },
+                { provider: 'huggingface', model: 'Qwen/Qwen3.8-27B:ovhcloud' },
             ]);
         });
 
@@ -321,6 +386,35 @@ describe('api endpoints (chat and models)', () => {
             const models = await res.json();
             expect(models).toContainEqual({ provider: 'huggingface', model: 'Qwen/Qwen3.8-27B:ovhcloud' });
             expect(models).not.toContainEqual({ provider: 'huggingface', model: 'custom/paid-endpoint' });
+        });
+
+        it('returns opencode_zen model when OPENCODE_ZEN_API_KEY is configured', async () => {
+            process.env.OPENCODE_ZEN_API_KEY = 'zen-test-key';
+            process.env.OPENCODE_ZEN_MODEL = 'deepseek-v4.1-flash-free';
+
+            const req = new Request('http://localhost:3000/api/models', {
+                method: 'GET',
+            });
+
+            const res = await modelsHandler(req);
+            expect(res.status).toBe(200);
+            const models = await res.json();
+            expect(models).toContainEqual({ provider: 'opencode_zen', model: 'deepseek-v4.1-flash-free' });
+        });
+
+        it('strictly defaults to glm-5.3-flash-free for OpenCode Zen even if OPENCODE_ZEN_MODEL is set to a non-free model', async () => {
+            process.env.OPENCODE_ZEN_API_KEY = 'zen-test-key';
+            process.env.OPENCODE_ZEN_MODEL = 'paid/deepseek-chat';
+
+            const req = new Request('http://localhost:3000/api/models', {
+                method: 'GET',
+            });
+
+            const res = await modelsHandler(req);
+            expect(res.status).toBe(200);
+            const models = await res.json();
+            expect(models).toContainEqual({ provider: 'opencode_zen', model: 'glm-5.3-flash-free' });
+            expect(models).not.toContainEqual({ provider: 'opencode_zen', model: 'paid/deepseek-chat' });
         });
     });
 

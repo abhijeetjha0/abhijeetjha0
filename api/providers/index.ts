@@ -32,7 +32,7 @@ export async function executeProviderWaterfall(
 
         return {
             success: false,
-            error: 'No AI provider is configured. Please configure OPENROUTER_API_KEY, HF_TOKEN, or OLLAMA_API_KEY.',
+            error: 'No AI provider is configured. Please configure OPENROUTER_API_KEY, HF_TOKEN, OLLAMA_API_KEY, or OPENCODE_ZEN_API_KEY.',
             attempts: [],
         };
     }

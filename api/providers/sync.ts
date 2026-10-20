@@ -7,6 +7,7 @@ interface CachedData {
     models: ProviderModel[];
     hfFreeModels: string[];
     ollamaModels: string[];
+    opencodeZenModels?: string[];
 }
 
 let inMemoryCache: CachedData | null = null;
@@ -148,10 +149,64 @@ export async function fetchOllamaModels(apiKey?: string): Promise<string[]> {
     return ['gemma4:31b'];
 }
 
+export async function fetchOpenCodeZenModels(apiKey?: string): Promise<string[]> {
+    const key = apiKey || process.env.OPENCODE_ZEN_API_KEY || process.env.OPENCODE_API_KEY;
+    const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+    };
+    if (key) {
+        headers.Authorization = `Bearer ${key}`;
+    }
+
+    try {
+        const res = await fetch('https://opencode.ai/zen/v1/models', { headers });
+        if (!res.ok) {
+            console.warn(`[api/providers/sync] Failed to fetch OpenCode Zen models: HTTP ${res.status}`);
+
+            return ['glm-5.3-flash-free'];
+        }
+
+        const data = await res.json();
+        let availableModels: string[] = [];
+        if (Array.isArray(data?.data)) {
+            availableModels = data.data
+                .map((m: { id: string }) => m.id)
+                .filter((id: string) => id.endsWith('-free'));
+        }
+
+        if (availableModels.length > 0) {
+            // Prioritize glm-5.3-flash-free and flash-free models
+            availableModels.sort((a, b) => {
+                if (a === 'glm-5.3-flash-free') {
+                    return -1;
+                }
+                if (b === 'glm-5.3-flash-free') {
+                    return 1;
+                }
+                if (a.includes('flash') && !b.includes('flash')) {
+                    return -1;
+                }
+                if (!a.includes('flash') && b.includes('flash')) {
+                    return 1;
+                }
+
+                return 0;
+            });
+
+            return availableModels;
+        }
+    } catch (err) {
+        console.warn('[api/providers/sync] Error discovering OpenCode Zen models:', err);
+    }
+
+    return ['glm-5.3-flash-free'];
+}
+
 export async function syncFreeModels(forceRefresh = false): Promise<{
     models: ProviderModel[];
     hfFreeModels: string[];
     ollamaModels: string[];
+    opencodeZenModels?: string[];
     source: 'cache' | 'kv' | 'live';
 }> {
     const now = Date.now();
@@ -164,6 +219,7 @@ export async function syncFreeModels(forceRefresh = false): Promise<{
             models: inMemoryCache.models,
             hfFreeModels: inMemoryCache.hfFreeModels,
             ollamaModels: inMemoryCache.ollamaModels || ['gemma4:31b'],
+            opencodeZenModels: inMemoryCache.opencodeZenModels || ['glm-5.3-flash-free'],
             source: 'cache',
         };
     }
@@ -180,6 +236,7 @@ export async function syncFreeModels(forceRefresh = false): Promise<{
                     models: cached.models,
                     hfFreeModels: cached.hfFreeModels,
                     ollamaModels: cached.ollamaModels || ['gemma4:31b'],
+                    opencodeZenModels: cached.opencodeZenModels || ['glm-5.3-flash-free'],
                     source: 'kv',
                 };
             }
@@ -190,17 +247,19 @@ export async function syncFreeModels(forceRefresh = false): Promise<{
 
     // 3. Perform live sync
     console.info('[api/providers/sync] Performing live sync of free AI models...');
-    const [hfFreeModels, ollamaModels] = await Promise.all([
+    const [hfFreeModels, ollamaModels, opencodeZenModels] = await Promise.all([
         fetchFreeHuggingFaceModels(),
         fetchOllamaModels(),
+        fetchOpenCodeZenModels(),
     ]);
 
     setDynamicFreeHuggingFaceModels(hfFreeModels);
 
     const dynamicModels: ProviderModel[] = [
+        { provider: 'openrouter', model: 'openrouter/free' },
+        { provider: 'opencode_zen', model: opencodeZenModels[0] || 'glm-5.3-flash-free' },
         { provider: 'ollama', model: ollamaModels[0] || 'gemma4:31b' },
         { provider: 'huggingface', model: hfFreeModels[0] || 'Qwen/Qwen3.8-27B:ovhcloud' },
-        { provider: 'openrouter', model: 'openrouter/free' },
     ];
 
     const cacheEntry: CachedData = {
@@ -208,6 +267,7 @@ export async function syncFreeModels(forceRefresh = false): Promise<{
         models: dynamicModels,
         hfFreeModels,
         ollamaModels,
+        opencodeZenModels,
     };
 
     inMemoryCache = cacheEntry;
@@ -224,6 +284,8 @@ export async function syncFreeModels(forceRefresh = false): Promise<{
         models: dynamicModels,
         hfFreeModels,
         ollamaModels,
+        opencodeZenModels,
         source: 'live',
     };
 }
+

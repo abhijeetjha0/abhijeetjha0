@@ -2,6 +2,28 @@ import { ProviderConfig } from './types.js';
 
 export const FREE_PROVIDERS: ProviderConfig[] = [
     {
+        name: 'openrouter',
+        displayName: 'OpenRouter Free Tier',
+        endpoint: 'https://openrouter.ai/api/v1/chat/completions',
+        apiKeyEnv: 'OPENROUTER_API_KEY',
+        defaultModel: 'openrouter/free',
+        authHeader: (key: string) => ({
+            Authorization: `Bearer ${key}`,
+            'HTTP-Referer': 'https://abhijeetjha0.github.io/abhijeetjha0/',
+            'X-Title': 'Abhijit Kumar Jha Portfolio Assistant',
+        }),
+    },
+    {
+        name: 'opencode_zen',
+        displayName: 'OpenCode Zen',
+        endpoint: 'https://opencode.ai/zen/v1/chat/completions',
+        apiKeyEnv: 'OPENCODE_ZEN_API_KEY',
+        defaultModel: 'glm-5.3-flash-free',
+        authHeader: (key: string) => ({
+            Authorization: `Bearer ${key}`,
+        }),
+    },
+    {
         name: 'ollama',
         displayName: 'Ollama Cloud',
         endpoint: 'https://ollama.com/v1/chat/completions',
@@ -21,18 +43,6 @@ export const FREE_PROVIDERS: ProviderConfig[] = [
             Authorization: `Bearer ${key}`,
         }),
     },
-    {
-        name: 'openrouter',
-        displayName: 'OpenRouter Free Tier',
-        endpoint: 'https://openrouter.ai/api/v1/chat/completions',
-        apiKeyEnv: 'OPENROUTER_API_KEY',
-        defaultModel: 'openrouter/free',
-        authHeader: (key: string) => ({
-            Authorization: `Bearer ${key}`,
-            'HTTP-Referer': 'https://abhijeetjha0.github.io/abhijeetjha0/',
-            'X-Title': 'Abhijit Kumar Jha Portfolio Assistant',
-        }),
-    },
 ];
 
 export function getProviderApiKey(config: ProviderConfig): string | undefined {
@@ -45,6 +55,10 @@ export function getProviderApiKey(config: ProviderConfig): string | undefined {
     // Secondary fallback alias env vars
     if (config.name === 'huggingface') {
         return process.env.HUGGINGFACE_API_KEY;
+    }
+
+    if (config.name === 'opencode_zen') {
+        return process.env.OPENCODE_API_KEY;
     }
 
     return undefined;
@@ -72,6 +86,14 @@ export function isFreeHuggingFaceModel(model: string): boolean {
     return dynamicHfFreeModels.includes(trimmed) ||
         trimmed === 'Qwen/Qwen3.8-27B:ovhcloud' ||
         trimmed === 'Qwen/Qwen3.8-27B';
+}
+
+export function isOpenCodeFreeModel(model: string): boolean {
+    if (!model || typeof model !== 'string') {
+        return false;
+    }
+
+    return model.trim().endsWith('-free');
 }
 
 

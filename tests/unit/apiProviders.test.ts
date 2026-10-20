@@ -5,14 +5,17 @@ import {
     FREE_PROVIDERS,
     fetchFreeHuggingFaceModels,
     fetchOllamaModels,
+    fetchOpenCodeZenModels,
     syncFreeModels,
     getCachedFreeHuggingFaceModels,
     resetSyncCacheForTesting,
 } from '../../api/providers';
 import {
     isFreeHuggingFaceModel,
+    isOpenCodeFreeModel,
     setDynamicFreeHuggingFaceModels,
     getDynamicFreeHuggingFaceModels,
+    getProviderApiKey,
 } from '../../api/providers/registry';
 
 const originalEnv = process.env;
@@ -31,6 +34,10 @@ describe('api/providers', () => {
         delete process.env.HF_TOKEN;
         delete process.env.HUGGINGFACE_API_KEY;
         delete process.env.OLLAMA_API_KEY;
+        delete process.env.OPENCODE_ZEN_API_KEY;
+        delete process.env.OPENCODE_API_KEY;
+        delete process.env.OPENCODE_ZEN_MODEL;
+        delete process.env.OPENCODE_MODEL;
         delete process.env.DEFAULT_AI_PROVIDER;
 
         mockFetch = jest.fn();
@@ -122,6 +129,88 @@ describe('api/providers', () => {
                         ],
                         stream: false,
                     }),
+                })
+            );
+        });
+
+        it('handles OpenCode Zen provider and respects OPENCODE_ZEN_MODEL', async () => {
+            const zenConfig = FREE_PROVIDERS.find(p => p.name === 'opencode_zen')!;
+            process.env.OPENCODE_ZEN_MODEL = 'deepseek-v4.1-flash-free';
+
+            mockFetch.mockResolvedValueOnce({
+                ok: true,
+                status: 200,
+                json: async () => ({
+                    choices: [
+                        {
+                            message: {
+                                content: 'OpenCode Zen response',
+                            },
+                        },
+                    ],
+                }),
+            });
+
+            const result = await callOpenAICompatibleProvider(
+                zenConfig,
+                'zen-test-key',
+                [{ role: 'user', content: 'Hi' }],
+                'System prompt'
+            );
+
+            expect(result.success).toBe(true);
+            expect(result.response?.provider).toBe('opencode_zen');
+            expect(result.response?.model).toBe('deepseek-v4.1-flash-free');
+            expect(mockFetch).toHaveBeenCalledWith(
+                zenConfig.endpoint,
+                expect.objectContaining({
+                    headers: expect.objectContaining({
+                        Authorization: 'Bearer zen-test-key',
+                    }),
+                    body: JSON.stringify({
+                        model: 'deepseek-v4.1-flash-free',
+                        messages: [
+                            { role: 'system', content: 'System prompt' },
+                            { role: 'user', content: 'Hi' },
+                        ],
+                        stream: false,
+                    }),
+                })
+            );
+        });
+
+        it('strictly defaults OpenCode Zen to glm-5.3-flash-free when requested model does not end with -free', async () => {
+            const zenConfig = FREE_PROVIDERS.find(p => p.name === 'opencode_zen')!;
+            process.env.OPENCODE_ZEN_MODEL = 'deepseek-chat';
+
+            mockFetch.mockResolvedValueOnce({
+                ok: true,
+                status: 200,
+                json: async () => ({
+                    choices: [
+                        {
+                            message: {
+                                content: 'OpenCode Zen default free response',
+                            },
+                        },
+                    ],
+                }),
+            });
+
+            const result = await callOpenAICompatibleProvider(
+                zenConfig,
+                'zen-test-key',
+                [{ role: 'user', content: 'Hi' }],
+                'System prompt'
+            );
+
+            expect(result.success).toBe(true);
+            expect(result.response?.provider).toBe('opencode_zen');
+            expect(result.response?.model).toBe('glm-5.3-flash-free');
+            expect(mockFetch).toHaveBeenCalledWith(
+                zenConfig.endpoint,
+                expect.objectContaining({
+                    body: expect.stringContaining('"model":"glm-5.3-flash-free"'),
                 })
             );
         });
@@ -221,15 +310,47 @@ describe('api/providers', () => {
             process.env.OPENROUTER_API_KEY = 'sk-or-xxx';
             process.env.HF_TOKEN = 'hf_xxx';
             const providers = getConfiguredProviders();
-            expect(providers.map(p => p.name)).toEqual(['huggingface', 'openrouter']);
+            expect(providers.map(p => p.name)).toEqual(['openrouter', 'huggingface']);
         });
 
-        it('detects all providers in priority order (Ollama, Hugging Face, OpenRouter)', () => {
+        it('detects all providers in priority order (OpenRouter, OpenCode Zen, Ollama, Hugging Face)', () => {
             process.env.OPENROUTER_API_KEY = 'sk-or-xxx';
             process.env.HF_TOKEN = 'hf_xxx';
             process.env.OLLAMA_API_KEY = 'ollama_xxx';
+            process.env.OPENCODE_ZEN_API_KEY = 'zen_xxx';
             const providers = getConfiguredProviders();
-            expect(providers.map(p => p.name)).toEqual(['ollama', 'huggingface', 'openrouter']);
+            expect(providers.map(p => p.name)).toEqual(['openrouter', 'opencode_zen', 'ollama', 'huggingface']);
+        });
+
+        it('detects OpenCode Zen when OPENCODE_ZEN_API_KEY is set', () => {
+            process.env.OPENCODE_ZEN_API_KEY = 'zen_xxx';
+            const providers = getConfiguredProviders();
+            expect(providers.map(p => p.name)).toContain('opencode_zen');
+        });
+
+        it('detects OpenCode Zen with fallback alias OPENCODE_API_KEY', () => {
+            process.env.OPENCODE_API_KEY = 'opencode_alias_xxx';
+            const providers = getConfiguredProviders();
+            expect(providers.map(p => p.name)).toContain('opencode_zen');
+        });
+    });
+
+    describe('getProviderApiKey', () => {
+        it('retrieves API key for OpenCode Zen using OPENCODE_ZEN_API_KEY', () => {
+            process.env.OPENCODE_ZEN_API_KEY = 'zen_primary';
+            const config = FREE_PROVIDERS.find(p => p.name === 'opencode_zen')!;
+            expect(getProviderApiKey(config)).toBe('zen_primary');
+        });
+
+        it('retrieves API key for OpenCode Zen using fallback OPENCODE_API_KEY', () => {
+            process.env.OPENCODE_API_KEY = 'zen_fallback';
+            const config = FREE_PROVIDERS.find(p => p.name === 'opencode_zen')!;
+            expect(getProviderApiKey(config)).toBe('zen_fallback');
+        });
+
+        it('returns undefined when no key is set for OpenCode Zen', () => {
+            const config = FREE_PROVIDERS.find(p => p.name === 'opencode_zen')!;
+            expect(getProviderApiKey(config)).toBeUndefined();
         });
     });
 
@@ -410,6 +531,16 @@ describe('api/providers', () => {
             expect(isFreeHuggingFaceModel('meta-llama/Llama-3.3-70B-Instruct:ovhcloud')).toBe(false);
             expect(isFreeHuggingFaceModel('openai/gpt-4')).toBe(false);
             expect(isFreeHuggingFaceModel('')).toBe(false);
+        });
+
+        it('validates free OpenCode Zen models using isOpenCodeFreeModel', () => {
+            expect(isOpenCodeFreeModel('glm-5.3-flash-free')).toBe(true);
+            expect(isOpenCodeFreeModel('deepseek-v4.1-flash-free')).toBe(true);
+            expect(isOpenCodeFreeModel('minimax-m3.1-flash-free')).toBe(true);
+            expect(isOpenCodeFreeModel('glm-5.3-flash')).toBe(false);
+            expect(isOpenCodeFreeModel('deepseek-v4.1-flash')).toBe(false);
+            expect(isOpenCodeFreeModel('deepseek-chat')).toBe(false);
+            expect(isOpenCodeFreeModel('')).toBe(false);
         });
 
         it('maps bare Qwen/Qwen3.8-27B to Qwen/Qwen3.8-27B:ovhcloud to lock to free provider endpoint', async () => {
@@ -599,6 +730,50 @@ describe('api/providers', () => {
             expect(getDynamicFreeHuggingFaceModels()).toEqual(['test-org/Free-Model:provider']);
             expect(isFreeHuggingFaceModel('test-org/Free-Model:provider')).toBe(true);
             expect(isFreeHuggingFaceModel('test-org/Unknown-Model')).toBe(false);
+        });
+
+        it('discovers OpenCode Zen models from /v1/models and filters for -free models prioritizing flash-free models', async () => {
+            mockFetch.mockResolvedValueOnce({
+                ok: true,
+                status: 200,
+                json: async () => ({
+                    data: [
+                        { id: 'big-pickle' },
+                        { id: 'deepseek-v4.1-flash-free' },
+                        { id: 'glm-5.3-flash-free' },
+                        { id: 'paid-commercial-model' },
+                        { id: 'other-model-free' },
+                    ],
+                }),
+            });
+
+            const models = await fetchOpenCodeZenModels('test-zen-key');
+            expect(mockFetch).toHaveBeenCalledWith(
+                'https://opencode.ai/zen/v1/models',
+                expect.objectContaining({
+                    headers: expect.objectContaining({
+                        Authorization: 'Bearer test-zen-key',
+                    }),
+                })
+            );
+            expect(models).toEqual([
+                'glm-5.3-flash-free',
+                'deepseek-v4.1-flash-free',
+                'other-model-free',
+            ]);
+            expect(models).not.toContain('big-pickle');
+            expect(models).not.toContain('paid-commercial-model');
+            expect(models[0]).toBe('glm-5.3-flash-free');
+        });
+
+        it('falls back to default glm-5.3-flash-free on OpenCode Zen fetch failure', async () => {
+            mockFetch.mockResolvedValueOnce({
+                ok: false,
+                status: 500,
+            });
+
+            const models = await fetchOpenCodeZenModels();
+            expect(models).toEqual(['glm-5.3-flash-free']);
         });
     });
 });

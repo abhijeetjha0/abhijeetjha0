@@ -1,5 +1,5 @@
 import { ProviderConfig, ChatMessagePayload, ProviderCallResult } from './types.js';
-import { isFreeHuggingFaceModel } from './registry.js';
+import { isFreeHuggingFaceModel, isOpenCodeFreeModel } from './registry.js';
 
 export async function callOpenAICompatibleProvider(
     config: ProviderConfig,
@@ -15,6 +15,8 @@ export async function callOpenAICompatibleProvider(
         envModel = process.env.HF_MODEL;
     } else if (config.name === 'ollama') {
         envModel = process.env.OLLAMA_MODEL;
+    } else if (config.name === 'opencode_zen') {
+        envModel = process.env.OPENCODE_ZEN_MODEL || process.env.OPENCODE_MODEL;
     }
 
     let model = modelOverride || envModel || config.defaultModel;
@@ -36,6 +38,16 @@ export async function callOpenAICompatibleProvider(
         } else if (!isFreeHuggingFaceModel(model)) {
             console.warn(
                 `[api/providers] Hugging Face is strictly restricted to free models to prevent charges. Ignoring requested model: "${model}". Defaulting to "${config.defaultModel}".`
+            );
+            model = config.defaultModel;
+        }
+    }
+
+    // OpenCode Zen is strictly restricted to free models ending with "-free"
+    if (config.name === 'opencode_zen') {
+        if (!isOpenCodeFreeModel(model)) {
+            console.warn(
+                `[api/providers] OpenCode Zen is strictly restricted to free models ending with "-free". Ignoring requested model: "${model}". Defaulting to "${config.defaultModel}".`
             );
             model = config.defaultModel;
         }

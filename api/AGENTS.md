@@ -39,18 +39,22 @@ api/
 
 The backend automatically detects which provider API keys are present in `process.env` and cascades in priority order:
 
-1. **Ollama Cloud (Primary)**:
-   - Uses `OLLAMA_API_KEY`.
-   - Model: `gemma4:31b`.
-2. **Hugging Face Serverless**:
-   - Uses `HF_TOKEN` (or `HUGGINGFACE_API_KEY`).
-   - Model: `Qwen/Qwen3.8-27B:ovhcloud` (OVHcloud serverless partner routing).
-3. **OpenRouter Free Tier**:
+1. **OpenRouter Free Tier (Primary)**:
    - Uses `OPENROUTER_API_KEY`.
    - Model: `openrouter/free` (Free Models Router, auto-routes across all active free models; strictly locked in `client.ts` to guarantee zero charges).
    - Free tier: 200 requests/day, 20 RPM.
+2. **OpenCode Zen**:
+   - Uses `OPENCODE_ZEN_API_KEY` (or fallback alias `OPENCODE_API_KEY`).
+   - Endpoint: `https://opencode.ai/zen/v1` (OpenAI-compatible).
+   - Model: `glm-5.3-flash-free` (or override via `OPENCODE_ZEN_MODEL` / `OPENCODE_MODEL`; strictly filtered using `-free` suffix).
+3. **Ollama Cloud**:
+   - Uses `OLLAMA_API_KEY`.
+   - Model: `gemma4:31b`.
+4. **Hugging Face Serverless**:
+   - Uses `HF_TOKEN` (or `HUGGINGFACE_API_KEY`).
+   - Model: `Qwen/Qwen3.8-27B:ovhcloud` (OVHcloud serverless partner routing).
 
-**Priority Customization**: Setting `DEFAULT_AI_PROVIDER` (`ollama` | `huggingface` | `openrouter`) moves that provider to the front of the line.
+**Priority Customization**: Setting `DEFAULT_AI_PROVIDER` (`openrouter` | `opencode_zen` | `ollama` | `huggingface`) moves that provider to the front of the line.
 **Service-Bound Models (`ProviderModel[]`)**: Models in `modelsToTry` are structured as `{ provider, model }` objects, ensuring models intended for one provider (e.g. Hugging Face) are never attempted on another (e.g. OpenRouter).
 
 ---
@@ -91,6 +95,7 @@ The backend automatically detects which provider API keys are present in `proces
    - `OPENROUTER_API_KEY` (OpenRouter Free Tier)
    - `HF_TOKEN` / `HUGGINGFACE_API_KEY` (Hugging Face Inference)
    - `OLLAMA_API_KEY` (Ollama Cloud)
+   - `OPENCODE_ZEN_API_KEY` / `OPENCODE_API_KEY` (OpenCode Zen)
    - `DEFAULT_AI_PROVIDER` (Optional primary provider override)
    - `KV_REST_API_URL` / `KV_REST_API_TOKEN` (Optional Upstash Redis for distributed rate limiting)
    - `GITHUB_TOKEN` / `GITHUB_PAT` / `GH_TOKEN` (Optional GitHub Personal Access Token to increase GitHub REST API rate limits to 5,000 req/hr)

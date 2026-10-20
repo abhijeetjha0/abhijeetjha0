@@ -1,4 +1,4 @@
-export type FreeProviderName = 'openrouter' | 'huggingface' | 'ollama';
+export type FreeProviderName = 'openrouter' | 'huggingface' | 'ollama' | 'opencode_zen';
 
 export interface ProviderModel {
     provider: FreeProviderName | string;
