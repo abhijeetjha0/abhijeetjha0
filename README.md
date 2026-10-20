@@ -3,15 +3,12 @@
 <img src="./.github/assets/typing-header.svg" width="620" alt="Senior Software Engineer | React &amp; TypeScript Specialist | UI Performance, L10n &amp; Accessibility" />
 
 <a href="https://abhijeetjha0.github.io/abhijeetjha0/" target="_blank" rel="noopener noreferrer"><img src="./.github/assets/portfolio-badge.svg" alt="Portfolio" /></a>
-<a href="https://github.com/abhijeetjha0?tab=repositories&q=&type=source" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/View_Projects-GitHub-181717?style=flat&logo=github&logoColor=white" alt="View Projects" /></a>
-<a href="https://calendar.app.google/BFfU1CSpF3XL9ja69" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Book_Appointment-Google_Calendar-0B8043?style=flat&logo=googlecalendar&logoColor=white" alt="Book Appointment" /></a>
 <a href="https://linkedin.com/in/abhijeetjha0" target="_blank" rel="noopener noreferrer"><img src="./.github/assets/linkedin-badge.svg" alt="LinkedIn" /></a>
-<a href="https://www.npmjs.com/~abhijeetjha0" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/npm-abhijeetjha0-CB3837?style=flat&logo=npm&logoColor=white" alt="npm" /></a>
-<a href="https://g.dev/abhijeetjha0" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Google_Developer-abhijeetjha0-4285F4?style=flat&logo=google&logoColor=white" alt="Google Developer" /></a>
-<a href="https://ollama.com/abhijeetjha0" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Ollama-abhijeetjha0-000000?style=flat&logo=ollama&logoColor=white" alt="Ollama" /></a>
-<a href="https://huggingface.co/abhijeetjha0" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Hugging_Face-abhijeetjha0-FFD21E?style=flat&logo=huggingface&logoColor=black" alt="Hugging Face" /></a>
 [![Email](./.github/assets/email-badge.svg)](mailto:abhijeetjha0@hotmail.com)
 
+
+<a href="https://github.com/abhijeetjha0?tab=repositories&q=&type=source" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/View_Projects-GitHub-181717?style=flat&logo=github&logoColor=white" alt="View Projects" /></a>
+<a href="https://calendar.app.google/BFfU1CSpF3XL9ja69" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Book_Appointment-Google_Calendar-0B8043?style=flat&logo=googlecalendar&logoColor=white" alt="Book Appointment" /></a>
 
 ---
 
