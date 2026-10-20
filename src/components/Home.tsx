@@ -12,7 +12,7 @@ import { useGitHubProjects } from '../hooks/useGitHubProjects';
 
 export default function Home() {
     const { t } = useTranslation();
-    const { projects } = useGitHubProjects();
+    const { projects, isLoading: isProjectsLoading } = useGitHubProjects();
     const { 
         messages, 
         isLoading, 
@@ -29,7 +29,7 @@ export default function Home() {
             <Hero />
             <Experience />
             <Skills />
-            <Projects />
+            <Projects projects={projects} isLoading={isProjectsLoading} />
             <Education />
       
             <AiChatFab isOpen={isOpen} toggleChat={toggleChat} />

@@ -1,7 +1,15 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { GitHubRepo, ProjectInfo, UseGitHubProjectsResult } from '../@types';
 import { PROJECTS_CONFIG } from '../constants';
 import { logger } from '../utilities/logger';
+
+let cachedProjects: ProjectInfo[] | null = null;
+let inFlightFetchPromise: Promise<ProjectInfo[] | null> | null = null;
+
+export function clearProjectFetchCacheForTesting(): void {
+    cachedProjects = null;
+    inFlightFetchPromise = null;
+}
 
 export function formatProjectTitle(repoName: string): string {
     if (PROJECTS_CONFIG.KNOWN_REPO_NAMES[repoName]) {
@@ -41,101 +49,130 @@ export function formatProjectDescription(
 export async function performProjectFetch(
     forceRefresh: boolean = false
 ): Promise<ProjectInfo[] | null> {
-    let fetchedList: (ProjectInfo | GitHubRepo)[] | null = null;
-
-    const fetchOptions: RequestInit = {
-        headers: {
-            'Accept': 'application/json',
-        },
-    };
-
-    if (forceRefresh) {
-        fetchOptions.cache = 'reload';
-    }
-
-    // Step 1: Try Vercel Edge endpoint (/api/projects)
-    try {
-        const edgeRes = await fetch(PROJECTS_CONFIG.BACKEND_URL, fetchOptions);
-
-        if (edgeRes.ok) {
-            fetchedList = await edgeRes.json();
+    if (!forceRefresh) {
+        if (cachedProjects && cachedProjects.length > 0) {
+            return cachedProjects;
         }
-    } catch {
-        // Edge API unavailable, fall back to direct GitHub API
+
+        if (inFlightFetchPromise) {
+            return inFlightFetchPromise;
+        }
     }
 
-    // Step 2: Fall back to direct GitHub REST API if Edge API didn't succeed
-    if (!fetchedList) {
+    inFlightFetchPromise = (async () => {
+        let fetchedList: (ProjectInfo | GitHubRepo)[] | null = null;
+
+        const fetchOptions: RequestInit = {
+            headers: {
+                'Accept': 'application/json',
+            },
+        };
+
+        if (forceRefresh) {
+            fetchOptions.cache = 'reload';
+        }
+
+        // Step 1: Try Vercel Edge endpoint (/api/projects)
         try {
-            const ghRes = await fetch(PROJECTS_CONFIG.GITHUB_API_URL, {
-                headers: {
-                    'Accept': 'application/vnd.github.v3+json',
-                },
-                ...(forceRefresh ? { cache: 'reload' } : {}),
-            });
+            const edgeRes = await fetch(PROJECTS_CONFIG.BACKEND_URL, fetchOptions);
 
-            if (ghRes.ok) {
-                fetchedList = await ghRes.json();
+            if (edgeRes && edgeRes.ok) {
+                fetchedList = await edgeRes.json();
             }
-        } catch (err) {
-            logger('Failed to fetch projects directly from GitHub API', err);
+        } catch {
+            // Edge API unavailable, fall back to direct GitHub API
         }
-    }
 
-    // Step 3: Process fetched repositories
-    if (Array.isArray(fetchedList) && fetchedList.length > 0) {
-        const validItems = fetchedList.filter(
-            (item): item is ProjectInfo | GitHubRepo =>
-                typeof item === 'object' && item !== null && 'name' in item && typeof item.name === 'string'
-        );
+        // Step 2: Fall back to direct GitHub REST API if Edge API didn't succeed
+        if (!fetchedList) {
+            try {
+                const ghRes = await fetch(PROJECTS_CONFIG.GITHUB_API_URL, {
+                    headers: {
+                        'Accept': 'application/vnd.github.v3+json',
+                    },
+                    ...(forceRefresh ? { cache: 'reload' } : {}),
+                });
 
-        const nonForkItems = validItems.filter(item => !('fork' in item) || !item.fork);
-
-        if (nonForkItems.length > 0) {
-            return nonForkItems.map(item => {
-                const rawName = item.name;
-                const displayName = formatProjectTitle(rawName);
-                const link = 'link' in item && item.link ? item.link : ('html_url' in item ? item.html_url : '');
-                const description = formatProjectDescription(rawName, item.description);
-                const homepage = item.homepage && item.homepage.trim().length > 0 ? item.homepage.trim() : undefined;
-                const language = item.language || undefined;
-                const updatedAt = 'updatedAt' in item && item.updatedAt
-                    ? item.updatedAt
-                    : ('pushed_at' in item ? item.pushed_at : undefined);
-
-                return {
-                    name: displayName,
-                    description,
-                    link,
-                    homepage,
-                    language,
-                    updatedAt,
-                    isDynamic: true,
-                };
-            });
+                if (ghRes && ghRes.ok) {
+                    fetchedList = await ghRes.json();
+                }
+            } catch (err) {
+                logger('Failed to fetch projects directly from GitHub API', err);
+            }
         }
-    }
 
-    return null;
+        // Step 3: Process fetched repositories
+        if (Array.isArray(fetchedList) && fetchedList.length > 0) {
+            const validItems = fetchedList.filter(
+                (item): item is ProjectInfo | GitHubRepo =>
+                    typeof item === 'object' && item !== null && 'name' in item && typeof item.name === 'string'
+            );
+
+            const nonForkItems = validItems.filter(item => !('fork' in item) || !item.fork);
+
+            if (nonForkItems.length > 0) {
+                const normalized = nonForkItems.map(item => {
+                    const rawName = item.name;
+                    const displayName = formatProjectTitle(rawName);
+                    const link = 'link' in item && item.link ? item.link : ('html_url' in item ? item.html_url : '');
+                    const description = formatProjectDescription(rawName, item.description);
+                    const homepage = item.homepage && item.homepage.trim().length > 0 ? item.homepage.trim() : undefined;
+                    const language = item.language || undefined;
+                    const updatedAt = 'updatedAt' in item && item.updatedAt
+                        ? item.updatedAt
+                        : ('pushed_at' in item ? item.pushed_at : undefined);
+
+                    return {
+                        name: displayName,
+                        description,
+                        link,
+                        homepage,
+                        language,
+                        updatedAt,
+                        isDynamic: true,
+                    };
+                });
+
+                cachedProjects = normalized;
+
+                return normalized;
+            }
+        }
+
+        return null;
+    })();
+
+    try {
+        const result = await inFlightFetchPromise;
+
+        return result;
+    } finally {
+        inFlightFetchPromise = null;
+    }
 }
 
-export function useGitHubProjects(): UseGitHubProjectsResult {
-    const [projects, setProjects] = useState<ProjectInfo[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+export interface UseGitHubProjectsOptions {
+    skip?: boolean;
+}
+
+export function useGitHubProjects(options?: UseGitHubProjectsOptions): UseGitHubProjectsResult {
+    const skip = options?.skip ?? false;
+    const [projects, setProjects] = useState<ProjectInfo[]>(() => cachedProjects || []);
+    const [isLoading, setIsLoading] = useState<boolean>(() => !skip && (!cachedProjects || cachedProjects.length === 0));
     const [isError, setIsError] = useState<boolean>(false);
-    const hasFetchedRef = useRef(false);
 
     useEffect(() => {
-        if (hasFetchedRef.current) {
+        if (skip) {
             return;
         }
 
-        hasFetchedRef.current = true;
-        let isMounted = true;
+        let isCancelled = false;
 
         performProjectFetch()
             .then(normalized => {
-                if (!isMounted) return;
+                if (isCancelled) {
+                    return;
+                }
 
                 if (normalized) {
                     setProjects(normalized);
@@ -147,16 +184,18 @@ export function useGitHubProjects(): UseGitHubProjectsResult {
                 }
             })
             .catch(() => {
-                if (!isMounted) return;
+                if (isCancelled) {
+                    return;
+                }
 
                 setIsError(true);
                 setIsLoading(false);
             });
 
         return () => {
-            isMounted = false;
+            isCancelled = true;
         };
-    }, []);
+    }, [skip]);
 
     const refresh = useCallback(async () => {
         setIsLoading(true);

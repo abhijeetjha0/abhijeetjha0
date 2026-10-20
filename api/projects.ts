@@ -125,7 +125,7 @@ export default async function handler(req: Request) {
             headers: {
                 ...CORS_HEADERS,
                 'Content-Type': 'application/json',
-                'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+                'Cache-Control': 'public, max-age=600, s-maxage=3600, stale-while-revalidate=86400',
             },
             status: 200,
         });

@@ -1,8 +1,10 @@
+import { StrictMode } from 'react';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import {
     useGitHubProjects,
     formatProjectTitle,
     formatProjectDescription,
+    clearProjectFetchCacheForTesting,
 } from '../../src/hooks/useGitHubProjects';
 import { PROJECTS_CONFIG } from '../../src/constants';
 
@@ -12,6 +14,7 @@ describe('useGitHubProjects hook and utilities', () => {
     const originalFetch = global.fetch;
 
     beforeEach(() => {
+        clearProjectFetchCacheForTesting();
         localStorage.clear();
         jest.resetAllMocks();
         mockFetch = jest.fn();
@@ -250,6 +253,69 @@ describe('useGitHubProjects hook and utilities', () => {
 
             expect(result.current.isError).toBe(true);
             expect(result.current.isLoading).toBe(false);
+        });
+
+        it('survives React StrictMode remount without remaining stuck in loading shimmer state', async () => {
+            const mockBackendProjects = [
+                {
+                    name: 'spin-your-ai',
+                    description: 'AI model extension',
+                    link: 'https://github.com/abhijeetjha0/spin-your-ai',
+                },
+            ];
+
+            mockFetch.mockResolvedValueOnce({
+                ok: true,
+                status: 200,
+                json: async () => mockBackendProjects,
+            });
+
+            const { result } = renderHook(() => useGitHubProjects(), { wrapper: StrictMode });
+
+            await waitFor(() => {
+                expect(result.current.isLoading).toBe(false);
+            });
+
+            expect(result.current.projects).toHaveLength(1);
+            expect(result.current.projects[0].name).toBe('Spin Your AI');
+            expect(result.current.isError).toBe(false);
+        });
+
+        it('deduplicates in-flight fetches when multiple components call useGitHubProjects concurrently', async () => {
+            const mockBackendProjects = [
+                {
+                    name: 'shared-project',
+                    description: 'Shared desc',
+                    link: 'https://github.com/abhijeetjha0/shared',
+                },
+            ];
+
+            mockFetch.mockResolvedValueOnce({
+                ok: true,
+                status: 200,
+                json: async () => mockBackendProjects,
+            });
+
+            // Simulate Home and Projects mounting concurrently
+            const { result: hook1 } = renderHook(() => useGitHubProjects());
+            const { result: hook2 } = renderHook(() => useGitHubProjects());
+
+            await waitFor(() => {
+                expect(hook1.current.isLoading).toBe(false);
+                expect(hook2.current.isLoading).toBe(false);
+            });
+
+            expect(hook1.current.projects).toHaveLength(1);
+            expect(hook2.current.projects).toHaveLength(1);
+            expect(mockFetch).toHaveBeenCalledTimes(1);
+        });
+
+        it('does not trigger fetch when skip: true is passed', async () => {
+            const { result } = renderHook(() => useGitHubProjects({ skip: true }));
+
+            expect(result.current.isLoading).toBe(false);
+            expect(result.current.projects).toEqual([]);
+            expect(mockFetch).not.toHaveBeenCalled();
         });
     });
 });

@@ -3,10 +3,18 @@ import { Container, Card, Row, Col } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useGitHubProjects } from '../hooks/useGitHubProjects';
 import { PROJECTS_CONFIG } from '../constants';
+import { ProjectInfo } from '../@types';
 
-export default function Projects() {
+export interface ProjectsProps {
+    projects?: ProjectInfo[];
+    isLoading?: boolean;
+}
+
+export default function Projects({ projects: propProjects, isLoading: propIsLoading }: ProjectsProps = {}) {
     const { t } = useTranslation();
-    const { projects, isLoading } = useGitHubProjects();
+    const hookResult = useGitHubProjects({ skip: propProjects !== undefined });
+    const projects = propProjects ?? hookResult.projects;
+    const isLoading = propIsLoading ?? hookResult.isLoading;
 
     return (
         <section id="projects" className="py-5 mb-5">

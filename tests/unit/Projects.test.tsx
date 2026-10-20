@@ -133,4 +133,30 @@ describe('Projects Component', () => {
         expect(screen.getByRole('heading', { level: 2, name: /Projects/i })).toBeDefined();
         expect(screen.queryByRole('heading', { level: 3 })).toBeNull();
     });
+
+    test('uses passed props directly and skips hook fetch', () => {
+        (useGitHubProjects as jest.Mock).mockReturnValue({
+            projects: [],
+            isLoading: false,
+            isError: false,
+            refresh: jest.fn(),
+        });
+
+        const propProjects: ProjectInfo[] = [
+            {
+                name: 'Direct Prop Project',
+                description: 'Passed via props from Home component',
+                link: 'https://github.com/abhijeetjha0/prop-project',
+            },
+        ];
+
+        render(
+            <I18nextProvider i18n={i18n}>
+                <Projects projects={propProjects} isLoading={false} />
+            </I18nextProvider>
+        );
+
+        expect(useGitHubProjects).toHaveBeenCalledWith({ skip: true });
+        expect(screen.getByRole('heading', { level: 3, name: 'Direct Prop Project' })).toBeDefined();
+    });
 });
