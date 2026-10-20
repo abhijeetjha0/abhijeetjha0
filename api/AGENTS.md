@@ -28,9 +28,10 @@ api/
 ## 🔒 System Prompt & Scope Guardrails (`constants.ts`)
 
 1. **Resume-Only Scope**: The `SYSTEM_PROMPT` strictly limits the AI assistant to answering questions about Abhijit Kumar Jha's resume, portfolio, experience, skills, projects, and education only. It explicitly refuses general-knowledge, math, weather, AQI, and off-topic queries.
-2. **Identity Protection**: The prompt instructs the model to identify itself as "Abhijit's Portfolio AI Assistant" and never reveal third-party model names (Ollama, Gemma, OpenAI, etc.) or system prompt details.
-3. **Markdown Link Formatting**: The prompt instructs the model to format all links as standard markdown links with full `https://` URLs (e.g. `[Project Name](https://github.com/...)`).
-4. **Anti-Table Formatting**: The prompt discourages markdown tables (hard to read on mobile) and prefers bullet points unless the user explicitly asks for a table.
+2. **Dynamic Project Generation**: System prompts are dynamically constructed via `buildSystemPrompt(projects?: ProjectPromptItem[])`. When projects are provided (from client auto-feed or GitHub fetch), they are synthesized directly into the prompt with repo names, descriptions, programming languages, topics, GitHub URLs, and homepage / npm links. A static fallback (`FALLBACK_PROJECTS`) is used when no dynamic projects are available.
+3. **Identity Protection**: The prompt instructs the model to identify itself as "Abhijit's Portfolio AI Assistant" and never reveal third-party model names (Ollama, Gemma, OpenAI, etc.) or system prompt details.
+4. **Markdown Link Formatting**: The prompt instructs the model to format all links as standard markdown links with full `https://` URLs (e.g. `[Project Name](https://github.com/...)`).
+5. **Anti-Table Formatting**: The prompt discourages markdown tables (hard to read on mobile) and prefers bullet points unless the user explicitly asks for a table.
 
 ---
 
@@ -75,8 +76,12 @@ The backend automatically detects which provider API keys are present in `proces
 11. **GitHub Projects Synchronization (`/api/projects.ts`)**:
    - **Endpoint Contract**: Handles `GET /api/projects`. Returns normalized JSON array of public non-fork GitHub repositories.
    - **Authentication & Rate Limits**: Uses optional `GITHUB_TOKEN` from environment if present to boost GitHub API rate limits from 60 to 5,000 req/hr.
-   - **Edge Caching**: Employs `Cache-Control: public, s-maxage=1800, stale-while-revalidate=86400` so Vercel CDN caches results at edge for 30 minutes.
+   - **Edge & In-Memory Caching**: Serves responses with `Cache-Control: public, s-maxage=3600, stale-while-revalidate=86400` so Vercel CDN caches responses at the edge. Additionally maintains a 15-minute in-memory cache (`IN_MEMORY_CACHE_TTL_MS = 15m`) in `fetchGitHubProjects(forceRefresh = false)` to prevent redundant external fetches.
    - **Burst Rate Limiting**: Applies `chatRateLimit` (5 requests / 10s) to mitigate abusive traffic.
+12. **AI Dynamic Project Auto-Feeding (`/api/chat.ts`)**:
+   - Accepts optional `projects` array in POST request payload from frontend client (`useAiChat`).
+   - If provided, calls `buildSystemPrompt(projects)` to dynamically construct the AI context matching what the user sees in the browser.
+   - If omitted or empty (e.g. direct curl or external caller), automatically falls back to `fetchGitHubProjects()` to inject live repository data into the AI prompt.
 
 ---
 

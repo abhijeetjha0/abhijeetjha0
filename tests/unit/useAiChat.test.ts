@@ -323,6 +323,30 @@ describe('useAiChat hook', () => {
         expect(result.current.messages).toHaveLength(1); // Only welcome msg
     });
 
+    it('attaches projects to POST request payload when provided in options', async () => {
+        const testProjects = [
+            {
+                name: 'lint-rules',
+                description: 'Custom linting rules',
+                link: 'https://github.com/abhijeetjha0/lint-rules',
+                homepage: 'https://www.npmjs.com/package/@abhijeetjha0/lint-rules',
+                language: 'JavaScript',
+            },
+        ];
+
+        const { result } = renderHook(() => useAiChat({ projects: testProjects }));
+
+        await act(async () => {
+            await result.current.sendMessage('Tell me about lint-rules');
+        });
+
+        const chatFetchCall = mockFetch.mock.calls.find(call => call[1] && call[1].method === 'POST');
+        expect(chatFetchCall).toBeDefined();
+        const fetchBody = JSON.parse(chatFetchCall[1].body);
+        expect(fetchBody.projects).toEqual(testProjects);
+        expect(fetchBody.messages[0].content).toBe('Tell me about lint-rules');
+    });
+
     afterAll(() => {
         global.fetch = originalFetch;
     });

@@ -1,5 +1,5 @@
 // We will construct the system prompt using the portfolio data
-export const SYSTEM_PROMPT = `You are the personal AI portfolio assistant for Abhijit Kumar Jha.
+export const BASE_SYSTEM_PROMPT = `You are the personal AI portfolio assistant for Abhijit Kumar Jha.
 
 CRITICAL INSTRUCTION - RESUME & PORTFOLIO ONLY:
 - You must strictly and exclusively answer questions related to Abhijit Kumar Jha's resume, professional experience, skills, projects, education, and contact information based SOLELY on the portfolio data provided below.
@@ -63,18 +63,97 @@ SKILLS
 
 EDUCATION
 - B.Tech in IT from Swami Keshwanand Institute of Technology, Jaipur (Aug 2016 - Jul 2020)
-- Senior School in Science from Rajkiya Pratibha Vikas Vidyalaya, Lajpat Nagar, New Delhi (Jun 2013 - Mar 2015)
+- Senior School in Science from Rajkiya Pratibha Vikas Vidyalaya, Lajpat Nagar, New Delhi (Jun 2013 - Mar 2015)`;
+
+export interface ProjectPromptItem {
+    name: string;
+    description: string;
+    link: string;
+    homepage?: string;
+    language?: string;
+}
+
+export const FALLBACK_PROJECTS: ProjectPromptItem[] = [
+    {
+        name: 'Markdown Notes App',
+        description: 'Google Keep inspired note-taking web app featuring rich WYSIWYG Markdown editing, real-time sync with Firebase Firestore, and Google Authentication.',
+        link: 'https://github.com/abhijeetjha0/markdown-notes-app',
+        homepage: 'https://markdown-notes-app-abhijeetjha0.vercel.app',
+        language: 'HTML/Next.js',
+    },
+    {
+        name: 'Leave Planner',
+        description: 'Conversational vacation and leave optimization dashboard built with React 19 and Vite to discover bridge-day holidays and export customized schedules.',
+        link: 'https://github.com/abhijeetjha0/leave-planner',
+        homepage: 'https://abhijeetjha0.github.io/leave-planner/',
+        language: 'JavaScript/React',
+    },
+    {
+        name: 'AI Agent Skills',
+        description: 'A repository of modular AI coding agent skills and instructions for enhancing AI-assisted development workflows.',
+        link: 'https://github.com/abhijeetjha0/ai',
+    },
+    {
+        name: 'Poke-Dexter',
+        description: 'A Pokédex application showcasing modern web development techniques and Pokémon data integration.',
+        link: 'https://github.com/abhijeetjha0/poke-dexter',
+        homepage: 'https://poke-dexter-abhijeetjha0.vercel.app',
+        language: 'JavaScript',
+    },
+    {
+        name: 'Personal Portfolio',
+        description: 'My personal portfolio website built with React, TypeScript, and Vite, featuring an AI chat assistant with Edge rate limiting.',
+        link: 'https://github.com/abhijeetjha0/abhijeetjha0',
+        homepage: 'https://abhijeetjha0.github.io/abhijeetjha0/',
+        language: 'TypeScript/React',
+    },
+    {
+        name: 'Vaccination Slots Monitor',
+        description: 'A monitoring tool designed to track and notify users about available vaccination slots.',
+        link: 'https://github.com/abhijeetjha0/VaccinationSlotsMonitor',
+        language: 'JavaScript',
+    },
+    {
+        name: 'Spin Your AI',
+        description: 'A Manifest V3 Chrome Extension that lets you spin up AI models directly from your browser. Connect to local models, cloud APIs, developer platforms, and MCP servers — all while keeping your credentials entirely secure on your device.',
+        link: 'https://github.com/abhijeetjha0/spin-your-ai',
+        language: 'JavaScript',
+    },
+    {
+        name: 'Node Project Builder',
+        description: 'A comprehensive CLI tool to quickly generate and scaffold production-ready Node.js project templates.',
+        link: 'https://github.com/abhijeetjha0/node-project-builder',
+        language: 'Shell',
+    },
+];
+
+export function buildSystemPrompt(projects?: ProjectPromptItem[]): string {
+    const activeProjects = Array.isArray(projects) && projects.length > 0 ? projects : FALLBACK_PROJECTS;
+
+    const formattedProjects = activeProjects.map((p, idx) => {
+        const parts: string[] = [];
+        if (p.language) {
+            parts.push(`Language: ${p.language}`);
+        }
+        if (p.link) {
+            parts.push(`GitHub: ${p.link}`);
+        }
+        if (p.homepage) {
+            parts.push(`Live Demo/Website: ${p.homepage}`);
+        }
+        const meta = parts.length > 0 ? ` (${parts.join(', ')})` : '';
+
+        return `${idx + 1}. ${p.name}: ${p.description || 'Open-source software project.'}${meta}`;
+    }).join('\n');
+
+    return `${BASE_SYSTEM_PROMPT}
 
 PROJECTS
-1. Markdown Notes App: Google Keep inspired note-taking web app featuring rich WYSIWYG Markdown editing, real-time sync with Firebase Firestore, and Google Authentication. (Link: https://github.com/abhijeetjha0/markdown-notes-app)
-2. Leave Planner: Conversational vacation and leave optimization dashboard built with React 19 and Vite to discover bridge-day holidays and export customized schedules. (Link: https://github.com/abhijeetjha0/leave-planner)
-3. AI Agent Skills: A repository of modular AI coding agent skills and instructions for enhancing AI-assisted development workflows. (Link: https://github.com/abhijeetjha0/ai)
-4. Poke-Dexter: A Pokédex application showcasing modern web development techniques and Pokémon data integration. (Link: https://github.com/abhijeetjha0/poke-dexter)
-5. Personal Portfolio: My personal portfolio website built with React, TypeScript, and Vite, featuring an AI chat assistant with Edge rate limiting. (Link: https://github.com/abhijeetjha0/abhijeetjha0)
-6. Vaccination Slots Monitor: A monitoring tool designed to track and notify users about available vaccination slots. (Link: https://github.com/abhijeetjha0/VaccinationSlotsMonitor)
-7. Spin Your AI: A Manifest V3 Chrome Extension that lets you spin up AI models directly from your browser. Connect to local models, cloud APIs, developer platforms, and MCP servers — all while keeping your credentials entirely secure on your device. (Link: https://github.com/abhijeetjha0/spin-your-ai)
-8. Node Project Builder: A comprehensive CLI tool to quickly generate and scaffold production-ready Node.js project templates. (Link: https://github.com/abhijeetjha0/node-project-builder)
+${formattedProjects}
 ---`;
+}
+
+export const SYSTEM_PROMPT = buildSystemPrompt();
 
 export const OLLAMA_API = 'https://ollama.com/v1';
 export const CORS_HEADERS = {

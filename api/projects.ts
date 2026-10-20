@@ -18,6 +18,74 @@ interface GitHubApiRepo {
     updated_at?: string;
 }
 
+export interface SyncedProject {
+    name: string;
+    description: string;
+    link: string;
+    homepage?: string;
+    language?: string;
+    updatedAt?: string;
+    isDynamic?: boolean;
+}
+
+let inMemoryProjectsCache: { timestamp: number; data: SyncedProject[] } | null = null;
+const IN_MEMORY_CACHE_TTL_MS = 15 * 60 * 1000;
+
+export function clearProjectsCache(): void {
+    inMemoryProjectsCache = null;
+}
+
+export async function fetchGitHubProjects(forceRefresh: boolean = false): Promise<SyncedProject[]> {
+    if (!forceRefresh && inMemoryProjectsCache) {
+        const isFresh = Date.now() - inMemoryProjectsCache.timestamp < IN_MEMORY_CACHE_TTL_MS;
+        if (isFresh && inMemoryProjectsCache.data.length > 0) {
+            return inMemoryProjectsCache.data;
+        }
+    }
+
+    const githubHeaders: Record<string, string> = {
+        'Accept': 'application/vnd.github.v3+json',
+        'User-Agent': 'abhijeetjha0-portfolio',
+    };
+
+    const token = process.env.GITHUB_TOKEN;
+    if (token) {
+        githubHeaders['Authorization'] = `Bearer ${token}`;
+    }
+
+    const response = await fetch('https://api.github.com/users/abhijeetjha0/repos?sort=pushed&per_page=100', {
+        headers: githubHeaders,
+    });
+
+    if (!response.ok) {
+        const error = new Error(`GitHub API error: ${response.status}`) as Error & { status?: number };
+        error.status = response.status;
+        throw error;
+    }
+
+    const repos = (await response.json()) as GitHubApiRepo[];
+
+    // Filter for authored original repositories only (excluding forks)
+    const projects: SyncedProject[] = repos
+        .filter(repo => !repo.fork)
+        .map(repo => ({
+            name: repo.name,
+            description: repo.description ?? '',
+            link: repo.html_url,
+            homepage: repo.homepage ? repo.homepage : undefined,
+            language: repo.language ?? undefined,
+            updatedAt: repo.pushed_at ?? repo.updated_at,
+            isDynamic: true,
+        }));
+
+    inMemoryProjectsCache = {
+        timestamp: Date.now(),
+        data: projects,
+    };
+
+    return projects;
+}
+
 export default async function handler(req: Request) {
     if (req.method === 'OPTIONS') {
         return new Response(null, {
@@ -51,46 +119,7 @@ export default async function handler(req: Request) {
     }
 
     try {
-        const githubHeaders: Record<string, string> = {
-            'Accept': 'application/vnd.github.v3+json',
-            'User-Agent': 'abhijeetjha0-portfolio',
-        };
-
-        const token = process.env.GITHUB_TOKEN;
-        if (token) {
-            githubHeaders['Authorization'] = `Bearer ${token}`;
-        }
-
-        const response = await fetch('https://api.github.com/users/abhijeetjha0/repos?sort=pushed&per_page=100', {
-            headers: githubHeaders,
-        });
-
-        if (!response.ok) {
-            console.warn(`[api/projects] GitHub API responded with status ${response.status}`);
-
-            return new Response(JSON.stringify({ error: 'Failed to fetch repositories from GitHub' }), {
-                status: response.status,
-                headers: {
-                    ...CORS_HEADERS,
-                    'Content-Type': 'application/json',
-                },
-            });
-        }
-
-        const repos = (await response.json()) as GitHubApiRepo[];
-
-        // Filter for authored original repositories only (excluding forks)
-        const projects = repos
-            .filter(repo => !repo.fork)
-            .map(repo => ({
-                name: repo.name,
-                description: repo.description ?? '',
-                link: repo.html_url,
-                homepage: repo.homepage ? repo.homepage : undefined,
-                language: repo.language ?? undefined,
-                updatedAt: repo.pushed_at ?? repo.updated_at,
-                isDynamic: true,
-            }));
+        const projects = await fetchGitHubProjects(true);
 
         return new Response(JSON.stringify(projects), {
             headers: {
@@ -100,7 +129,20 @@ export default async function handler(req: Request) {
             },
             status: 200,
         });
-    } catch (error) {
+    } catch (error: unknown) {
+        if (error && typeof error === 'object' && 'status' in error && typeof (error as { status: unknown }).status === 'number') {
+            const status = (error as { status: number }).status;
+            console.warn(`[api/projects] GitHub API responded with status ${status}`);
+
+            return new Response(JSON.stringify({ error: 'Failed to fetch repositories from GitHub' }), {
+                status,
+                headers: {
+                    ...CORS_HEADERS,
+                    'Content-Type': 'application/json',
+                },
+            });
+        }
+
         console.error('[api/projects] Exception during project sync:', error);
 
         return new Response(JSON.stringify({ error: 'Internal Server Error' }), {

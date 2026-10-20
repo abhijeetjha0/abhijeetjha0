@@ -31,7 +31,8 @@ src/
 4. **i18n Localization Integrity**: Ensure text content is loaded via `useTranslation()` from `src/translations/en-US.json`.
 5. **No Disabled Lint Rules**: Never use `eslint-disable` comments unless explicitly approved and documented with a valid technical reason.
 6. **Custom Hooks** (`src/hooks/`):
-   - `useAiChat` manages AI chat state including messages, model discovery, server-synchronized IP quota, and error handling.
+   - `useAiChat` manages AI chat state including messages, model discovery, server-synchronized IP quota, and dynamic project context auto-feeding (`projects?: ProjectInfo[]`) to `/api/chat`.
+   - `useGitHubProjects` synchronizes GitHub repositories via `/api/projects` relying on Edge HTTP caching without client `localStorage` overhead, falling back to direct GitHub API or static i18n projects.
    - Hooks must return a clean public API and keep internal state private.
    - Session persistence (model cache) uses `sessionStorage` with keys from `AI_CHAT_CONFIG`.
 

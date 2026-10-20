@@ -1,6 +1,7 @@
-import { CORS_HEADERS, SYSTEM_PROMPT } from './constants.js';
+import { CORS_HEADERS, SYSTEM_PROMPT, buildSystemPrompt } from './constants.js';
 import { chatRateLimit, chatDailyRateLimit } from './rateLimit.js';
 import { executeProviderWaterfall } from './providers/index.js';
+import { fetchGitHubProjects } from './projects.js';
 
 export const config = {
     runtime: 'edge',
@@ -58,7 +59,7 @@ export default async function handler(req: Request) {
         }
 
         const body = await req.json().catch(() => ({}));
-        const { messages, preferredProvider, modelsToTry } = body;
+        const { messages, preferredProvider, modelsToTry, projects } = body;
 
         if (!messages || !Array.isArray(messages)) {
             return new Response('Invalid request body: "messages" array is required', {
@@ -67,10 +68,25 @@ export default async function handler(req: Request) {
             });
         }
 
+        // Determine active system prompt: client auto-feed > server auto-feed > fallback
+        let activeSystemPrompt = SYSTEM_PROMPT;
+        if (Array.isArray(projects) && projects.length > 0) {
+            activeSystemPrompt = buildSystemPrompt(projects);
+        } else {
+            try {
+                const serverProjects = await fetchGitHubProjects();
+                if (Array.isArray(serverProjects) && serverProjects.length > 0) {
+                    activeSystemPrompt = buildSystemPrompt(serverProjects);
+                }
+            } catch (err) {
+                console.warn('[api/chat] Failed to fetch server projects dynamically, using fallback prompt:', err);
+            }
+        }
+
         // Execute the multi-provider waterfall across configured free providers
         const result = await executeProviderWaterfall(
             messages,
-            SYSTEM_PROMPT,
+            activeSystemPrompt,
             preferredProvider,
             Array.isArray(modelsToTry) ? modelsToTry : undefined
         );

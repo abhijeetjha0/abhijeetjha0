@@ -88,10 +88,14 @@ Subdirectory-specific guidelines are maintained in modular `AGENTS.md` files thr
     - **Vercel Cron**: Scheduled daily at 04:00 UTC (`0 4 * * *` in `vercel.json`) via `/api/cron/sync-models.ts` with optional `CRON_SECRET` authentication.
 12. **Badge Placement (Portfolio Scope)**: Never add project status badges (e.g., CI/CD, Test Coverage, License) to the main `README.md` file, as this repository serves as a personal portfolio presentation. All technical status and generic repository badges must be strictly placed in `SETUP.md`.
 13. **Dynamic GitHub Projects Synchronization**:
-    - **Architecture**: Dynamic repository synchronization (`abhijeetjha0`) via `/api/projects` (Vercel Edge Function with `s-maxage=1800, stale-while-revalidate=86400`) and the `useGitHubProjects` hook.
-    - **Client Fallback & Caching**: 30-minute `localStorage` cache (`portfolio_github_projects_cache_v1`). If the backend Edge Function is unreachable, the client cascades directly to GitHub REST API (`api.github.com/users/abhijeetjha0/repos`), falling back to curated static i18n projects if offline.
+    - **Architecture**: Dynamic repository synchronization (`abhijeetjha0`) via `/api/projects` (Vercel Edge Function with `s-maxage=3600, stale-while-revalidate=86400`) and the `useGitHubProjects` hook.
+    - **HTTP & Edge Caching**: No client-side `localStorage` cache dependency. Relies on native Edge CDN headers (`Cache-Control: public, s-maxage=3600, stale-while-revalidate=86400`) and a 15-minute in-memory Edge cache (`IN_MEMORY_CACHE_TTL_MS = 15m`). If the backend Edge Function is unreachable, the client cascades directly to GitHub REST API (`api.github.com/users/abhijeetjha0/repos`), falling back to curated static i18n projects if offline.
     - **Repository Filtering**: Original repositories only (`fork === false`).
     - **UI Features**: Primary programming language badge with language accent color dot and responsive "Live Demo" action button alongside "View Project" when repository `homepage` is present.
+14. **Dynamic Project Auto-Feeding to Built-in Portfolio AI Assistant**:
+    - **Prompt Synthesis**: The AI system prompt dynamically embeds detailed project context (name, description, language, topics, repository URL, live demo / npm links) via `buildSystemPrompt(projects?: ProjectPromptItem[])` in `api/constants.ts`.
+    - **Client Auto-Feed**: `useAiChat({ projects })` automatically injects the client's current GitHub projects into the `/api/chat` POST payload body.
+    - **Server Auto-Feed Fallback**: If `/api/chat` is invoked externally or without client project context, it automatically invokes `fetchGitHubProjects()` from `api/projects.ts` to construct a complete, up-to-date system prompt.
 
 
 > **Note**: Subdirectory-specific guidelines (Edge Functions, React component interfaces, constant declarations, i18n parity, shell script standards, and Jest testing patterns) are maintained directly within their respective modular `AGENTS.md` files:

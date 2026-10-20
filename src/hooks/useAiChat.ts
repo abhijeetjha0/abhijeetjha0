@@ -1,7 +1,11 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AiChatState, ChatMessage, ProviderModel } from '../@types';
+import { AiChatState, ChatMessage, ProviderModel, ProjectInfo } from '../@types';
 import { AI_CHAT_CONFIG } from '../constants';
+
+export interface UseAiChatOptions {
+    projects?: ProjectInfo[];
+}
 
 function getCachedModels(): ProviderModel[] | undefined {
     try {
@@ -21,8 +25,13 @@ function getCachedModels(): ProviderModel[] | undefined {
     return undefined;
 }
 
-export function useAiChat() {
+export function useAiChat(options?: UseAiChatOptions) {
     const { t } = useTranslation();
+    const projectsRef = useRef(options?.projects);
+
+    useEffect(() => {
+        projectsRef.current = options?.projects;
+    }, [options?.projects]);
 
     const [state, setState] = useState<AiChatState>({
         messages: [
@@ -144,15 +153,21 @@ export function useAiChat() {
                 .concat(userMessage)
                 .map(m => ({ role: m.role, content: m.content }));
 
+            const payload: Record<string, unknown> = {
+                messages: messagesToSend,
+                modelsToTry: state.modelsToTry,
+            };
+
+            if (projectsRef.current && projectsRef.current.length > 0) {
+                payload.projects = projectsRef.current;
+            }
+
             const response = await fetch(AI_CHAT_CONFIG.BACKEND_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    messages: messagesToSend,
-                    modelsToTry: state.modelsToTry
-                }),
+                body: JSON.stringify(payload),
             });
 
             if (!response.ok) {

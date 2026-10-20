@@ -91,33 +91,8 @@ describe('useGitHubProjects hook and utilities', () => {
         });
     });
 
-    describe('useGitHubProjects hook data fetching & caching', () => {
-        it('returns fresh cached projects from localStorage without calling fetch', async () => {
-            const cachedData: ProjectInfo[] = [
-                {
-                    name: 'Cached Project',
-                    description: 'From localStorage',
-                    link: 'https://github.com/abhijeetjha0/cached',
-                    language: 'TypeScript',
-                },
-            ];
-
-            localStorage.setItem(
-                PROJECTS_CONFIG.STORAGE_KEY,
-                JSON.stringify({
-                    timestamp: Date.now(),
-                    data: cachedData,
-                })
-            );
-
-            const { result } = renderHook(() => useGitHubProjects());
-
-            expect(result.current.isLoading).toBe(false);
-            expect(result.current.projects).toEqual(cachedData);
-            expect(mockFetch).not.toHaveBeenCalled();
-        });
-
-        it('fetches from backend endpoint (/api/projects) when cache is empty', async () => {
+    describe('useGitHubProjects hook data fetching & HTTP edge integration', () => {
+        it('fetches from backend endpoint (/api/projects) on mount', async () => {
             const mockBackendProjects = [
                 {
                     name: 'spin-your-ai',
@@ -145,11 +120,14 @@ describe('useGitHubProjects hook and utilities', () => {
             expect(result.current.projects[0].name).toBe('Spin Your AI');
             expect(result.current.projects[0].homepage).toBe('https://spinyourai.com');
             expect(result.current.isError).toBe(false);
-
-            // Verifies saved to localStorage
-            const stored = localStorage.getItem(PROJECTS_CONFIG.STORAGE_KEY);
-            expect(stored).not.toBeNull();
-            expect(JSON.parse(stored!).data[0].name).toBe('Spin Your AI');
+            expect(mockFetch).toHaveBeenCalledWith(
+                PROJECTS_CONFIG.BACKEND_URL,
+                expect.objectContaining({
+                    headers: expect.objectContaining({
+                        Accept: 'application/json',
+                    }),
+                })
+            );
         });
 
         it('falls back to direct GitHub API if backend endpoint fails', async () => {
@@ -210,25 +188,24 @@ describe('useGitHubProjects hook and utilities', () => {
             expect(result.current.projects).toEqual(mockStaticProjects);
         });
 
-        it('refresh() ignores existing cache and triggers a fresh fetch', async () => {
-            const cachedData: ProjectInfo[] = [
-                {
-                    name: 'Old Cached',
-                    description: 'Old desc',
-                    link: 'https://github.com/abhijeetjha0/old',
-                },
-            ];
-
-            localStorage.setItem(
-                PROJECTS_CONFIG.STORAGE_KEY,
-                JSON.stringify({
-                    timestamp: Date.now(),
-                    data: cachedData,
-                })
-            );
+        it('refresh() triggers a fresh fetch with cache: reload', async () => {
+            mockFetch.mockResolvedValueOnce({
+                ok: true,
+                status: 200,
+                json: async () => [
+                    {
+                        name: 'initial-project',
+                        description: 'Initial desc',
+                        link: 'https://github.com/abhijeetjha0/initial',
+                    },
+                ],
+            });
 
             const { result } = renderHook(() => useGitHubProjects());
-            expect(result.current.projects[0].name).toBe('Old Cached');
+            await waitFor(() => {
+                expect(result.current.isLoading).toBe(false);
+            });
+            expect(result.current.projects[0].name).toBe('Initial Project');
 
             const freshBackendProjects = [
                 {
@@ -249,24 +226,12 @@ describe('useGitHubProjects hook and utilities', () => {
             });
 
             expect(result.current.projects[0].name).toBe('Freshly Synced Project');
-        });
-
-        it('handles corrupted localStorage JSON gracefully', async () => {
-            localStorage.setItem(PROJECTS_CONFIG.STORAGE_KEY, 'invalid-json{{{');
-
-            mockFetch.mockResolvedValueOnce({
-                ok: true,
-                status: 200,
-                json: async () => [],
-            });
-
-            const { result } = renderHook(() => useGitHubProjects());
-
-            await waitFor(() => {
-                expect(result.current.isLoading).toBe(false);
-            });
-
-            expect(result.current.projects).toEqual(mockStaticProjects);
+            expect(mockFetch).toHaveBeenLastCalledWith(
+                PROJECTS_CONFIG.BACKEND_URL,
+                expect.objectContaining({
+                    cache: 'reload',
+                })
+            );
         });
 
         it('refresh() handles API failure and preserves static projects on error', async () => {

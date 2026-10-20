@@ -174,8 +174,6 @@ export const AI_CHAT_CONFIG = {
 export const PROJECTS_CONFIG = {
     GITHUB_USERNAME: 'abhijeetjha0',
     GITHUB_API_URL: 'https://api.github.com/users/abhijeetjha0/repos?sort=pushed&per_page=100',
-    STORAGE_KEY: 'abhijeetjha0_github_projects',
-    CACHE_TTL_MS: 30 * 60 * 1000,
     BACKEND_URL: (process.env.VITE_AI_BACKEND_URL || 'http://localhost:3000/api/chat').replace('/api/chat', '/api/projects'),
     LANGUAGE_COLORS: {
         TypeScript: '#3178c6',

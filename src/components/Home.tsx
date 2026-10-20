@@ -8,9 +8,11 @@ import AiChatPanel from './AiChatPanel';
 import { Container } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useAiChat } from '../hooks/useAiChat';
+import { useGitHubProjects } from '../hooks/useGitHubProjects';
 
 export default function Home() {
     const { t } = useTranslation();
+    const { projects } = useGitHubProjects();
     const { 
         messages, 
         isLoading, 
@@ -20,7 +22,7 @@ export default function Home() {
         toggleChat,
         remainingQuota,
         isQuotaExceeded
-    } = useAiChat();
+    } = useAiChat({ projects });
 
     return (
         <div className="portfolio-content">

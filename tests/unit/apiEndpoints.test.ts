@@ -75,18 +75,42 @@ describe('api endpoints (chat and models)', () => {
         it('executes chat successfully with provider waterfall and returns headers', async () => {
             process.env.OPENROUTER_API_KEY = 'sk-or-test-token';
 
-            mockFetch.mockResolvedValueOnce({
-                ok: true,
-                status: 200,
-                json: async () => ({
-                    choices: [
-                        {
-                            message: {
-                                content: 'Abhijit is a Senior Software Engineer.',
+            mockFetch.mockImplementation(async (url: string) => {
+                if (url.includes('api.github.com/users/abhijeetjha0/repos')) {
+                    return {
+                        ok: true,
+                        status: 200,
+                        json: async () => [
+                            {
+                                id: 1,
+                                name: 'lint-rules',
+                                description: 'Linting presets',
+                                html_url: 'https://github.com/abhijeetjha0/lint-rules',
+                                homepage: 'https://www.npmjs.com/package/@abhijeetjha0/lint-rules',
+                                language: 'JavaScript',
+                                fork: false,
                             },
-                        },
-                    ],
-                }),
+                        ],
+                    };
+                }
+
+                if (url.includes('openrouter.ai')) {
+                    return {
+                        ok: true,
+                        status: 200,
+                        json: async () => ({
+                            choices: [
+                                {
+                                    message: {
+                                        content: 'Abhijit is a Senior Software Engineer.',
+                                    },
+                                },
+                            ],
+                        }),
+                    };
+                }
+
+                return { ok: true, status: 200, json: async () => ({}) };
             });
 
             const req = new Request('http://localhost:3000/api/chat', {
@@ -94,6 +118,15 @@ describe('api endpoints (chat and models)', () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     messages: [{ role: 'user', content: 'What is Abhijit\'s role?' }],
+                    projects: [
+                        {
+                            name: 'lint-rules',
+                            description: 'Linting presets',
+                            link: 'https://github.com/abhijeetjha0/lint-rules',
+                            homepage: 'https://www.npmjs.com/package/@abhijeetjha0/lint-rules',
+                            language: 'JavaScript',
+                        },
+                    ],
                 }),
             });
 
@@ -106,6 +139,68 @@ describe('api endpoints (chat and models)', () => {
 
             const text = await res.text();
             expect(text).toBe('Abhijit is a Senior Software Engineer.');
+        });
+
+        it('auto-feeds server-fetched projects into prompt when client projects are not provided', async () => {
+            process.env.OPENROUTER_API_KEY = 'sk-or-test-token';
+
+            let receivedSystemPrompt = '';
+            mockFetch.mockImplementation(async (url: string, options?: RequestInit) => {
+                if (url.includes('api.github.com/users/abhijeetjha0/repos')) {
+                    return {
+                        ok: true,
+                        status: 200,
+                        json: async () => [
+                            {
+                                id: 99,
+                                name: 'server-synced-project',
+                                description: 'Server synced description',
+                                html_url: 'https://github.com/abhijeetjha0/server-synced-project',
+                                fork: false,
+                            },
+                        ],
+                    };
+                }
+
+                if (url.includes('openrouter.ai')) {
+                    if (options && options.body) {
+                        const parsed = JSON.parse(options.body as string);
+                        const sysMsg = parsed.messages?.find((m: { role?: string; content?: string }) => m.role === 'system');
+                        if (sysMsg) {
+                            receivedSystemPrompt = sysMsg.content;
+                        }
+                    }
+
+                    return {
+                        ok: true,
+                        status: 200,
+                        json: async () => ({
+                            choices: [
+                                {
+                                    message: {
+                                        content: 'Here are the projects.',
+                                    },
+                                },
+                            ],
+                        }),
+                    };
+                }
+
+                return { ok: true, status: 200, json: async () => ({}) };
+            });
+
+            const req = new Request('http://localhost:3000/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    messages: [{ role: 'user', content: 'Tell me about your projects' }],
+                }),
+            });
+
+            const res = await chatHandler(req);
+            expect(res.status).toBe(200);
+            expect(receivedSystemPrompt).toContain('server-synced-project');
+            expect(receivedSystemPrompt).toContain('Server synced description');
         });
 
         it('rejects request when burst rate limit is exceeded with 429', async () => {

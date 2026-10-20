@@ -4,11 +4,6 @@ import { GitHubRepo, ProjectInfo, UseGitHubProjectsResult } from '../@types';
 import { PROJECTS_CONFIG } from '../constants';
 import { logger } from '../utilities/logger';
 
-interface CachedProjectsPayload {
-    timestamp: number;
-    data: ProjectInfo[];
-}
-
 export function formatProjectTitle(repoName: string): string {
     if (PROJECTS_CONFIG.KNOWN_REPO_NAMES[repoName]) {
         return PROJECTS_CONFIG.KNOWN_REPO_NAMES[repoName];
@@ -44,49 +39,25 @@ export function formatProjectDescription(
     return formatProjectTitle(repoName);
 }
 
-function getCachedProjects(): ProjectInfo[] | null {
-    try {
-        const stored = localStorage.getItem(PROJECTS_CONFIG.STORAGE_KEY);
-        if (stored) {
-            const parsed = JSON.parse(stored) as CachedProjectsPayload;
-            if (parsed && typeof parsed.timestamp === 'number' && Array.isArray(parsed.data)) {
-                const isFresh = Date.now() - parsed.timestamp < PROJECTS_CONFIG.CACHE_TTL_MS;
-                if (isFresh) {
-                    return parsed.data;
-                }
-            }
-        }
-    } catch (e) {
-        logger('Failed to parse cached projects from localStorage', e);
-    }
-
-    return null;
-}
-
-function setCachedProjects(data: ProjectInfo[]): void {
-    try {
-        const payload: CachedProjectsPayload = {
-            timestamp: Date.now(),
-            data,
-        };
-        localStorage.setItem(PROJECTS_CONFIG.STORAGE_KEY, JSON.stringify(payload));
-    } catch (e) {
-        logger('Failed to save projects to localStorage cache', e);
-    }
-}
-
 async function performProjectFetch(
-    staticProjects: ProjectInfo[]
+    staticProjects: ProjectInfo[],
+    forceRefresh: boolean = false
 ): Promise<ProjectInfo[] | null> {
     let fetchedList: (ProjectInfo | GitHubRepo)[] | null = null;
 
+    const fetchOptions: RequestInit = {
+        headers: {
+            'Accept': 'application/json',
+        },
+    };
+
+    if (forceRefresh) {
+        fetchOptions.cache = 'reload';
+    }
+
     // Step 1: Try Vercel Edge endpoint (/api/projects)
     try {
-        const edgeRes = await fetch(PROJECTS_CONFIG.BACKEND_URL, {
-            headers: {
-                'Accept': 'application/json',
-            },
-        });
+        const edgeRes = await fetch(PROJECTS_CONFIG.BACKEND_URL, fetchOptions);
 
         if (edgeRes.ok) {
             fetchedList = await edgeRes.json();
@@ -102,6 +73,7 @@ async function performProjectFetch(
                 headers: {
                     'Accept': 'application/vnd.github.v3+json',
                 },
+                ...(forceRefresh ? { cache: 'reload' } : {}),
             });
 
             if (ghRes.ok) {
@@ -157,14 +129,13 @@ export function useGitHubProjects(): UseGitHubProjectsResult {
         return Array.isArray(rawProjects) ? (rawProjects as ProjectInfo[]) : [];
     }, [t]);
 
-    const [cached] = useState<ProjectInfo[] | null>(() => getCachedProjects());
-    const [projects, setProjects] = useState<ProjectInfo[]>(() => cached || staticProjects);
-    const [isLoading, setIsLoading] = useState<boolean>(() => !cached);
+    const [projects, setProjects] = useState<ProjectInfo[]>(() => staticProjects);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isError, setIsError] = useState<boolean>(false);
     const hasFetchedRef = useRef(false);
 
     useEffect(() => {
-        if (cached || hasFetchedRef.current) {
+        if (hasFetchedRef.current) {
             return;
         }
 
@@ -177,7 +148,6 @@ export function useGitHubProjects(): UseGitHubProjectsResult {
 
                 if (normalized) {
                     setProjects(normalized);
-                    setCachedProjects(normalized);
                     setIsLoading(false);
                     setIsError(false);
                 } else {
@@ -201,17 +171,16 @@ export function useGitHubProjects(): UseGitHubProjectsResult {
         return () => {
             isMounted = false;
         };
-    }, [cached, staticProjects]);
+    }, [staticProjects]);
 
     const refresh = useCallback(async () => {
         setIsLoading(true);
         setIsError(false);
 
         try {
-            const normalized = await performProjectFetch(staticProjects);
+            const normalized = await performProjectFetch(staticProjects, true);
             if (normalized) {
                 setProjects(normalized);
-                setCachedProjects(normalized);
                 setIsLoading(false);
                 setIsError(false);
             } else {
