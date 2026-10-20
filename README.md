@@ -22,6 +22,7 @@ Senior Software Engineer with **6+ years of experience** leading UI development 
 - 🌐 **Google Developer**: [g.dev/abhijeetjha0](https://g.dev/abhijeetjha0)
 - 🦙 **Ollama**: [ollama.com/abhijeetjha0](https://ollama.com/abhijeetjha0)
 - 🤗 **Hugging Face**: [huggingface.co/abhijeetjha0](https://huggingface.co/abhijeetjha0)
+- ❤️ **Lovable**: [lovable.dev/@abhijeetjha0](https://lovable.dev/@abhijeetjha0)
 - 🎓 **Education**: B.Tech in IT @ Swami Keshwanand Institute of Technology (SKIT), Jaipur
 
 ---
