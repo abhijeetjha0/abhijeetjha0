@@ -24,6 +24,12 @@
 }
 
 .settings-offcanvas {
+    --bs-offcanvas-width: 430px;
+    --bs-offcanvas-zindex: 1050;
+
+    z-index: 1050;
+    width: var(--bs-offcanvas-width);
+    max-width: 100vw;
     background-color: var(--bs-body-bg);
     color: var(--bs-body-color);
     box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
@@ -68,6 +74,15 @@
                 z-index: 1;
             }
         }
+    }
+}
+
+// Suppress background chat floating UI when settings drawer is active
+body:has(.settings-offcanvas.show) {
+    .ai-chat-fab,
+    .ai-chat-panel {
+        opacity: 0;
+        pointer-events: none;
     }
 }
 
