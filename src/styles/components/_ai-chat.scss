@@ -47,7 +47,8 @@
     width: 380px;
     height: 600px;
     max-height: calc(100vh - 4rem);
-    background: white;
+    background: $color-white;
+    border: 1px solid $color-slate-200;
     z-index: 1040;
     display: flex;
     flex-direction: column;
@@ -66,6 +67,7 @@
         .chat-header {
             border-radius: 0 !important;
         }
+
         .chat-input-area {
             border-radius: 0 !important;
         }
@@ -97,6 +99,25 @@
     .chat-messages {
         flex-grow: 1;
         background: $color-slate-50;
+        scrollbar-width: thin;
+        scrollbar-color: rgba($color-slate-600, 0.25) transparent;
+
+        &::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: rgba($color-slate-600, 0.25);
+            border-radius: 9999px;
+
+            &:hover {
+                background: rgba($color-slate-600, 0.4);
+            }
+        }
 
         .message-bubble-wrapper {
             display: flex;
@@ -104,17 +125,70 @@
 
             &.user {
                 justify-content: flex-end;
+
                 .message-bubble {
                     border-bottom-right-radius: 4px !important;
+                    background: var(--bs-primary);
+                    color: white;
+
+                    a {
+                        color: #ffffff;
+                        text-decoration: underline;
+
+                        &:hover {
+                            color: #e0e7ff;
+                        }
+                    }
                 }
             }
 
             &.assistant {
                 justify-content: flex-start;
+
                 .message-bubble {
                     border-bottom-left-radius: 4px !important;
-                    background: white !important;
+                    background: $color-white;
+                    color: $color-slate-900;
                     border: 1px solid $color-slate-200;
+
+                    a {
+                        color: var(--bs-primary);
+                        text-decoration: none;
+
+                        &:hover {
+                            text-decoration: underline;
+                        }
+                    }
+
+                    code {
+                        background: $color-slate-100;
+                        color: #e11d48;
+                        padding: 0.15rem 0.35rem;
+                        border-radius: 4px;
+                        font-size: 0.85em;
+                    }
+
+                    pre {
+                        background: $color-slate-100;
+                        border: 1px solid $color-slate-200;
+                        padding: 0.75rem;
+                        border-radius: 6px;
+                        overflow-x: auto;
+                        margin: 0.5rem 0;
+
+                        code {
+                            background: transparent;
+                            color: inherit;
+                            padding: 0;
+                        }
+                    }
+
+                    blockquote {
+                        border-left: 3px solid $color-slate-200;
+                        padding-left: 0.75rem;
+                        margin: 0.5rem 0;
+                        color: $color-slate-600;
+                    }
                 }
             }
         }
@@ -142,7 +216,7 @@
                 scrollbar-color: rgba($color-slate-600, 0.3) $color-slate-100;
                 border: 1px solid $color-slate-200;
                 margin: 0.5rem 0;
-                background: white;
+                background: $color-white;
 
                 &::-webkit-scrollbar {
                     height: 5px;
@@ -183,6 +257,12 @@
                 }
             }
         }
+
+        .suggested-questions {
+            .btn {
+                transition: all 0.2s ease;
+            }
+        }
     }
 
     .typing-indicator {
@@ -193,6 +273,18 @@
     }
 
     .chat-input-area {
+        background: $color-white;
+        border-top: 1px solid $color-slate-200;
+
+        .form-control {
+            border-color: $color-slate-200;
+
+            &:focus {
+                border-color: var(--bs-primary);
+                box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.25);
+            }
+        }
+
         .char-counter {
             font-size: 0.7rem;
             color: $color-slate-600;
@@ -202,6 +294,187 @@
             background-color: $color-slate-50;
             border: 1px dashed rgba($color-slate-600, 0.3);
             border-radius: 12px;
+        }
+    }
+}
+
+// Dark theme specific overrides
+[data-bs-theme="dark"] {
+    .ai-chat-fab {
+        box-shadow:
+            0 4px 16px rgba(0, 0, 0, 0.4),
+            0 0 12px rgba(79, 70, 229, 0.35);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+
+        &:hover,
+        &:focus-visible {
+            box-shadow:
+                0 6px 20px rgba(0, 0, 0, 0.5),
+                0 0 16px rgba(79, 70, 229, 0.55);
+        }
+    }
+
+    .ai-chat-panel {
+        background: #1e293b;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        box-shadow:
+            0 16px 40px -4px rgba(0, 0, 0, 0.55),
+            0 0 0 1px rgba(255, 255, 255, 0.05);
+
+        .chat-limitation-notice {
+            background-color: #0f172a;
+            color: #94a3b8;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .chat-messages {
+            background: #0f172a;
+            scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+
+            &::-webkit-scrollbar-thumb {
+                background: rgba(255, 255, 255, 0.2);
+
+                &:hover {
+                    background: rgba(255, 255, 255, 0.35);
+                }
+            }
+
+            .message-bubble-wrapper.assistant .message-bubble {
+                background: #1e293b;
+                color: #f1f5f9;
+                border-color: rgba(255, 255, 255, 0.12);
+
+                a {
+                    color: #60a5fa;
+
+                    &:hover {
+                        color: #93c5fd;
+                    }
+                }
+
+                code {
+                    background: rgba(255, 255, 255, 0.08);
+                    color: #f472b6;
+                }
+
+                pre {
+                    background: #0b1120;
+                    border-color: rgba(255, 255, 255, 0.1);
+                    color: #f1f5f9;
+                }
+
+                blockquote {
+                    border-left-color: rgba(255, 255, 255, 0.2);
+                    color: #94a3b8;
+                }
+            }
+
+            .message-bubble {
+                .table-responsive {
+                    background: #0b1120;
+                    border-color: rgba(255, 255, 255, 0.12);
+                    scrollbar-color: rgba(255, 255, 255, 0.2) #0b1120;
+
+                    &::-webkit-scrollbar-track {
+                        background: #0b1120;
+                    }
+
+                    &::-webkit-scrollbar-thumb {
+                        background: rgba(255, 255, 255, 0.2);
+
+                        &:hover {
+                            background: rgba(255, 255, 255, 0.35);
+                        }
+                    }
+
+                    table {
+                        --bs-table-bg: transparent;
+                        --bs-table-striped-bg: rgba(255, 255, 255, 0.03);
+                        --bs-table-color: #e2e8f0;
+                        --bs-table-border-color: rgba(255, 255, 255, 0.12);
+
+                        color: #e2e8f0;
+                        border-color: rgba(255, 255, 255, 0.12);
+
+                        th {
+                            background-color: #1e293b;
+                            color: #f8fafc;
+                            border-color: rgba(255, 255, 255, 0.12);
+                        }
+
+                        td {
+                            border-color: rgba(255, 255, 255, 0.12);
+                        }
+                    }
+                }
+            }
+
+            .suggested-questions {
+                .btn-outline-primary {
+                    background: rgba(30, 41, 59, 0.7);
+                    color: #93c5fd;
+                    border-color: rgba(96, 165, 250, 0.35);
+
+                    &:hover,
+                    &:focus-visible {
+                        background: var(--bs-primary);
+                        color: #ffffff;
+                        border-color: var(--bs-primary);
+                        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+                    }
+                }
+            }
+
+            .text-danger.bg-danger {
+                background-color: rgba(239, 68, 68, 0.15) !important;
+                border: 1px solid rgba(239, 68, 68, 0.3);
+                color: #fca5a5 !important;
+            }
+        }
+
+        .chat-input-area {
+            background: #1e293b;
+            border-top-color: rgba(255, 255, 255, 0.1);
+
+            .form-control {
+                background-color: #0f172a;
+                color: #f1f5f9;
+                border-color: rgba(255, 255, 255, 0.15);
+
+                &:focus {
+                    background-color: #0f172a;
+                    color: #ffffff;
+                    border-color: #60a5fa;
+                    box-shadow: 0 0 0 0.25rem rgba(96, 165, 250, 0.25);
+                }
+
+                &::placeholder {
+                    color: #64748b;
+                }
+            }
+
+            .char-counter {
+                color: #94a3b8 !important;
+            }
+
+            .quota-exhausted-box {
+                background-color: #0f172a;
+                border-color: rgba(255, 255, 255, 0.15);
+
+                .text-danger {
+                    color: #f87171 !important;
+                }
+
+                .btn-outline-primary {
+                    color: #93c5fd;
+                    border-color: rgba(96, 165, 250, 0.4);
+
+                    &:hover {
+                        background: var(--bs-primary);
+                        color: #ffffff;
+                    }
+                }
+            }
         }
     }
 }

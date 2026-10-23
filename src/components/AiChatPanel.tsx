@@ -76,14 +76,14 @@ export default function AiChatPanel({
                 <button className="btn-close btn-close-white" onClick={toggleChat} aria-label="Close chat" />
             </div>
 
-            <div className="chat-limitation-notice px-3 py-1 bg-light text-muted small border-bottom">
+            <div className="chat-limitation-notice px-3 py-1 small border-bottom">
                 {t('aiChat.rateLimitNotice')}
             </div>
 
             <div className="chat-messages p-3 overflow-auto" aria-live="polite" aria-atomic="false">
                 {messages.map((msg, index) => (
                     <div key={msg.id || index} className={`message-bubble-wrapper ${msg.role === 'user' ? 'user' : 'assistant'}`}>
-                        <div className={`message-bubble ${msg.role === 'user' ? 'bg-primary text-white' : 'bg-light text-dark'} p-2 px-3 rounded-4 mb-2 shadow-sm`}>
+                        <div className={`message-bubble ${msg.role === 'user' ? 'bg-primary text-white' : ''} p-2 px-3 rounded-4 mb-2 shadow-sm`}>
                             {msg.content ? (
                                 <ReactMarkdown 
                                     remarkPlugins={[remarkGfm]}
@@ -138,7 +138,7 @@ export default function AiChatPanel({
                 <div ref={messagesEndRef} />
             </div>
 
-            <div className="chat-input-area p-3 border-top bg-white rounded-bottom-4">
+            <div className="chat-input-area p-3 border-top rounded-bottom-4">
                 {isQuotaExceeded ? (
                     <div className="quota-exhausted-box text-center py-2 px-3">
                         <p className="small text-danger mb-2 fw-semibold">
